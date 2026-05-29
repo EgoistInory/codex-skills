@@ -44,15 +44,16 @@ codex-skills/
 
 ### 选项 A：在线自动安装（推荐）
 
-如果你的 Codex 或其他 AI 助理支持 `$skill-installer` 工具，可以直接使用对话指令让它从本仓库安装。
+如果你的 Codex 或其他 AI 助理支持 `$skill-installer` 工具，可以直接在对话框中粘贴以下指令，让它从本仓库自动安装对应的技能。
 
-**场景 1：安装单个指定的 Skill**
-在对话框中输入以下指令（请将 `<你>` 和 `<repo>` 替换为实际的 GitHub 用户名和仓库名）：
-> Use $skill-installer to install from https://github.com/<你>/<repo>/tree/main/skills/frontend-acceptance-workflow
+**示例：安装 frontend-acceptance-workflow 技能**
+你可以使用直接链接方式：
+> Use $skill-installer to install from https://github.com/EgoistInory/codex-skills/tree/main/skills/frontend-acceptance-workflow
 
-**场景 2：从包含多个 Skill 的仓库中指定安装**
-或者使用以下格式精确指定仓库和路径：
-> Use $skill-installer to install frontend-acceptance-workflow from repo <你>/<repo> path skills/frontend-acceptance-workflow
+或者使用精确指定仓库与路径的方式：
+> Use $skill-installer to install frontend-acceptance-workflow from repo EgoistInory/codex-skills path skills/frontend-acceptance-workflow
+
+*(如果你想安装本仓库中的其他技能，只需将指令中的 `frontend-acceptance-workflow` 替换为目标技能的目录名即可。)*
 
 ⚠️ **重要提示**：安装完成后，**请务必重启 Codex**（或你正在使用的 AI 客户端），以确保新安装的 skill 被正确加载并生效。
 
@@ -72,10 +73,10 @@ codex-skills/
 一旦安装完成并重启生效，AI 智能体将支持两种触发方式：
 
 1. **隐式自动触发（Implicit Invocation）**
-   当你在对话中提到与前端美化、UI 调整、打包部署、浏览器测试或回归排查相关的任务时，智能体会根据 `SKILL.md` 的 `description` 自动检索并加载对应技能，并在后台默默遵循该工作流执行。
+   当你在对话中提到的任务与某个技能的 `description` 高度匹配时（例如你提到了与前端验收、部署等相关的任务），智能体会自动检索并加载对应的技能，并在后台默默遵循该工作流执行。
    
 2. **显式主动调用（Explicit Invocation）**
-   你可以在提示词中直接引用技能名称来强制启用它，例如：
+   你可以在提示词中直接引用特定技能的名称来强制启用它，例如：
    > “使用 $frontend-acceptance-workflow 来重构登录页面，并完成浏览器回归测试。”
 
 ---
