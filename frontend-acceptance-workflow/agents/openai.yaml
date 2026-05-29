@@ -1,0 +1,4 @@
+interface:
+  display_name: "Frontend Acceptance Workflow"
+  short_description: "Frontend UI polish to tested acceptance"
+  default_prompt: "Use $frontend-acceptance-workflow to improve a frontend project, validate code, run browser regression checks, and prepare acceptance notes."
