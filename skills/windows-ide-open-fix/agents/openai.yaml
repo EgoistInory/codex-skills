@@ -1,0 +1,7 @@
+﻿interface:
+  display_name: "Windows IDE Open Fix"
+  short_description: "Fix Codex Windows failures opening projects in IDEs."
+  default_prompt: "Use $windows-ide-open-fix to diagnose why Codex cannot open this Windows project in my configured IDE."
+
+policy:
+  allow_implicit_invocation: true
