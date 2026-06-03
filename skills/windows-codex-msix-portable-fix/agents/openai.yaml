@@ -1,0 +1,7 @@
+interface:
+  display_name: "Windows Codex MSIX Portable Fix"
+  short_description: "Repair restricted Win10 Codex installs."
+  default_prompt: "Use $windows-codex-msix-portable-fix to diagnose my restricted Windows Codex install and restore workspace dependencies."
+
+policy:
+  allow_implicit_invocation: true
