@@ -25,6 +25,18 @@ codex-skills/
 
 ---
 
+## 📦 当前技能
+
+| Skill | 用途 |
+| --- | --- |
+| `frontend-acceptance-workflow` | 前端实现、浏览器验收、回归排查与交付闭环。 |
+| `hatch-pet` | Codex pet / spritesheet 生成、校验与打包流程。 |
+| `realistic-human-image-qa` | 写实真人生图提示词的人体结构、手部、服装、背景透视与物理现实校验。 |
+| `windows-codex-msix-portable-fix` | Windows 受限环境下 Codex MSIX / portable 运行与 runtime 修复。 |
+| `windows-ide-open-fix` | Windows 上 Codex 打开 IDE / 文件失败的诊断与修复。 |
+
+---
+
 ## 💡 什么是 Skill（智能体技能）？
 
 在 AI 智能体生态中，一个 **Skill** 是一个独立的目录，其核心是 `SKILL.md` 文件。
