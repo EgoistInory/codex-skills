@@ -1,0 +1,4 @@
+interface:
+  display_name: "GitHub Backup Publish"
+  short_description: "Create a private GitHub repo and sync a local project"
+  default_prompt: "Use $gh-backup-publish to safely back up this local project to GitHub."
