@@ -1,0 +1,4 @@
+interface:
+  display_name: "Frontend Netlify Release"
+  short_description: "Ship frontend sites to Netlify safely"
+  default_prompt: "Use the Frontend Netlify Release workflow to validate, commit, push, and deploy this frontend project to Netlify."
