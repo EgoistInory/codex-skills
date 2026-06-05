@@ -1,6 +1,6 @@
 ---
 name: realistic-human-image-qa
-description: Use this skill whenever the user asks for realistic human image generation, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, or wants prompts/negative prompts that reduce bad anatomy, broken hands, crossed-leg artifacts, strange clothing, impossible contact, and background/subject physics errors. Always apply this skill for 写实真人, 真人写真, 人物摆姿势, 参考图生图提示词, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 服装自然, or physical-reality prompt checks.
+description: Use this skill whenever the user asks for realistic human image generation, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, multi-reference prompt merging, or wants complete copy-paste image prompts with positive prompts, negative prompts, quality constraints, and physical-reality checks. Always apply this skill for 写实真人, 真人写真, 人物摆姿势, 参考图生图提示词, 多参考图提示词整合, 完整提示词直接复制, GPT网页手机端生图工作流, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 服装自然, or physical-reality prompt checks.
 ---
 
 # Realistic Human Image QA Prompting
@@ -14,7 +14,8 @@ Use this skill to turn a user request for realistic human image generation into 
 3. Add targeted negative keywords for the risky body regions in the requested pose.
 4. Keep negatives specific. Avoid huge generic negative blocks that may suppress normal hands, fabric folds, or body shape.
 5. If the user provides a source image, preserve its real-world geometry: viewpoint, floor plane, horizon, light direction, object scale, occlusion order, and contact shadows.
-6. If the user provides multiple reference images, produce one prompt per reference image plus a shared style enhancer and optional model parameters.
+6. If the user provides multiple reference images, extract a compact `Reference Card` for each image, then merge the cards into one direct-copy final prompt.
+7. Do not leave the user with only categorized fragments. Every useful subject, pose, wardrobe, scene, light, quality, and negative constraint must be folded into a `Final Copy Prompt`.
 
 ## Output format
 
@@ -43,13 +44,29 @@ Shared Style Anchor:
 [consistent subject, wardrobe, environment, color, camera, texture, mood]
 
 Reference 1:
-Prompt:
-[image-specific pose, framing, contact, clothing, background, camera]
-Negative Prompt:
-[image-specific defects to prevent]
+- Role in final image: [style / pose / wardrobe / background / composition / mood]
+- Positive traits to reuse: [subject, pose, clothing, scene, light, camera, texture]
+- Risk points to prevent: [hands, joints, clothing, horizon, water, background, artifacts]
+- Reusable phrase: [one concise phrase that can be merged into the final prompt]
 
 Reference 2:
 ...
+
+Merged Prompt Ingredients:
+- Subject and identity-safe visible traits: [...]
+- Wardrobe and props: [...]
+- Pose and composition: [...]
+- Scene and camera: [...]
+- Quality and realism constraints: [...]
+- Negative constraints: [...]
+
+Final Copy Prompt:
+```text
+[one complete prompt the user can paste directly into GPT image generation]
+```
+
+Separate Negative Prompt:
+[comma-separated negative prompt for models that support a negative field]
 
 Shared Style Enhancer:
 [short reusable style tail]
@@ -57,6 +74,8 @@ Shared Style Enhancer:
 Optional Model Notes:
 [aspect ratio, Midjourney-style flags if supported, reference/pose/depth guidance]
 ```
+
+For ChatGPT image generation, the `Final Copy Prompt` should be self-contained because there may be no separate negative prompt field. Put important negatives into natural language such as "avoid..." inside that final block, while also providing `Separate Negative Prompt` for tools that support it.
 
 Do not copy sensitive identity claims from reference images. Describe visible, non-sensitive visual traits and make the subject an adult when swimwear, lingerie, or sensual styling appears.
 
@@ -214,6 +233,39 @@ For a set of references, preserve consistent style anchors and vary only pose/fr
 ```text
 high-resolution realistic photography, natural skin texture, soft natural light, shallow depth of field, subtle film grain, clean composition, subject in sharp focus, softly blurred background, detailed light and shadow, editorial portrait photography, no watermark, no text, no logo
 ```
+
+## Multi-reference integration workflow
+
+Use this workflow when the user uploads several reference photos or says they want to run several GPT conversations in parallel and combine the results.
+
+1. In each reference-image conversation, ask GPT to output only a `Reference Card`, not a final image prompt. This keeps each extraction small and comparable.
+2. Each `Reference Card` must identify the image's role in the final prompt: style, subject, pose, wardrobe, background, camera, lighting, or failure-prevention.
+3. Merge cards by separating shared anchors from conflicting details. Shared anchors become the final style and quality base; conflicting pose/framing details become optional variants unless the user chose a main reference.
+4. Deduplicate negative prompts. Keep targeted physical failures; remove generic repeats and negatives that contradict the desired image.
+5. Return one `Final Copy Prompt` first. Supporting cards and separate negatives can follow, but the user must be able to copy a single block and generate an image.
+
+Use this `Reference Card` schema for each parallel extraction:
+
+```text
+Reference Card:
+- Role in final image:
+- Subject and visible styling:
+- Wardrobe, props, and accessories:
+- Pose, contact, and body geometry:
+- Scene, lighting, camera, and texture:
+- Must-preserve details:
+- Failure risks:
+- Reusable phrase:
+```
+
+Use this final copy format:
+
+```text
+Final Copy Prompt:
+Create a [target image] using the combined reference direction: [shared subject/style/scene]. Preserve [must-preserve details]. Use [pose/composition/camera/light]. Keep the image physically realistic: [anatomy, hand, clothing, contact, shadow, perspective constraints]. Avoid [deduplicated negative constraints]. [quality/style tail].
+```
+
+If the target model is ChatGPT mobile or web, prefer natural Chinese or bilingual wording that is easy to copy. Keep domain-standard terms like `HDR`, `35mm`, `4K`, `OpenPose`, `Depth`, and `no watermark` in English when they are clearer.
 
 ## Targeted negative prompt blocks
 
