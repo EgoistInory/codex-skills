@@ -62,11 +62,11 @@ Merged Prompt Ingredients:
 
 Final Copy Prompt:
 ```text
-[one complete prompt the user can paste directly into GPT image generation]
+[one complete Chinese prompt the user can paste directly into GPT image generation]
 ```
 
 Separate Negative Prompt:
-[comma-separated negative prompt for models that support a negative field]
+[English comma-separated negative prompt for models that support a negative field]
 
 Shared Style Enhancer:
 [short reusable style tail]
@@ -75,7 +75,7 @@ Optional Model Notes:
 [aspect ratio, Midjourney-style flags if supported, reference/pose/depth guidance]
 ```
 
-For ChatGPT image generation, the `Final Copy Prompt` should be self-contained because there may be no separate negative prompt field. Put important negatives into natural language such as "avoid..." inside that final block, while also providing `Separate Negative Prompt` for tools that support it.
+For ChatGPT image generation, the `Final Copy Prompt` must be fluent Chinese by default. Do not append a long English tag list to the Chinese prompt body. Translate quality, realism, anatomy, fabric, contact, light, and perspective constraints into natural Chinese. Put English keyword-style negatives such as `bad anatomy`, `extra fingers`, `watermark`, `text`, and `logo` only in `Separate Negative Prompt` for models that support a negative field.
 
 Do not copy sensitive identity claims from reference images. Describe visible, non-sensitive visual traits and make the subject an adult when swimwear, lingerie, or sensual styling appears.
 
@@ -231,7 +231,7 @@ When extracting prompts from reference images, decompose each image into reusabl
 For a set of references, preserve consistent style anchors and vary only pose/framing details. A useful shared style tail is:
 
 ```text
-high-resolution realistic photography, natural skin texture, soft natural light, shallow depth of field, subtle film grain, clean composition, subject in sharp focus, softly blurred background, detailed light and shadow, editorial portrait photography, no watermark, no text, no logo
+高清写实摄影质感，真实皮肤纹理，柔和自然光，浅景深，轻微胶片颗粒，构图干净，主体清晰锐利，背景自然虚化，光影细腻，具有高级人像摄影质感，画面中不要出现水印、文字或 logo。
 ```
 
 ## Multi-reference integration workflow
@@ -262,10 +262,14 @@ Use this final copy format:
 
 ```text
 Final Copy Prompt:
-Create a [target image] using the combined reference direction: [shared subject/style/scene]. Preserve [must-preserve details]. Use [pose/composition/camera/light]. Keep the image physically realistic: [anatomy, hand, clothing, contact, shadow, perspective constraints]. Avoid [deduplicated negative constraints]. [quality/style tail].
+生成一张[目标画面]，融合这些参考图方向：[共同风格、主体、场景]。保留[必须保留的细节]。画面采用[姿势、构图、镜头、光线]。保持写实成人真人质感：[人体结构、手部、服装受力、身体或脚底接触、阴影、透视、背景或水面/地面/家具关系]。避免[中文化后的主要失败点]。[中文画质和风格增强语句]。
 ```
 
-If the target model is ChatGPT mobile or web, prefer natural Chinese or bilingual wording that is easy to copy. Keep domain-standard terms like `HDR`, `35mm`, `4K`, `OpenPose`, `Depth`, and `no watermark` in English when they are clearer.
+Use this language split by default:
+
+- `Final Copy Prompt`: all Chinese, polished and directly readable as one photography instruction for GPT image generation.
+- `Separate Negative Prompt`: English keyword list for Midjourney, SDXL, Civitai, LoRA, or any model with a negative prompt field.
+- `Optional Model Notes`: may keep technical terms such as `35mm`, `4K`, `HDR`, `OpenPose`, `Depth`, `ControlNet`, `--ar`, and `--style raw` when they are model controls, not prose style tags.
 
 ## Targeted negative prompt blocks
 

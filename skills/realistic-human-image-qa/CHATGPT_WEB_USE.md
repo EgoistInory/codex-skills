@@ -55,11 +55,11 @@ Merged Prompt Ingredients:
 
 Final Copy Prompt:
 ```text
-[一整段可直接复制进 GPT 生图框的完整提示词]
+[一整段全中文、可直接复制进 GPT 生图框的完整提示词]
 ```
 
 Separate Negative Prompt:
-[如果目标模型支持负面提示词字段，额外复制这一段；如果是 ChatGPT 生图，可只复制 Final Copy Prompt]
+[英文负面关键词。如果目标模型支持负面提示词字段，额外复制这一段；如果是 ChatGPT 生图，只复制全中文 Final Copy Prompt]
 
 Shared Style Enhancer:
 [可复制到每条提示词末尾的统一风格增强词]
@@ -93,14 +93,21 @@ Reference Card:
 - 先抽取所有参考图共同的风格锚点。
 - 再选择一个主姿势或主构图，其他参考图只作为服装、光线、质感或背景补充。
 - 把正向提示词、质量约束、物理现实约束和负面约束去重后合并。
-- 最先输出 `Final Copy Prompt`，因为用户的目标是直接复制去生图。
+- 最先输出全中文 `Final Copy Prompt`，因为用户的目标是直接复制去 GPT 生图。
+- 不要在中文提示词后面突然接一长串英文质量标签或英文负面词。
+- 英文关键词只放到 `Separate Negative Prompt`，给 Midjourney、SDXL、Civitai、LoRA 或其他有负面提示词字段的模型使用。
 - 如果信息冲突，不要平均混合；保留主参考图，其他内容写成可选变体。
 
 最终复制块格式：
 
 ```text
 Final Copy Prompt:
-生成一张[目标画面]，融合这些参考图方向：[共同风格、主体、场景]。保留[关键细节]。画面采用[姿势、构图、镜头、光线]。保持物理真实：[人体结构、手部、服装受力、接触阴影、背景透视、水面/地面/家具关系]。避免：[去重后的负面约束]。[统一画质和风格增强词]。
+生成一张[目标画面]，融合这些参考图方向：[共同风格、主体、场景]。保留[关键细节]。画面采用[姿势、构图、镜头、光线]。保持写实成人真人质感，人体比例自然，手部、关节、腿部、脚部、服装受力、接触阴影、背景透视、水面/地面/家具关系都符合真实摄影逻辑。避免[用中文描述的主要失败点]。[中文画质和风格增强语句]。
+```
+
+```text
+Separate Negative Prompt:
+bad anatomy, extra fingers, missing fingers, extra legs, missing feet, floating feet, distorted clothing, wrong perspective, no contact shadow, AI artifacts, watermark, text, logo
 ```
 
 ## 通用正向约束
@@ -160,7 +167,7 @@ adult model, editorial vacation portrait, realistic summer beach portrait, shall
 统一风格增强词可用：
 
 ```text
-高清真实摄影，柔和自然光，浅景深，真实皮肤纹理，轻微胶片颗粒，干净构图，人物主体清晰，背景自然虚化，细腻光影，高级人像摄影，no watermark, no text, no logo
+高清真实摄影，柔和自然光，浅景深，真实皮肤纹理，轻微胶片颗粒，干净构图，人物主体清晰，背景自然虚化，细腻光影，高级人像摄影，画面中不要出现水印、文字或 logo。
 ```
 
 ## 常用负面关键词
