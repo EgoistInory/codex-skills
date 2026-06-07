@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Handoff Workflow"
+  short_description: "Keep project context portable across agents"
+  default_prompt: "Use $agent-handoff-workflow to create or update this project's handoff context files."
