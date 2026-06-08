@@ -53,19 +53,29 @@ Merged Prompt Ingredients:
 - 质量和真实感约束： [...]
 - 负面约束： [...]
 
-Final Copy Prompt:
-```text
-[一整段全中文、可直接复制进 GPT 生图框的完整提示词]
-```
-
-Separate Negative Prompt:
-[英文负面关键词。如果目标模型支持负面提示词字段，额外复制这一段；如果是 ChatGPT 生图，只复制全中文 Final Copy Prompt]
-
 Shared Style Enhancer:
-[可复制到每条提示词末尾的统一风格增强词]
+[统一风格增强词要合并进每条 Final Copy Prompt，不要作为最终复制块留在 Batch Generation Note 后面]
 
 Optional Model Notes:
-[比例、参考图、姿势控制、深度图、MJ 风格参数等]
+[比例、参考图、姿势控制、深度图、MJ 风格参数等；批量出图时非必要就省略]
+
+Final Copy Prompt 1:
+```text
+[第一张参考图对应的一整段全中文、可直接复制进 GPT 生图框的完整提示词]
+```
+
+Final Copy Prompt 2:
+```text
+[第二张参考图对应的一整段全中文、可直接复制进 GPT 生图框的完整提示词]
+```
+
+...
+
+Separate Negative Prompt:
+[如果多张图负面约束基本一致，只在这里统一输出一份英文负面关键词；如果某张图有特殊风险，再写专属负面补充]
+
+Batch Generation Note:
+[多条 Final Copy Prompt 时，在这里要求模型一次性生成对应数量的独立图片]
 ```
 
 参考图里有泳装、贴身服装或性感风格时，统一写成成人模特、时尚写真、度假写真、自然姿势、克制构图，不要使用未成年或低俗化描述。
@@ -91,23 +101,32 @@ Reference Card:
 第二步，把多个 `Reference Card` 粘贴到同一个会话，要求合并。合并时：
 
 - 先抽取所有参考图共同的风格锚点。
-- 再选择一个主姿势或主构图，其他参考图只作为服装、光线、质感或背景补充。
-- 把正向提示词、质量约束、物理现实约束和负面约束去重后合并。
-- 最先输出全中文 `Final Copy Prompt`，因为用户的目标是直接复制去 GPT 生图。
+- 如果用户要一张最终图，再选择一个主姿势或主构图，其他参考图只作为服装、光线、质感或背景补充。
+- 如果用户要多张参考图分别出图，按参考图数量输出 `Final Copy Prompt 1`、`Final Copy Prompt 2`、`Final Copy Prompt 3`。
+- 把正向提示词、质量约束、物理现实约束和负面约束去重后合并到对应提示词。
+- 最先输出全中文 `Final Copy Prompt 1..N`，因为用户的目标是直接复制去 GPT 生图。
 - 不要在中文提示词后面突然接一长串英文质量标签或英文负面词。
-- 英文关键词只放到 `Separate Negative Prompt`，给 Midjourney、SDXL、Civitai、LoRA 或其他有负面提示词字段的模型使用。
+- 英文关键词只放到最后的 `Separate Negative Prompt`，给 Midjourney、SDXL、Civitai、LoRA 或其他有负面提示词字段的模型使用。
+- 多张图负面约束一致时只输出一份统一英文负面词，不要每张图重复；只有某张图存在手持物体、二郎腿、浅水、镜自拍、背身回眸、复杂裙摆等特殊风险时，才追加该图专属负面补充。
+- `Batch Generation Note` 放在最后一个负面提示词块后面，不要加在每条 `Final Copy Prompt` 后面；批量出图时它必须是最后一个输出块。
 - 如果信息冲突，不要平均混合；保留主参考图，其他内容写成可选变体。
 
 最终复制块格式：
 
 ```text
-Final Copy Prompt:
+Final Copy Prompt 1:
 生成一张[目标画面]，融合这些参考图方向：[共同风格、主体、场景]。保留[关键细节]。画面采用[姿势、构图、镜头、光线]。保持写实成人真人质感，人体比例自然，手部、关节、腿部、脚部、服装受力、接触阴影、背景透视、水面/地面/家具关系都符合真实摄影逻辑。避免[用中文描述的主要失败点]。[中文画质和风格增强语句]。
+
+Final Copy Prompt 2:
+生成一张[第二张参考图对应的目标画面]，保留[第二张图的独有姿势、穿搭、构图或场景]，同时延续共同风格锚点。保持写实成人真人质感和真实物理逻辑。避免[用中文描述的第二张图主要失败点]。
 ```
 
 ```text
 Separate Negative Prompt:
-bad anatomy, extra fingers, missing fingers, extra legs, missing feet, floating feet, distorted clothing, wrong perspective, no contact shadow, AI artifacts, watermark, text, logo
+bad anatomy, extra fingers, missing fingers, extra legs, missing feet, floating feet, distorted clothing, wrong perspective, no contact shadow, AI artifacts, watermark, text, logo, collage, grid, split-screen, screenshot UI
+
+Batch Generation Note:
+请一次性生成与 Final Copy Prompt 数量对应的独立图片；例如有 2 条提示词就生成 2 张独立图片。不要宫格，不要拼图，不要多图合成在一张图里，不要保留平台截图界面、按钮、文字或水印。
 ```
 
 ## 通用正向约束
@@ -229,7 +248,7 @@ tilted horizon, warped horizon, fake beach background, distorted waves, water cu
 ### 画质和 AI 痕迹
 
 ```text
-low quality, low resolution, blurry anatomy, blurry face, face collapse, motion-smudged fingers, warped edges, uneven linework, melted details, duplicated contours, jagged silhouette, over-smoothed skin, plastic skin, mannequin look, uncanny realism, AI artifacts, overexposed, oversaturated, oily lighting, over-sharpened, heavy noise, watermark, text, logo, social media watermark
+low quality, low resolution, blurry anatomy, blurry face, face collapse, motion-smudged fingers, warped edges, uneven linework, melted details, duplicated contours, jagged silhouette, over-smoothed skin, plastic skin, mannequin look, uncanny realism, AI artifacts, overexposed, oversaturated, oily lighting, over-sharpened, heavy noise, watermark, text, logo, social media watermark, collage, grid, split-screen, screenshot UI, platform UI, buttons
 ```
 
 ## 姿势模板

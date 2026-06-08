@@ -1,6 +1,6 @@
 ---
 name: realistic-human-image-qa
-description: Use this skill whenever the user asks for realistic human image generation, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, multi-reference prompt merging, or wants complete copy-paste image prompts with positive prompts, negative prompts, quality constraints, and physical-reality checks. Always apply this skill for 写实真人, 真人写真, 人物摆姿势, 参考图生图提示词, 多参考图提示词整合, 完整提示词直接复制, GPT网页手机端生图工作流, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 服装自然, or physical-reality prompt checks.
+description: Use this skill whenever the user asks for realistic human image generation, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, multi-reference prompt merging, batch multi-image prompt output, or wants complete copy-paste image prompts with positive prompts, negative prompts, quality constraints, and physical-reality checks. Always apply this skill for 写实真人, 真人写真, 人物摆姿势, 参考图生图提示词, 多参考图提示词整合, 多张参考图一次输出多张图片, 完整提示词直接复制, GPT网页手机端生图工作流, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 服装自然, or physical-reality prompt checks.
 ---
 
 # Realistic Human Image QA Prompting
@@ -14,8 +14,9 @@ Use this skill to turn a user request for realistic human image generation into 
 3. Add targeted negative keywords for the risky body regions in the requested pose.
 4. Keep negatives specific. Avoid huge generic negative blocks that may suppress normal hands, fabric folds, or body shape.
 5. If the user provides a source image, preserve its real-world geometry: viewpoint, floor plane, horizon, light direction, object scale, occlusion order, and contact shadows.
-6. If the user provides multiple reference images, extract a compact `Reference Card` for each image, then merge the cards into one direct-copy final prompt.
-7. Do not leave the user with only categorized fragments. Every useful subject, pose, wardrobe, scene, light, quality, and negative constraint must be folded into a `Final Copy Prompt`.
+6. If the user provides multiple reference images, extract a compact `Reference Card` for each image. If the user wants one final image, merge the cards into one direct-copy final prompt; if the user wants each reference to become its own image, output `Final Copy Prompt 1..N`.
+7. Do not leave the user with only categorized fragments. Every useful subject, pose, wardrobe, scene, light, quality, and negative constraint must be folded into the relevant `Final Copy Prompt`.
+8. For batch multi-image output, put shared English negatives once at the end in `Separate Negative Prompt`, then add `Batch Generation Note`. Do not repeat identical negatives after every prompt.
 
 ## Output format
 
@@ -60,22 +61,35 @@ Merged Prompt Ingredients:
 - Quality and realism constraints: [...]
 - Negative constraints: [...]
 
-Final Copy Prompt:
-```text
-[one complete Chinese prompt the user can paste directly into GPT image generation]
-```
-
-Separate Negative Prompt:
-[English comma-separated negative prompt for models that support a negative field]
-
 Shared Style Enhancer:
-[short reusable style tail]
+[short reusable style tail, folded into every Final Copy Prompt rather than left as a separate copy block]
 
 Optional Model Notes:
-[aspect ratio, Midjourney-style flags if supported, reference/pose/depth guidance]
+[aspect ratio, Midjourney-style flags if supported, reference/pose/depth guidance; omit in batch mode unless essential]
+
+Final Copy Prompt 1:
+```text
+[one complete Chinese prompt for image 1]
 ```
 
-For ChatGPT image generation, the `Final Copy Prompt` must be fluent Chinese by default. Do not append a long English tag list to the Chinese prompt body. Translate quality, realism, anatomy, fabric, contact, light, and perspective constraints into natural Chinese. Put English keyword-style negatives such as `bad anatomy`, `extra fingers`, `watermark`, `text`, and `logo` only in `Separate Negative Prompt` for models that support a negative field.
+Final Copy Prompt 2:
+```text
+[one complete Chinese prompt for image 2]
+```
+
+...
+
+Separate Negative Prompt:
+[one shared English comma-separated negative prompt if the images share the same risk profile]
+
+Per-Image Negative Additions:
+[only include when a specific prompt has unique risks such as holding objects, mirror selfies, crossed legs, shallow water, over-shoulder pose, or complex skirts]
+
+Batch Generation Note:
+[Chinese instruction to generate the same number of independent images as the Final Copy Prompts]
+```
+
+For ChatGPT image generation, each `Final Copy Prompt` must be fluent Chinese by default. Do not append a long English tag list to the Chinese prompt body. Translate quality, realism, anatomy, fabric, contact, light, and perspective constraints into natural Chinese. Put English keyword-style negatives such as `bad anatomy`, `extra fingers`, `watermark`, `text`, `logo`, `collage`, `grid`, `split-screen`, and `screenshot UI` only in `Separate Negative Prompt` for models that support a negative field.
 
 Do not copy sensitive identity claims from reference images. Describe visible, non-sensitive visual traits and make the subject an adult when swimwear, lingerie, or sensual styling appears.
 
@@ -240,9 +254,12 @@ Use this workflow when the user uploads several reference photos or says they wa
 
 1. In each reference-image conversation, ask GPT to output only a `Reference Card`, not a final image prompt. This keeps each extraction small and comparable.
 2. Each `Reference Card` must identify the image's role in the final prompt: style, subject, pose, wardrobe, background, camera, lighting, or failure-prevention.
-3. Merge cards by separating shared anchors from conflicting details. Shared anchors become the final style and quality base; conflicting pose/framing details become optional variants unless the user chose a main reference.
-4. Deduplicate negative prompts. Keep targeted physical failures; remove generic repeats and negatives that contradict the desired image.
-5. Return one `Final Copy Prompt` first. Supporting cards and separate negatives can follow, but the user must be able to copy a single block and generate an image.
+3. Decide the output mode:
+   - Single final image: merge cards by separating shared anchors from conflicting details, then return one `Final Copy Prompt`.
+   - Batch multi-image output: return one `Final Copy Prompt` per reference image, numbered `Final Copy Prompt 1`, `Final Copy Prompt 2`, etc.
+4. Deduplicate negative prompts. If the images share the same failure risks, output one shared `Separate Negative Prompt` at the end instead of repeating it after each prompt.
+5. Add per-image negative additions only when a specific image has a unique risk, such as holding objects, mirror selfies, crossed legs, shallow water, back-side over-shoulder poses, complex skirts, reflective surfaces, or strong occlusion.
+6. Put `Batch Generation Note` after the final negative prompt block, not inside each prompt. It must be the last output block in batch mode and ask the model to generate the same number of independent images as the number of `Final Copy Prompt` blocks.
 
 Use this `Reference Card` schema for each parallel extraction:
 
@@ -261,14 +278,24 @@ Reference Card:
 Use this final copy format:
 
 ```text
-Final Copy Prompt:
+Final Copy Prompt 1:
 生成一张[目标画面]，融合这些参考图方向：[共同风格、主体、场景]。保留[必须保留的细节]。画面采用[姿势、构图、镜头、光线]。保持写实成人真人质感：[人体结构、手部、服装受力、身体或脚底接触、阴影、透视、背景或水面/地面/家具关系]。避免[中文化后的主要失败点]。[中文画质和风格增强语句]。
+
+Final Copy Prompt 2:
+生成一张[第二张参考图对应的目标画面]，保留[第二张图的独有姿势、穿搭、构图或场景]，同时延续共同风格锚点。保持写实成人真人质感和真实物理逻辑。避免[第二张图的中文化主要失败点]。
+
+Separate Negative Prompt:
+bad anatomy, extra fingers, missing fingers, extra limbs, bad legs, floating feet, distorted clothing, wrong perspective, no contact shadow, AI artifacts, watermark, text, logo, collage, grid, split-screen, screenshot UI
+
+Batch Generation Note:
+请一次性生成与 Final Copy Prompt 数量对应的独立图片；例如有 2 条提示词就生成 2 张独立图片。不要宫格，不要拼图，不要多图合成在一张图里，不要保留平台截图界面、按钮、文字或水印。
 ```
 
 Use this language split by default:
 
 - `Final Copy Prompt`: all Chinese, polished and directly readable as one photography instruction for GPT image generation.
 - `Separate Negative Prompt`: English keyword list for Midjourney, SDXL, Civitai, LoRA, or any model with a negative prompt field.
+- `Batch Generation Note`: Chinese batch-output instruction, only when there are two or more `Final Copy Prompt` blocks.
 - `Optional Model Notes`: may keep technical terms such as `35mm`, `4K`, `HDR`, `OpenPose`, `Depth`, `ControlNet`, `--ar`, and `--style raw` when they are model controls, not prose style tags.
 
 ## Targeted negative prompt blocks
@@ -338,7 +365,7 @@ tilted horizon, warped horizon, fake beach background, distorted waves, water cu
 ### Image-quality artifacts
 
 ```text
-low quality, low resolution, blurry anatomy, blurry face, face collapse, motion-smudged fingers, warped edges, uneven linework, melted details, duplicated contours, jagged silhouette, over-smoothed skin, plastic skin, mannequin look, uncanny realism, AI artifacts, overexposed, oversaturated, oily lighting, over-sharpened, heavy noise, watermark, text, logo, social media watermark
+low quality, low resolution, blurry anatomy, blurry face, face collapse, motion-smudged fingers, warped edges, uneven linework, melted details, duplicated contours, jagged silhouette, over-smoothed skin, plastic skin, mannequin look, uncanny realism, AI artifacts, overexposed, oversaturated, oily lighting, over-sharpened, heavy noise, watermark, text, logo, social media watermark, collage, grid, split-screen, screenshot UI, platform UI, buttons
 ```
 
 ## Pose-specific recipes
