@@ -1,6 +1,6 @@
 ---
 name: realistic-human-image-qa
-description: Use this skill whenever the user asks for realistic human image generation, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, multi-reference prompt merging, batch multi-image prompt output, or wants complete copy-paste image prompts with positive prompts, negative prompts, quality constraints, and physical-reality checks. Always apply this skill for 写实真人, 真人写真, 人物摆姿势, 参考图生图提示词, 多参考图提示词整合, 多张参考图一次输出多张图片, 完整提示词直接复制, GPT网页手机端生图工作流, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 服装自然, or physical-reality prompt checks.
+description: Use this skill whenever the user asks for realistic human image generation, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, multi-reference prompt merging, batch multi-image prompt output, or wants complete copy-paste image prompts with positive prompts, negative prompts, quality constraints, and physical-reality checks. Always apply this skill for 写实真人, 真人写真, 人物摆姿势, 参考图生图提示词, 多参考图提示词整合, 多张参考图一次输出多张图片, 完整提示词直接复制, 只输出最终提示词, 不要中间过程, GPT网页手机端生图工作流, 面容妆容细节, 发丝层次, 人物肌理, 摄影后期, 滤镜调色, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 服装自然, or physical-reality prompt checks.
 ---
 
 # Realistic Human Image QA Prompting
@@ -14,9 +14,12 @@ Use this skill to turn a user request for realistic human image generation into 
 3. Add targeted negative keywords for the risky body regions in the requested pose.
 4. Keep negatives specific. Avoid huge generic negative blocks that may suppress normal hands, fabric folds, or body shape.
 5. If the user provides a source image, preserve its real-world geometry: viewpoint, floor plane, horizon, light direction, object scale, occlusion order, and contact shadows.
-6. If the user provides multiple reference images, extract a compact `Reference Card` for each image. If the user wants one final image, merge the cards into one direct-copy final prompt; if the user wants each reference to become its own image, output `Final Copy Prompt 1..N`.
-7. Do not leave the user with only categorized fragments. Every useful subject, pose, wardrobe, scene, light, quality, and negative constraint must be folded into the relevant `Final Copy Prompt`.
-8. For batch multi-image output, put shared English negatives once at the end in `Separate Negative Prompt`, then add `Batch Generation Note`. Do not repeat identical negatives after every prompt.
+6. When extracting from realistic person references, include face shape, jawline, eyes, gaze, brows, nose bridge, lips, lip color, blush, eye makeup, skin pores, hair layers, hair direction, fabric material, garment fit, pose force, light direction, focal-length feel, composition, depth of field, exposure, color temperature, film/phone feel, filter, color grading, grain, sharpening, and de-AI constraints.
+7. If the user provides multiple reference images, extract a compact `Reference Card` for each image only when the user asks for cards or parallel extraction. If the user asks to "提取提示词", "分别生成 Final Copy Prompt", or "不要中间过程", default to final-only output: `Final Copy Prompt 1..N`, one shared `Separate Negative Prompt`, then `Batch Generation Note`.
+8. Do not leave the user with only categorized fragments. Every useful subject, face/makeup, hair, pose, wardrobe, scene, light, camera, post-production, quality, and negative constraint must be folded into the relevant `Final Copy Prompt`.
+9. For batch multi-image output, put shared English negatives once at the end in `Separate Negative Prompt`, then add `Batch Generation Note`. Do not repeat identical negatives after every prompt.
+10. If uploaded image content is unavailable, unsupported, blocked, or visually unreadable, do not invent details. Ask the user to upload JPG, PNG, WEBP, or provide a text description.
+11. For platform screenshots or video frames, extract the person, pose, outfit, scene, light, and camera feel, but remove platform UI, subtitles, product bars, buttons, avatars, page counters, watermarks, and screenshot chrome from the generation prompt.
 
 ## Output format
 
@@ -90,6 +93,8 @@ Batch Generation Note:
 ```
 
 For ChatGPT image generation, each `Final Copy Prompt` must be fluent Chinese by default. Do not append a long English tag list to the Chinese prompt body. Translate quality, realism, anatomy, fabric, contact, light, and perspective constraints into natural Chinese. Put English keyword-style negatives such as `bad anatomy`, `extra fingers`, `watermark`, `text`, `logo`, `collage`, `grid`, `split-screen`, and `screenshot UI` only in `Separate Negative Prompt` for models that support a negative field.
+
+When the user asks for prompt extraction and does not explicitly request the analysis process, output only the final usable blocks: `Final Copy Prompt`, optional numbered `Final Copy Prompt 1..N`, `Separate Negative Prompt`, optional `Per-Image Negative Additions`, and optional `Batch Generation Note`. Keep `Reference Card`, `Merged Prompt Ingredients`, and reasoning internal unless the user asks to see them.
 
 Do not copy sensitive identity claims from reference images. Describe visible, non-sensitive visual traits and make the subject an adult when swimwear, lingerie, or sensual styling appears.
 
@@ -234,13 +239,27 @@ For swimwear or revealing clothing, avoid sexualized wording. Use "adult model",
 
 When extracting prompts from reference images, decompose each image into reusable fields:
 
-- Subject: age category as adult, apparent styling, hair, makeup, expression, body orientation.
-- Wardrobe: garment type, color, pattern, straps, seams, accessories, hat, jewelry, shoes.
-- Pose: standing, side lean, front-facing, kneeling, seated, back-side over-shoulder, hand/object contact.
-- Environment: beach, water depth, room, furniture, horizon, foreground/background objects.
-- Light and camera: sun direction, softness, lens feel, depth of field, framing, subject sharpness.
-- Texture and mood: real skin texture, film grain, color grading, editorial/photobook/lifestyle mood.
-- Failure prevention: anatomy, hands, garment structure, horizon, water/background deformation, watermark/text/logo.
+- Subject: age category as adult, apparent styling, expression, body orientation, overall temperament.
+- Face and makeup: face shape, jawline, forehead proportion, eye shape, gaze direction, brow shape, nose bridge, lip shape, lip color, blush position, eye-makeup intensity, under-eye/aegyo-sal detail, highlight placement, visible pores, skin translucency, natural skin texture.
+- Hair: hairstyle, layers, strand direction, hair color, bangs, flyaways, hair accessories, wind or gravity direction.
+- Wardrobe: garment type, color, pattern, straps, seams, buttons, lace, denim, satin, knit, leather, accessories, hat, jewelry, shoes, fabric material, fit, drape, garment tension, contact wrinkles.
+- Pose and force: standing, side lean, front-facing, kneeling, seated, back-side over-shoulder, hand/object contact, body weight support, limb force direction, floor/chair/prop contact, occlusion order.
+- Environment: beach, water depth, room, furniture, floor plane, horizon, foreground/background objects, platform screenshot context only if it affects the crop or framing.
+- Light, camera, and composition: light direction, softness, focal-length feel, camera height, crop, framing, composition, depth of field, exposure, color temperature, subject sharpness.
+- Texture, mood, and post-production: real skin texture, fabric texture, film grain, phone snapshot feel, vlog/video-frame feel, filter, color grading, bloom, softness, sharpening, editorial/photobook/lifestyle mood.
+- Failure prevention: anatomy, hands, face collapse, hair merging, garment structure, floor/water/furniture contact, horizon, water/background deformation, platform UI, subtitle, product bar, watermark/text/logo.
+
+### Unsupported or unreadable references
+
+If the image is unsupported, unavailable, or too unclear to inspect, do not fill in imagined face, outfit, pose, or scene details. Reply briefly that the reference cannot be extracted reliably and ask for a JPG, PNG, WEBP, or a short visual description. If only part of the image is readable, extract only visible details and mark the missing detail as unspecified.
+
+### Platform screenshot and video-frame cleanup
+
+For 小红书, 抖音, TikTok, Instagram, video screenshots, livestream frames, product pages, or phone screenshots, preserve the useful photographic content but strip app UI from the final prompt. Do not ask the model to recreate subtitles, usernames, avatars, product bars, buttons, page indicators, screenshot borders, watermarks, logos, or interface text. Add these risks to the English negative prompt when relevant:
+
+```text
+subtitle, caption text, social media UI, platform UI, product bar, app buttons, username, avatar, page indicator, screenshot border, watermark, text, logo
+```
 
 For a set of references, preserve consistent style anchors and vary only pose/framing details. A useful shared style tail is:
 
@@ -252,7 +271,7 @@ For a set of references, preserve consistent style anchors and vary only pose/fr
 
 Use this workflow when the user uploads several reference photos or says they want to run several GPT conversations in parallel and combine the results.
 
-1. In each reference-image conversation, ask GPT to output only a `Reference Card`, not a final image prompt. This keeps each extraction small and comparable.
+1. In each reference-image conversation, ask GPT to output only a `Reference Card` when the user is intentionally running a parallel extraction workflow. For ordinary "提取提示词" requests, skip visible cards and return final copy blocks directly.
 2. Each `Reference Card` must identify the image's role in the final prompt: style, subject, pose, wardrobe, background, camera, lighting, or failure-prevention.
 3. Decide the output mode:
    - Single final image: merge cards by separating shared anchors from conflicting details, then return one `Final Copy Prompt`.
@@ -285,7 +304,7 @@ Final Copy Prompt 2:
 生成一张[第二张参考图对应的目标画面]，保留[第二张图的独有姿势、穿搭、构图或场景]，同时延续共同风格锚点。保持写实成人真人质感和真实物理逻辑。避免[第二张图的中文化主要失败点]。
 
 Separate Negative Prompt:
-bad anatomy, extra fingers, missing fingers, extra limbs, bad legs, floating feet, distorted clothing, wrong perspective, no contact shadow, AI artifacts, watermark, text, logo, collage, grid, split-screen, screenshot UI
+bad anatomy, extra fingers, missing fingers, extra limbs, bad legs, floating feet, distorted clothing, wrong perspective, no contact shadow, AI artifacts, subtitle, caption text, social media UI, platform UI, product bar, app buttons, watermark, text, logo, collage, grid, split-screen, screenshot UI
 
 Batch Generation Note:
 请一次性生成与 Final Copy Prompt 数量对应的独立图片；例如有 2 条提示词就生成 2 张独立图片。不要宫格，不要拼图，不要多图合成在一张图里，不要保留平台截图界面、按钮、文字或水印。
@@ -365,7 +384,7 @@ tilted horizon, warped horizon, fake beach background, distorted waves, water cu
 ### Image-quality artifacts
 
 ```text
-low quality, low resolution, blurry anatomy, blurry face, face collapse, motion-smudged fingers, warped edges, uneven linework, melted details, duplicated contours, jagged silhouette, over-smoothed skin, plastic skin, mannequin look, uncanny realism, AI artifacts, overexposed, oversaturated, oily lighting, over-sharpened, heavy noise, watermark, text, logo, social media watermark, collage, grid, split-screen, screenshot UI, platform UI, buttons
+low quality, low resolution, blurry anatomy, blurry face, face collapse, motion-smudged fingers, warped edges, uneven linework, melted details, duplicated contours, jagged silhouette, over-smoothed skin, plastic skin, mannequin look, uncanny realism, AI artifacts, overexposed, oversaturated, oily lighting, over-sharpened, heavy noise, watermark, text, logo, subtitle, caption text, social media watermark, social media UI, platform UI, product bar, app buttons, username, avatar, page indicator, screenshot border, collage, grid, split-screen, screenshot UI, platform UI, buttons
 ```
 
 ## Pose-specific recipes
@@ -514,5 +533,8 @@ Before returning a prompt, check whether it answers these:
 - Which object is in front when body parts overlap?
 - How does clothing respond to the pose?
 - Does the camera perspective match the background?
+- Are face, makeup, hair, skin texture, fabric material, and garment fit described beyond generic beauty words?
+- Are the light direction, focal-length feel, crop, exposure, color temperature, filter, color grading, grain, and sharpening/de-AI constraints clear?
+- If the source is a screenshot or video frame, have UI, subtitles, buttons, product bars, watermarks, and logos been excluded?
 
 If any answer is missing and the image depends on it, add a short constraint to the prompt rather than asking the user unless the missing detail changes the creative direction.
