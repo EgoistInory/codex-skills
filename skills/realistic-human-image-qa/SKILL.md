@@ -1,6 +1,6 @@
 ---
 name: realistic-human-image-qa
-description: Use this skill whenever the user asks for realistic human image generation, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, multi-reference prompt merging, batch multi-image prompt output, or wants complete copy-paste image prompts with positive prompts, negative prompts, quality constraints, and physical-reality checks. Always apply this skill for 写实真人, 真人写真, 人物摆姿势, 参考图生图提示词, 多参考图提示词整合, 多张参考图一次输出多张图片, 完整提示词直接复制, 只输出最终提示词, 不要中间过程, GPT网页手机端生图工作流, 面容妆容细节, 发丝层次, 人物肌理, 摄影后期, 滤镜调色, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 服装自然, or physical-reality prompt checks.
+description: Use this skill whenever the user asks for realistic human image generation, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, multi-reference prompt merging, batch multi-image prompt output, or wants complete copy-paste image prompts with positive prompts, negative prompts, quality constraints, and physical-reality checks. Always apply this skill for 写实真人, 真人写真, 写实人物穿搭, 情绪写真, 泪目感写真, 小红书穿搭图, 人物摆姿势, 参考图生图提示词, 多参考图提示词整合, 多张参考图一次输出多张图片, 完整提示词直接复制, 只输出最终提示词, 不要中间过程, 统一补充规则, GPT网页手机端生图工作流, 面容妆容细节, 发丝层次, 人物肌理, 摄影后期, 滤镜调色, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 服装自然, or physical-reality prompt checks.
 ---
 
 # Realistic Human Image QA Prompting
@@ -20,6 +20,22 @@ Use this skill to turn a user request for realistic human image generation into 
 9. For batch multi-image output, put shared English negatives once at the end in `Separate Negative Prompt`, then add `Batch Generation Note`. Do not repeat identical negatives after every prompt.
 10. If uploaded image content is unavailable, unsupported, blocked, or visually unreadable, do not invent details. Ask the user to upload JPG, PNG, WEBP, or provide a text description.
 11. For platform screenshots or video frames, extract the person, pose, outfit, scene, light, and camera feel, but remove platform UI, subtitles, product bars, buttons, avatars, page counters, watermarks, and screenshot chrome from the generation prompt.
+12. For the user's fixed fashion/emotional-portrait extraction workflow, single-image output is `Final Copy Prompt` plus `Separate Negative Prompt`; multi-image output is `图 1｜Final Copy Prompt` through `图 N｜Final Copy Prompt`, then `统一 Separate Negative Prompt`, then `统一补充规则`.
+
+## Template decision: fused single-image, independent multi-image
+
+The user's latest settled workflow is a fusion solution:
+
+- Single reference image: use one fused fashion/portrait template. It combines face, makeup, skin texture, hair, outfit, pose, scene, photography, post-production, and physical-reality constraints into one Chinese `Final Copy Prompt`.
+- Emotional portrait: do not treat it as a separate competing template. If the reference has tearful, vulnerable, cool, cinematic, or emotional qualities, add an emotional enhancement module inside the single-image template.
+- Multiple reference images: do not use the single-image fusion template to average all images into one prompt unless the user explicitly wants one merged image. Default to one independent final prompt per image using `图 N｜Final Copy Prompt`.
+
+Tradeoffs and final choice:
+
+- A concise single-image template is stable and easy to copy, but can miss face, makeup, texture, and post-production details.
+- A very detailed extraction template improves realism and reference fidelity, but becomes too scattered if pasted as analysis fragments.
+- A multi-image merge template is useful for one composite image, but is wrong for batch extraction because it mixes people, outfits, poses, scenes, and composition across references.
+- Final rule: single images use the fused template; emotional detail is an optional single-image enhancement; multiple images use an independent batch template with shared negatives and a final generation-control rule.
 
 ## Output format
 
@@ -40,6 +56,18 @@ Optional Model Notes:
 ```
 
 If the user asks for only negative keywords, provide `Negative Prompt` plus a short `Use with` note explaining which pose or body region it targets.
+
+For reference-image prompt extraction in the user's current Chinese GPT workflow, prefer this final-only format over the generic `Prompt / Physical Reality Checks` structure:
+
+```text
+Final Copy Prompt:
+[one complete Chinese prompt, directly copyable, no intermediate analysis]
+
+Separate Negative Prompt:
+[one English negative keyword block]
+```
+
+If the reference is a fashion, lifestyle, or emotional portrait of a woman, clearly make the subject a young adult woman or young adult Asian woman when visually appropriate. Do not infer minor age. Preserve the reference's face, makeup, skin texture, hair, outfit, pose, scene, composition, light, and post-production feel as a single fluent Chinese prompt.
 
 For multiple reference images, return:
 
@@ -95,6 +123,24 @@ Batch Generation Note:
 For ChatGPT image generation, each `Final Copy Prompt` must be fluent Chinese by default. Do not append a long English tag list to the Chinese prompt body. Translate quality, realism, anatomy, fabric, contact, light, and perspective constraints into natural Chinese. Put English keyword-style negatives such as `bad anatomy`, `extra fingers`, `watermark`, `text`, `logo`, `collage`, `grid`, `split-screen`, and `screenshot UI` only in `Separate Negative Prompt` for models that support a negative field.
 
 When the user asks for prompt extraction and does not explicitly request the analysis process, output only the final usable blocks: `Final Copy Prompt`, optional numbered `Final Copy Prompt 1..N`, `Separate Negative Prompt`, optional `Per-Image Negative Additions`, and optional `Batch Generation Note`. Keep `Reference Card`, `Merged Prompt Ingredients`, and reasoning internal unless the user asks to see them.
+
+For Chinese multi-image extraction, use the latest agreed headings by default:
+
+```text
+图 1｜Final Copy Prompt
+[image 1 Chinese prompt]
+
+图 2｜Final Copy Prompt
+[image 2 Chinese prompt]
+
+统一 Separate Negative Prompt
+[shared English negative keywords]
+
+统一补充规则
+以下提示词为多张参考图逐张拆分生成，每一条 Final Copy Prompt 仅对应一张参考图，请分别独立生成，不要混合不同图片中的人物形象、穿搭、姿态、场景和构图元素；最终应输出与 Final Copy Prompt 数量对应的完整独立单图结果，例如有 5 条提示词就输出 5 张独立图片；不要只输出一张图，不要拼图，不要宫格，不要多画面合成，不要把多张图合成在同一张画布里。
+```
+
+Use the older `Final Copy Prompt 1..N` and `Batch Generation Note` labels only when the user asks for that exact format or when a non-Chinese model/tooling workflow expects those labels.
 
 Do not copy sensitive identity claims from reference images. Describe visible, non-sensitive visual traits and make the subject an adult when swimwear, lingerie, or sensual styling appears.
 
@@ -248,6 +294,19 @@ When extracting prompts from reference images, decompose each image into reusabl
 - Light, camera, and composition: light direction, softness, focal-length feel, camera height, crop, framing, composition, depth of field, exposure, color temperature, subject sharpness.
 - Texture, mood, and post-production: real skin texture, fabric texture, film grain, phone snapshot feel, vlog/video-frame feel, filter, color grading, bloom, softness, sharpening, editorial/photobook/lifestyle mood.
 - Failure prevention: anatomy, hands, face collapse, hair merging, garment structure, floor/water/furniture contact, horizon, water/background deformation, platform UI, subtitle, product bar, watermark/text/logo.
+
+For the user's fashion/emotional-portrait extraction workflow, make sure the final Chinese prompt covers:
+
+- Face: face shape, jawline, facial proportions, eye shape, brow shape, nose bridge, lip shape, expression, temperament.
+- Makeup: base makeup, eye makeup, eyelashes, aegyo-sal/under-eye detail, blush, lip color, skin glow.
+- Human texture: realistic skin texture, pores, slight imperfections, natural skin color, no over-smoothing.
+- Hair: color, length, bangs, curl, volume, flyaways, strand flow, accessories.
+- Outfit: top, bottom, dress/skirt, shoes, socks, bag, accessories, material, fit, cut, folds, contact and layering.
+- Pose/action: standing, sitting, side body, looking back, chin resting on hand, touching hair, selfie, walking, leaning, hand movement, leg movement.
+- Scene: indoor/outdoor space, furniture, windows, walls, floor, plants, props, lived-in details.
+- Photography: composition, camera angle, depth of field, light direction, color temperature, exposure, tone, filter, post-production texture, real phone-shot or Xiaohongshu outfit-photo feel.
+
+If the reference carries emotional, tearful, vulnerable, cool, or cinematic feeling, add the emotional portrait enhancement inside the same `Final Copy Prompt`: watery eyes, slightly red outer corners, damp eyelashes, slightly red nose tip, gently pressed lips, restrained emotion, low-saturation tone, soft focus, film grain, shallow depth of field, foreground blur, cinematic light.
 
 ### Unsupported or unreadable references
 

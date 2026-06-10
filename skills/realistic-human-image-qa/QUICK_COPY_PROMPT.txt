@@ -2,7 +2,15 @@
 
 核心目标：不要只输出分类片段。每次都要给用户一个全中文 `Final Copy Prompt`，这一整段可以直接复制进 GPT 生图框。不要在中文提示词后面夹一长串英文质量标签或英文负面词。
 
-当用户说“提取提示词”“分别生成 Final Copy Prompt”“中间过程和细则都不要”“只要最终可复制提示词”时，默认只输出最终可复制块，不展示拆解过程。普通任务输出 `Final Copy Prompt` 或 `Final Copy Prompt 1..N`、`Separate Negative Prompt`，多图批量时最后再加 `Batch Generation Note`。只有用户明确要求并行卡片工作流时，才展示 `Reference Card`。
+当用户说“提取提示词”“分别生成 Final Copy Prompt”“中间过程和细则都不要”“只要最终可复制提示词”时，默认只输出最终可复制块，不展示拆解过程。单图输出 `Final Copy Prompt` 和 `Separate Negative Prompt`；多图按顺序输出 `图 1｜Final Copy Prompt` 到 `图 N｜Final Copy Prompt`，最后输出 `统一 Separate Negative Prompt` 和 `统一补充规则`。只有用户明确要求并行卡片工作流时，才展示 `Reference Card`。
+
+最新固定方案：单图用“写实人物穿搭融合模板”，多图用“独立批量提取模板”，情绪写真/泪目感/脆弱感/清冷感/电影感不单独成体系，只作为单图模板里的增强模块。
+
+模板取舍：
+- 单图简洁模板稳定、直接、便于复制，但太简会漏掉面容、妆容、肌理、摄影后期等细节。
+- 细节提取模板还原度高、去 AI 味更强，但如果直接平铺输出，会太散、不适合复制。
+- 多图合并模板适合生成一张融合图，但用户要多张参考图分别出图时，容易混合不同图片的人物、穿搭、姿态、场景和构图。
+- 最终规则：单图融合，情绪增强按需叠加；多图逐张独立，不混图，最后统一英文负面词和统一补充规则。
 
 输出格式：
 
@@ -55,19 +63,19 @@ Reference Card:
 
 多参考图最终输出格式：
 
-Final Copy Prompt 1:
+图 1｜Final Copy Prompt:
 [第一张参考图对应的一整段全中文、可直接复制进 GPT 生图框的完整提示词：目标画面 + 共同风格 + 主体 + 服装 + 姿势 + 场景 + 镜头 + 光线 + 人体/服装/接触/透视物理约束 + 中文避免事项 + 中文画质风格增强]
 
-Final Copy Prompt 2:
+图 2｜Final Copy Prompt:
 [第二张参考图对应的一整段全中文、可直接复制进 GPT 生图框的完整提示词]
 
 ...
 
-Separate Negative Prompt:
+统一 Separate Negative Prompt:
 [英文负面关键词。如果多张图负面约束基本一致，只在最后统一输出一份，不要每张图重复；如果某张图有手持物体、二郎腿、浅水、镜自拍、背身回眸、复杂裙摆等特殊风险，再追加该图专属负面补充。]
 
-Batch Generation Note:
-[当存在多条 Final Copy Prompt 时，要求模型一次性生成对应数量的独立图片：不要宫格，不要拼图，不要多图合成在一张图里，不要保留平台截图界面、字幕、商品栏、按钮、文字或水印。]
+统一补充规则:
+以下提示词为多张参考图逐张拆分生成，每一条 Final Copy Prompt 仅对应一张参考图，请分别独立生成，不要混合不同图片中的人物形象、穿搭、姿态、场景和构图元素；最终应输出与 Final Copy Prompt 数量对应的完整独立单图结果，例如有 5 条提示词就输出 5 张独立图片；不要只输出一张图，不要拼图，不要宫格，不要多画面合成，不要把多张图合成在同一张画布里。
 
 海边/泳池/浅水/泳装写真额外加入：
 adult model, editorial vacation portrait, realistic summer beach portrait, shallow ocean water, level horizon, soft natural sunlight, clean blue-and-white color palette, natural skin texture, subtle film grain, subject sharply focused, background softly blurred, realistic water contact around legs, wet skin and fabric highlights matching the light direction, swimwear straps seams knots and side ties aligned with body perspective。使用成人、时尚写真、度假写真、自然姿势、克制构图，避免低俗化描述。
