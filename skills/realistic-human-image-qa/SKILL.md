@@ -1,6 +1,6 @@
 ---
 name: realistic-human-image-qa
-description: Use this skill whenever the user asks for realistic human image generation, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, multi-reference prompt merging, batch multi-image prompt output, or wants complete copy-paste image prompts with positive prompts, negative prompts, quality constraints, and physical-reality checks. Always apply this skill for 写实真人, 真人写真, 写实人物穿搭, 情绪写真, 泪目感写真, 小红书穿搭图, 人物摆姿势, 参考图生图提示词, 多参考图提示词整合, 多张参考图一次输出多张图片, 完整提示词直接复制, 只输出最终提示词, 不要中间过程, 统一补充规则, GPT网页手机端生图工作流, 面容妆容细节, 发丝层次, 人物肌理, 摄影后期, 滤镜调色, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 服装自然, or physical-reality prompt checks.
+description: Use this skill whenever the user asks for realistic human image generation, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, multi-reference prompt merging, batch multi-image prompt output, or wants complete copy-paste image prompts with positive prompts, negative prompts, quality constraints, and physical-reality checks. Always apply this skill for 写实真人, 真人写真, 写实人物穿搭, 情绪写真, 泪目感写真, 小红书穿搭图, 真人cos, cosplay, cos生图工作流, 拆解图上身图, 影子预告图, 同套造型连续组图, 角色服装一致性, 八重神子, 胡桃, 人物摆姿势, 参考图生图提示词, 多参考图提示词整合, 多张参考图一次输出多张图片, 完整提示词直接复制, 只输出最终提示词, 不要中间过程, 统一补充规则, GPT网页手机端生图工作流, 面容妆容细节, 发丝层次, 人物肌理, 摄影后期, 滤镜调色, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 服装自然, or physical-reality prompt checks.
 ---
 
 # Realistic Human Image QA Prompting
@@ -21,6 +21,7 @@ Use this skill to turn a user request for realistic human image generation into 
 10. If uploaded image content is unavailable, unsupported, blocked, or visually unreadable, do not invent details. Ask the user to upload JPG, PNG, WEBP, or provide a text description.
 11. For platform screenshots or video frames, extract the person, pose, outfit, scene, light, and camera feel, but remove platform UI, subtitles, product bars, buttons, avatars, page counters, watermarks, and screenshot chrome from the generation prompt.
 12. For the user's fixed fashion/emotional-portrait extraction workflow, single-image output is `Final Copy Prompt` plus `Separate Negative Prompt`; multi-image output is `图 1｜Final Copy Prompt` through `图 N｜Final Copy Prompt`, then `统一 Separate Negative Prompt`, then `统一补充规则`.
+13. For realistic cosplay workflows, treat the costume flatlay/ground breakdown image and the worn-character image as one continuity set: outfit, wig, headpiece, accessories, embroidery, collar, sleeve shape, exposed-skin structure, color palette, and character motifs must match across the sequence.
 
 ## Template decision: fused single-image, independent multi-image
 
@@ -36,6 +37,40 @@ Tradeoffs and final choice:
 - A very detailed extraction template improves realism and reference fidelity, but becomes too scattered if pasted as analysis fragments.
 - A multi-image merge template is useful for one composite image, but is wrong for batch extraction because it mixes people, outfits, poses, scenes, and composition across references.
 - Final rule: single images use the fused template; emotional detail is an optional single-image enhancement; multiple images use an independent batch template with shared negatives and a final generation-control rule.
+
+## Cos consecutive workflow
+
+Use this module when the user asks for a cos workflow, `拆解图 -> 上身图`, character cosplay prompts, or a continuous Xiaohongshu/Douyin-style cos content sequence.
+
+Default structure:
+
+```text
+[角色名] Cos 组图统一设定
+[one Chinese paragraph defining the character, adult coser, wig, makeup, costume, accessories, scene style, and the rule that every later image must match the first outfit breakdown image]
+
+图 1｜Final Copy Prompt（[角色名]·地面服装拆解 / 影子预告图）
+[one complete Chinese prompt for an independent outfit flatlay or ground breakdown image, with sunlight, real floor, luggage/props if useful, and a cast human shadow teaser]
+
+图 2｜Final Copy Prompt（[角色名]·对应人物上身图）
+[one complete Chinese prompt for the same adult coser wearing the exact same outfit, wig, headpiece, earrings/accessories, embroidery, collar, sleeve shape, color, and exposed-skin structure]
+
+图 3｜Final Copy Prompt（可选：怼脸 / 自拍 / 动作 / 全身补充成片）
+[one complete Chinese prompt for a same-outfit closeup, selfie, action shot, or full-body continuation]
+
+[角色名] 组 Negative Prompt
+[English negative prompt]
+
+统一约束补充
+后续每条提示词都只生成 1 张独立完整图片，不要把多张内容合成在一张图里；不要拼图，不要宫格，不要分屏，不要海报排版。若为连续组图，每一张都应是独立成片，但前后在人物、服装、发型、配饰和场景叙事上保持一致性，确保是同一套造型的连续内容。
+```
+
+Cos continuity requirements:
+
+- The first image is an outfit breakdown or shadow teaser, not a collage: costume pieces should be laid out clearly on a real floor, with natural sunlight, contact shadows, readable fabric texture, and optional suitcase/room props for lived-in preparation context.
+- The second image must be the corresponding worn look. Explicitly say it uses the exact same costume from image 1, not a similar outfit.
+- Optional third image keeps the same person, wig, headpiece, accessories, costume, makeup direction, and visual story; it may change crop, action, angle, or distance.
+- For named game/anime characters, preserve recognizable cosplay elements as costume/prop details while keeping the image photorealistic adult cosplay, not cartoon rendering.
+- Avoid cheap studio cosplay, rough convention snapshot, random fashion approximation, inconsistent wig, missing headpiece, missing tassels/earrings, wrong embroidery, simplified costume, and platform UI.
 
 ## Output format
 
@@ -428,6 +463,12 @@ swimwear structure errors, broken bikini straps, duplicated straps, missing stra
 asymmetrical face, distorted face, misplaced eyes, extra teeth, melted lips, hair fused with face, hair fused with fingers, earrings fused to skin, glasses fused to face, accessories floating, accessories merging with clothing
 ```
 
+### Cosplay continuity and costume accuracy
+
+```text
+wrong character design, inaccurate cosplay costume, inconsistent outfit, inconsistent wig, inconsistent headpiece, missing accessories, missing hat, missing tassels, missing earrings, inaccurate embroidery, wrong costume pattern, simplified costume, low detail fabric, messy costume details, costume fused to skin, wig fused with face, headpiece floating, accessories floating, cheap studio cosplay, rough convention snapshot, cartoon rendering, chibi style, comic style
+```
+
 ### Environment insertion and physical logic
 
 ```text
@@ -595,5 +636,6 @@ Before returning a prompt, check whether it answers these:
 - Are face, makeup, hair, skin texture, fabric material, and garment fit described beyond generic beauty words?
 - Are the light direction, focal-length feel, crop, exposure, color temperature, filter, color grading, grain, and sharpening/de-AI constraints clear?
 - If the source is a screenshot or video frame, have UI, subtitles, buttons, product bars, watermarks, and logos been excluded?
+- For cos workflows, do the outfit breakdown and worn-character prompts preserve the same costume, wig, headpiece, accessories, embroidery, collar, sleeve shape, exposed-skin structure, color palette, and character motifs?
 
 If any answer is missing and the image depends on it, add a short constraint to the prompt rather than asking the user unless the missing detail changes the creative direction.
