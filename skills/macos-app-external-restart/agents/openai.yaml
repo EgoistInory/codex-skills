@@ -1,0 +1,4 @@
+interface:
+  display_name: "macOS App External Restart"
+  short_description: "Restart macOS GUI apps through launchd without lingering helpers"
+  default_prompt: "Use $macos-app-external-restart to restart the target macOS app safely and verify cleanup."

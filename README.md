@@ -33,6 +33,7 @@ codex-skills/
 | `frontend-acceptance-workflow` | 前端实现、浏览器验收、回归排查与交付闭环。 |
 | `frontend-netlify-release` | 前端项目 Netlify 发布前检查、干净发布目录、MCP/CLI 发布与失败止损流程。 |
 | `hatch-pet` | Codex pet / spritesheet 生成、校验与打包流程。 |
+| `macos-app-external-restart` | macOS GUI 应用外置重启、launchd 托管执行、残留进程与临时文件清理验证。 |
 | `realistic-human-image-qa` | 写实真人生图、多参考图提示词整合、完整可复制提示词与物理现实校验。 |
 | `windows-codex-msix-portable-fix` | Windows 受限环境下 Codex MSIX / portable 运行与 runtime 修复。 |
 | `windows-ide-open-fix` | Windows 上 Codex 打开 IDE / 文件失败的诊断与修复。 |
