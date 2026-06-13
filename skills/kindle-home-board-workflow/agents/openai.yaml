@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kindle Home Board Workflow"
+  short_description: "Build and verify Kindle/e-ink local dashboards"
+  default_prompt: "Use $kindle-home-board-workflow to improve a Kindle or e-ink home board, keep the client old-browser friendly, sync external data locally, and verify the result on constrained viewports."
