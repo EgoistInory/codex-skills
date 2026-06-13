@@ -1,6 +1,6 @@
 ---
 name: realistic-human-image-qa
-description: Use this skill whenever the user asks for realistic human image generation, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, multi-reference prompt merging, batch multi-image prompt output, or wants complete copy-paste image prompts with positive prompts, negative prompts, quality constraints, and physical-reality checks. Always apply this skill for 写实真人, 真人写真, 写实人物穿搭, 情绪写真, 泪目感写真, 小红书穿搭图, 淘宝服装店, 网红模特上身展示, 服装版型, 面料垂感, 视觉等效相机, 纯可复制版, 真人cos, cosplay, cos生图工作流, 拆解图上身图, 影子预告图, 同套造型连续组图, 角色服装一致性, 八重神子, 胡桃, 人物摆姿势, 参考图生图提示词, 多参考图提示词整合, 多张参考图一次输出多张图片, 完整提示词直接复制, 只输出最终提示词, 不要中间过程, 统一补充规则, GPT网页手机端生图工作流, 面容妆容细节, 发丝层次, 人物肌理, 摄影后期, 滤镜调色, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 服装自然, or physical-reality prompt checks.
+description: Use this skill whenever the user asks for realistic human image generation, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, multi-reference prompt merging, batch multi-image prompt output, or wants complete copy-paste image prompts with positive prompts, negative prompts, quality constraints, and physical-reality checks. Always apply this skill for 写实真人, 真人写真, 写实人物穿搭, 情绪写真, 泪目感写真, 小红书穿搭图, 反推参考图, image2写实融合, 摄影参数置信度, 成片观感反推, 生图效果评估测试, 真人cos, cosplay, cos生图工作流, 拆解图上身图, 影子预告图, 同套造型连续组图, 角色服装一致性, 八重神子, 胡桃, 人物摆姿势, 参考图生图提示词, 多参考图提示词整合, 多张参考图一次输出多张图片, 完整提示词直接复制, 只输出最终提示词, 不要中间过程, 统一补充规则, GPT网页手机端生图工作流, 面容妆容细节, 发丝层次, 人物肌理, 摄影后期, 滤镜调色, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 服装自然, or physical-reality prompt checks.
 ---
 
 # Realistic Human Image QA Prompting
@@ -15,15 +15,15 @@ Use this skill to turn a user request for realistic human image generation into 
 4. Keep negatives specific. Avoid huge generic negative blocks that may suppress normal hands, fabric folds, or body shape.
 5. If the user provides a source image, preserve its real-world geometry: viewpoint, floor plane, horizon, light direction, object scale, occlusion order, and contact shadows.
 6. When extracting from realistic person references, include face shape, jawline, eyes, gaze, brows, nose bridge, lips, lip color, blush, eye makeup, skin pores, hair layers, hair direction, fabric material, garment fit, pose force, light direction, focal-length feel, composition, depth of field, exposure, color temperature, film/phone feel, filter, color grading, grain, sharpening, and de-AI constraints.
-7. For Xiaohongshu, short-video, phone, and compressed platform references, do not pretend to infer exact camera settings. Extract the final visible look: phone 1x/2x feel, light wide-angle close range, portrait-mode edge transition, platform compression/sharpening, mild beautification, color grading, exposure, and lifestyle-feed finish. Only name 35mm/50mm/85mm or f-stops when the image clearly supports it.
-8. For Taobao/e-commerce/model fitting references, prioritize garment display value: cut, silhouette, shoulder/back/waist/hip fit, fabric thickness, stretch, drape, seams, hems, waistband height, leg line, shoe contact, bag/accessory styling, and whether the pose is front, side, back, over-shoulder, kneeling, or product-model display. Keep it realistic, not hard studio glamour.
-9. If the user provides multiple reference images, extract a compact `Reference Card` for each image only when the user asks for cards or parallel extraction. If the user asks to "提取提示词", "分别生成 Final Copy Prompt", "纯可复制版", or "不要中间过程", default to final-only output: `Final Copy Prompt 1..N`, one shared `Separate Negative Prompt`, then `Batch Generation Note`.
-10. Do not leave the user with only categorized fragments. Every useful subject, face/makeup, hair, pose, wardrobe, scene, light, camera, post-production, quality, and negative constraint must be folded into the relevant `Final Copy Prompt`.
-11. For batch multi-image output, put shared English negatives once at the end in `Separate Negative Prompt`, then add `Batch Generation Note`. Do not repeat identical negatives after every prompt.
-12. If uploaded image content is unavailable, unsupported, blocked, or visually unreadable, do not invent details. Ask the user to upload JPG, PNG, WEBP, or provide a text description.
-13. For platform screenshots or video frames, extract the person, pose, outfit, scene, light, and camera feel, but remove platform UI, subtitles, product bars, buttons, avatars, page counters, watermarks, and screenshot chrome from the generation prompt.
-14. For the user's fixed fashion/emotional-portrait extraction workflow, single-image output is `Final Copy Prompt` plus `Separate Negative Prompt`; multi-image output is `图 1｜Final Copy Prompt` through `图 N｜Final Copy Prompt`, then `统一 Separate Negative Prompt`, then `统一补充规则`.
-15. For realistic cosplay workflows, treat the costume flatlay/ground breakdown image and the worn-character image as one continuity set: outfit, wig, headpiece, accessories, embroidery, collar, sleeve shape, exposed-skin structure, color palette, and character motifs must match across the sequence.
+7. If the user provides multiple reference images, extract a compact `Reference Card` for each image only when the user asks for cards or parallel extraction. If the user asks to "提取提示词", "分别生成 Final Copy Prompt", or "不要中间过程", default to final-only output: `Final Copy Prompt 1..N`, one shared `Separate Negative Prompt`, then `Batch Generation Note`.
+8. Do not leave the user with only categorized fragments. Every useful subject, face/makeup, hair, pose, wardrobe, scene, light, camera, post-production, quality, and negative constraint must be folded into the relevant `Final Copy Prompt`.
+9. For batch multi-image output, put shared English negatives once at the end in `Separate Negative Prompt`, then add `Batch Generation Note`. Do not repeat identical negatives after every prompt.
+10. If uploaded image content is unavailable, unsupported, blocked, or visually unreadable, do not invent details. Ask the user to upload JPG, PNG, WEBP, or provide a text description.
+11. For platform screenshots or video frames, extract the person, pose, outfit, scene, light, and camera feel, but remove platform UI, subtitles, product bars, buttons, avatars, page counters, watermarks, and screenshot chrome from the generation prompt.
+12. For the user's fixed fashion/emotional-portrait extraction workflow, single-image output is `Final Copy Prompt` plus `Separate Negative Prompt`; multi-image output is `图 1｜Final Copy Prompt` through `图 N｜Final Copy Prompt`, then `统一 Separate Negative Prompt`, then `统一补充规则`.
+13. For realistic cosplay workflows, treat the costume flatlay/ground breakdown image and the worn-character image as one continuity set: outfit, wig, headpiece, accessories, embroidery, collar, sleeve shape, exposed-skin structure, color palette, and character motifs must match across the sequence.
+14. For reverse-engineering reference images, first infer the image source and final-production traces, then write a prompt that obeys the reference instead of redesigning the person, outfit, scene, or composition.
+15. When the user says `纯可复制版`, `直接复制`, `只要提示词`, or `不要解释`, start directly with the requested prompt block. Do not add prefaces, closing offers, or process commentary.
 
 ## Template decision: fused single-image, independent multi-image
 
@@ -40,16 +40,48 @@ Tradeoffs and final choice:
 - A multi-image merge template is useful for one composite image, but is wrong for batch extraction because it mixes people, outfits, poses, scenes, and composition across references.
 - Final rule: single images use the fused template; emotional detail is an optional single-image enhancement; multiple images use an independent batch template with shared negatives and a final generation-control rule.
 
-## Latest reference-extraction decisions
+## Reference reverse-engineering and image2 fusion
 
-Use these rules for the user's current GPT image workflow:
+Use this module when the user asks to `反推参考图`, recover a prompt from a finished image, run image-to-image/image2, or test whether a generated prompt can reproduce the final reference-image look.
 
-- `纯可复制版`, `直接复制`, `只要提示词`, `不要解释`: output starts directly with the requested prompt blocks. Do not add prefaces such as "下面给你一版" and do not add closing offers or commentary.
-- Treat platform references as already processed final images, not raw camera originals. Extract a visual-equivalent description instead of hard-coded camera parameters.
-- Replace generic beauty words with identifiable facial anchors: face shape, jawline, forehead proportion, eye shape, eye distance, aegyo-sal, brow shape, nose bridge and tip, lip shape and color, cheek fullness, asymmetry, and temperament.
-- Always describe the person-environment relationship: contact shadows, body edge integration, floor plane, object scale, reflections, occlusion order, perspective, and environment-colored light. A background is not enough; the person must physically belong in the space.
-- For Taobao clothing-store or influencer model display prompts, foreground clothing utility: garment structure, fabric behavior, fit on the body, back/side/front display purpose, body line, product-model pose, clean commercial/lifestyle setting, and accurate material detail.
-- In multi-image prompt extraction, the `统一补充规则` belongs only after the shared negative prompt. Do not append it to each `Final Copy Prompt`, because some image models treat repeated batch-control text as visual content and reduce single-image quality.
+Core rule: the prompt must obey the reference image. Do not redesign the person, outfit, pose, scene, or composition. Strengthen realism, face specificity, skin texture, clothing material, human-environment integration, camera/final-image feel, and removal of UI/watermark/screenshot artifacts.
+
+First classify the likely source before writing the prompt:
+
+- phone original photo, phone front-camera selfie, phone rear 1x/2x/3x portrait
+- Xiaohongshu/social screenshot, video frame, livestream frame, compressed repost
+- e-commerce model photo, studio portrait, post-produced editorial photo
+- car-interior shoot, night mixed-light scene, AI derivative or heavily edited image
+
+Photography parameters use confidence tiers:
+
+- High confidence: if EXIF, model watermark, user-provided device info, obvious lens compression, or studio lighting is visible, write concrete or near-concrete device/lens/exposure traits such as phone/camera tendency, focal length, aperture, shutter, ISO, white balance, exposure, composition, light, and color grade.
+- Medium confidence: for social images, selfies, platform-compressed photos, and lightly retouched portraits, write visual equivalents such as `接近手机 1x 视角`, `疑似手机人像模式`, `类似 50mm 人像视角`, or `视觉上相当于中焦人像压缩感`.
+- Low confidence: for screenshots, strong beauty filters, heavy compression, AI derivative images, liquified/retouched photos, and heavily recolored images, do not invent exact devices or parameters. Only describe camera position, perspective, depth of field, light, color, crop, platform compression, and final-image texture.
+
+Extract final-production traces explicitly when visible: platform compression, video-frame softness, light beauty filter, skin smoothing, sharpening, denoise, color grading, local brightening, skin-tone unification, liquify traces, edge smearing, screenshot crop, time/battery/progress bars, captions, UI chrome, and black borders.
+
+Field priority for reverse prompts:
+
+- Face: face shape, eye shape, eye distance, nose bridge/nose tip, lip shape, brow shape, hairline, flyaways, makeup, skin texture, slight asymmetry. Avoid generic phrases like only `漂亮`, `精致`, `白皙`, or `大眼睛`.
+- Outfit: structure, material, thickness, elasticity, fit, folds, seams, edges, socks/shoes, bag, jewelry, accessories, and garment tension.
+- Pose: center of gravity, shoulders/neck, wrists, fingers, waist/hips, knees, ankles, shoe-sole contact, seated contact, body twist, and occlusion.
+- Scene integration: light direction, contact shadows, environmental reflection, subject edge transition, spatial perspective, floor/wall/furniture/car interior/plants/glass material relationships.
+- Photography facts: focal-length feel, shooting distance, light ratio, color temperature, exposure, depth of field, composition, sharpness, post-production traces, and final realistic photo texture. Do not rely on vague `cinematic`, `premium`, or `atmospheric` labels without concrete visual facts.
+
+Single-image reverse prompt format:
+
+```text
+图 1｜Final Copy Prompt
+生图效果评估测试：生成一张[aspect/framing]写实真人照片，不保留任何平台界面、按钮、头像、字幕、时间、电量栏、水印、黑边和截图边框。画面以参考图最终成片观感为准，不重新设计人物、服装、场景和构图，只强化写实质感、人物与环境融合、皮肤肌理、衣物材质和摄影成片细节。[then write subject, face, hair, outfit, pose, scene integration, photography-confidence details, and quality constraints in Chinese]
+
+Negative Prompt
+[English targeted negatives]
+```
+
+Multi-image reverse prompt format: output `图 1｜Final Copy Prompt`, `图 2｜Final Copy Prompt`, etc. Each prompt refers only to its own reference image. End with `统一 Negative Prompt` and `多图补充规则`: each prompt produces one independent final image; do not merge images, make a collage, grid, split screen, or multi-image canvas.
+
+Self-improving rule: if the current rules are not enough for a special reference type, add a short `本次规则补充：...` outside the final copy block. If the user asks for a pure copyable output, keep the rule supplement outside the prompt body so it does not pollute what they copy into the image model.
 
 ## Cos consecutive workflow
 
@@ -497,7 +529,7 @@ tilted horizon, warped horizon, fake beach background, distorted waves, water cu
 ### Image-quality artifacts
 
 ```text
-low quality, low resolution, blurry anatomy, blurry face, face collapse, motion-smudged fingers, warped edges, uneven linework, melted details, duplicated contours, jagged silhouette, over-smoothed skin, plastic skin, mannequin look, uncanny realism, AI artifacts, overexposed, oversaturated, oily lighting, over-sharpened, heavy noise, watermark, text, logo, subtitle, caption text, social media watermark, social media UI, platform UI, product bar, app buttons, username, avatar, page indicator, screenshot border, collage, grid, split-screen, screenshot UI, platform UI, buttons
+low quality, low resolution, blurry anatomy, blurry face, face collapse, motion-smudged fingers, warped edges, uneven linework, melted details, duplicated contours, jagged silhouette, over-smoothed skin, plastic skin, waxy skin, mannequin look, uncanny realism, generic influencer face, same face syndrome, doll face, excessive beauty filter, AI artifacts, overexposed, oversaturated, harsh HDR, muddy shadows, oily lighting, over-sharpened, heavy noise, platform compression artifacts, jpeg artifacts, watermark, text, logo, subtitle, caption text, social media watermark, social media UI, platform UI, product bar, app buttons, username, avatar, page indicator, screenshot border, time bar, battery icon, progress bar, collage, grid, split-screen, screenshot UI, platform UI, buttons
 ```
 
 ## Pose-specific recipes
@@ -620,7 +652,7 @@ integrated naturally into the scene, matching the background perspective, horizo
 Negative prompt:
 
 ```text
-cutout look, pasted-on subject, mismatched perspective, mismatched lighting, no contact shadow, wrong scale, incorrect occlusion, subject clipping through background objects, background warped around subject
+cutout look, pasted-on subject, cutout feeling, mismatched perspective, mismatched lighting, no contact shadow, missing contact shadow, wrong scale, incorrect occlusion, subject clipping through background objects, background warped around subject, inconsistent shadow direction, unnatural reflection, broken depth, fake background, poor integration
 ```
 
 ## Optional model notes
@@ -650,5 +682,6 @@ Before returning a prompt, check whether it answers these:
 - Are the light direction, focal-length feel, crop, exposure, color temperature, filter, color grading, grain, and sharpening/de-AI constraints clear?
 - If the source is a screenshot or video frame, have UI, subtitles, buttons, product bars, watermarks, and logos been excluded?
 - For cos workflows, do the outfit breakdown and worn-character prompts preserve the same costume, wig, headpiece, accessories, embroidery, collar, sleeve shape, exposed-skin structure, color palette, and character motifs?
+- For reverse-reference/image2 workflows, did you classify source type, apply photography-parameter confidence, avoid invented exact camera data, extract post-production/platform traces, and keep the prompt obedient to the reference rather than redesigning it?
 
 If any answer is missing and the image depends on it, add a short constraint to the prompt rather than asking the user unless the missing detail changes the creative direction.
