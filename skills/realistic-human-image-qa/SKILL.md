@@ -1,6 +1,6 @@
 ---
 name: realistic-human-image-qa
-description: Use this skill whenever the user asks for realistic human image generation, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, multi-reference prompt merging, batch multi-image prompt output, or wants complete copy-paste image prompts with positive prompts, negative prompts, quality constraints, and physical-reality checks. Always apply this skill for 写实真人, 真人写真, 写实人物穿搭, 情绪写真, 泪目感写真, 小红书穿搭图, 反推参考图, image2写实融合, 摄影参数置信度, 成片观感反推, 生图效果评估测试, 真人cos, cosplay, cos生图工作流, 拆解图上身图, 影子预告图, 同套造型连续组图, 角色服装一致性, 八重神子, 胡桃, 人物摆姿势, 参考图生图提示词, 多参考图提示词整合, 多张参考图一次输出多张图片, 完整提示词直接复制, 只输出最终提示词, 不要中间过程, 统一补充规则, GPT网页手机端生图工作流, 面容妆容细节, 发丝层次, 人物肌理, 摄影后期, 滤镜调色, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 服装自然, or physical-reality prompt checks.
+description: Use this skill whenever the user asks for realistic human image generation, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, multi-reference prompt merging, batch multi-image prompt output, or wants complete copy-paste image prompts with positive prompts, negative prompts, quality constraints, and physical-reality checks. Always apply this skill for 写实真人, 真人写真, 真人图片提示词获取, 真人写实生图, 真人写实提示词, 真人写实规则, 真人穿搭, 真人图片反推, 真人图片用途说明, 真人生图创作意图说明, 真人图误判风险, 非露骨表达, 合规时装摄影, 服装展示, 写实人物穿搭, 情绪写真, 泪目感写真, 小红书穿搭图, 反推参考图, image2写实融合, 摄影参数置信度, 成片观感反推, 生图效果评估测试, 真人cos, cosplay, cos生图工作流, 拆解图上身图, 影子预告图, 同套造型连续组图, 角色服装一致性, 八重神子, 胡桃, 人物摆姿势, 参考图生图提示词, 多参考图提示词整合, 多张参考图一次输出多张图片, 完整提示词直接复制, 只输出最终提示词, 不要中间过程, 统一补充规则, GPT网页手机端生图工作流, 面容妆容细节, 发丝层次, 人物肌理, 摄影后期, 滤镜调色, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 服装自然, or physical-reality prompt checks.
 ---
 
 # Realistic Human Image QA Prompting
@@ -23,7 +23,10 @@ Use this skill to turn a user request for realistic human image generation into 
 12. For the user's fixed fashion/emotional-portrait extraction workflow, single-image output is `Final Copy Prompt` plus `Separate Negative Prompt`; multi-image output is `图 1｜Final Copy Prompt` through `图 N｜Final Copy Prompt`, then `统一 Separate Negative Prompt`, then `统一补充规则`.
 13. For realistic cosplay workflows, treat the costume flatlay/ground breakdown image and the worn-character image as one continuity set: outfit, wig, headpiece, accessories, embroidery, collar, sleeve shape, exposed-skin structure, color palette, and character motifs must match across the sequence.
 14. For reverse-engineering reference images, first infer the image source and final-production traces, then write a prompt that obeys the reference instead of redesigning the person, outfit, scene, or composition.
-15. When the user says `纯可复制版`, `直接复制`, `只要提示词`, or `不要解释`, start directly with the requested prompt block. Do not add prefaces, closing offers, or process commentary.
+15. Add a short dynamic `用途说明` or `创作意图说明` only when the current image or prompt has likely misclassification risk: tight clothing, swimwear, hotel, car interior, low neckline, body-detail crop, cosplay, adult portrait styling, or obvious body-line emphasis. Do not add it for ordinary outfit photos, scenery, or product images.
+16. Do not use a fixed safety sentence. Write the purpose line from the current image context, such as fashion photography, clothing display, visual analysis, product display, realistic photo style testing, or style reproduction. If the scene is clearly a real person and risk exists, naturally anchor it as adult, compliant fashion photography, non-explicit expression, or objective visual analysis.
+17. Keep the purpose line short and outside the `Final Copy Prompt` body so it does not pollute the copyable prompt. Its purpose is to prevent the model from misunderstanding the creative intent, not to bypass policy or force disallowed content.
+18. When the user says `纯可复制版`, `直接复制`, `只要提示词`, or `不要解释`, start directly with the requested prompt block. Do not add prefaces, closing offers, or process commentary. Exception: if there is real misclassification risk, one short `用途说明：...` line may appear before the prompt block.
 
 ## Template decision: fused single-image, independent multi-image
 
@@ -223,6 +226,35 @@ For Chinese multi-image extraction, use the latest agreed headings by default:
 Use the older `Final Copy Prompt 1..N` and `Batch Generation Note` labels only when the user asks for that exact format or when a non-Chinese model/tooling workflow expects those labels.
 
 Do not copy sensitive identity claims from reference images. Describe visible, non-sensitive visual traits and make the subject an adult when swimwear, lingerie, or sensual styling appears.
+
+## Dynamic purpose statement
+
+Use a dynamic purpose statement only when it reduces likely model
+misclassification. It is optional, short, and context-specific.
+
+Add it for risky but legitimate visual contexts:
+
+- tight or body-line-focused fashion
+- swimwear, lingerie-like styling, low neckline, or exposed shoulders/back
+- hotel, bedroom, bathroom mirror, car interior, or other easily misunderstood
+  scenes
+- partial body crops, close body-detail framing, or pose-heavy references
+- cosplay, adult portrait, editorial fashion, or commercial garment display
+
+Do not add it for ordinary outfits, scenery, product-only images, or clear
+non-risky reference extraction.
+
+Write it as one brief Chinese line before the prompt blocks:
+
+```text
+用途说明：用于服装展示与写实摄影效果测试，重点呈现穿搭、材质、姿态和光影，保持客观、专业、非露骨表达。
+```
+
+Vary the wording for the actual image. Do not paste this exact line by default.
+The statement should classify the task into a legitimate context such as
+fashion photography, clothing display, visual analysis, product display,
+realistic photography testing, or style reproduction. It should not claim to
+override safety rules.
 
 ## Positive constraints to include
 
