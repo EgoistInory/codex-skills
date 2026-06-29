@@ -1,6 +1,6 @@
 ---
 name: fanqie-novel-workflow
-description: Use for generic Fanqie/番茄小说 webnovel production workflows, including project onboarding, chapter continuation, chapter review, state and handoff updates, pure-text Markdown validation, publish-ready Fanqie TXT export, and coordinating relevant fiction-craft skills such as 爽文, 热梗, 选题, 大纲, 润色, and platform-style guidance. Use when a user is writing, maintaining, checking, or preparing a Chinese webnovel for Fanqie-style publication.
+description: Use for generic Fanqie/番茄小说 webnovel production workflows, including project onboarding, chapter continuation, chapter review, state and handoff updates, pure-text Markdown validation, anti-template/anti-empty-expression craft checks, lived-in character detail checks, publish-ready Fanqie TXT export, and coordinating relevant fiction-craft skills such as 爽文, 热梗, 选题, 大纲, 润色, and platform-style guidance. Use when a user is writing, maintaining, checking, or preparing a Chinese webnovel for Fanqie-style publication.
 ---
 
 # 番茄小说通用工作流
@@ -66,6 +66,57 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 6. 不为了单章爽点破坏能力代价、人物边界、时间线或后续高潮。
 7. 完章后同步更新状态、审查记录、交接文件和必要的机器状态。
 
+## 反模板化与人物细节
+
+写作时避免把网文节奏写成固定模板、范式化句群或空洞判断。爽点、钩子和情绪波动必须落到可观察的角色选择与场面细节上。
+
+### 开场与时空锚点
+
+不要每章都用“时间 + 地点 + 事件说明”的固定开场。时间和地点可以保留，但优先嵌入场景运动：
+
+- 用天气、光线、声音、气味、人群、物件状态或人物正在做的动作带出场景。
+- 时间锚点服务压力，例如倒计时、疲劳、营业时间、门禁、病人状态、手机消息，而不是单独报时。
+- 地点锚点服务冲突，例如谁能进门、谁站在门外、谁被隔在玻璃后、哪个监控死角暴露问题。
+- 连续章节要变换开场姿态：动作开场、对话开场、环境开场、人物身体状态开场、证据物件开场、异常现象开场轮换使用。
+
+### 人物鲜活感
+
+每章至少让关键人物出现可辨认的生活或心理细节，避免角色只作为剧情功能件移动：
+
+- 主角需要有疲劳、饥饿、困意、伤痛、清洁、交通、等待、失眠、短暂走神等生活消耗；长期高压剧情也要写恢复失败或身体透支。
+- 重要人物出场时补足表情、眼神、停顿、语速、手部动作、站位、衣物状态或小习惯。
+- 写心理活动时用“他为什么此刻不能说/不敢信/必须退一步”替代抽象情绪标签。
+- 关系变化要落实到微动作：是否让路、是否递东西、是否避开称呼、是否压低声音、是否改变站位。
+- 配角不要只负责提供信息；让他们有自己的顾虑、专业边界、利益损失或情绪反弹。
+
+### 异能与规则刻画
+
+异能、金手指和修行规则不能只作为解题按钮出现。每次关键使用至少写清一到两项：
+
+- 感官表现：视野、听觉、触感、痛感、温度、颜色、符号、噪声、眩晕或身体反应。
+- 操作边界：能看见什么、看不见什么、不能越过谁的同意、不能替谁做决定。
+- 代价与恢复：消耗信任、体力、记忆、关系、时间、伤口、睡眠或后续判断力。
+- 外部反馈：旁人看到什么、误解什么、害怕什么，或者因此改变对主角的态度。
+- 失败与残缺：异能可以给方向，但不要总给完整答案；残缺信息更利于制造下一章钩子。
+
+优先采用：
+
+- 用具体证据、动作、物件、时间点、身体反应和对话潜台词承载剧情推进。
+- 让人物用自己的利益、恐惧、职业习惯、关系边界和既往经历做选择，不用作者替人物下结论。
+- 每个胜利写清代价、受影响的人、关系余波和下一步压力；不要只写“众人震惊”“局势逆转”“气氛凝固”。
+- 每个配角至少承担一个具体功能：提供阻力、保留证据、误解主角、保护自身利益、提出专业限制或制造新问题。
+- 情绪句之后补一个可见细节，例如手势、停顿、视线、文件编号、伤口变化、手机提示、病历曲线、旁人反应。
+- 爽文结构可以使用，但每次兑现都要换成当前人物、场景和规则里的独有解法。
+
+需要警惕：
+
+- 固定段落顺序：挑衅 -> 打脸 -> 全场震惊 -> 反派放狠话。
+- 固定开场顺序：先报时间地点，再解释当前任务，再让角色入场。
+- 抽象评价堆叠：很强、很冷、很痛、很震撼、所有人都明白了。
+- 空泛主题句：这就是规则、这就是代价、这就是现实，除非紧接着有具体事件支撑。
+- 人物工具化：配角只负责解释设定、送线索、被打脸或无条件相信主角。
+- 同质化台词：所有角色都用同一种短句、反问、冷笑、网络梗或作者腔。
+
 ## 正文格式
 
 正文源文必须是纯文本小说正文：
@@ -87,6 +138,12 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 5. 本章伏笔是否推进，是否误提前揭底。
 6. 章末钩子是否指向下一章真实冲突。
 7. 被修改 JSON、YAML 或状态文件是否可解析。
+8. 是否出现固定模板化桥段、范式化句群或空洞表达。
+9. 关键人物是否有独立动机、细节动作、关系边界和选择后果。
+10. 爽点是否由本章独有证据、规则或人物行动触发，而不是靠旁白宣布。
+11. 开场是否又落入固定“时间地点说明书”；时间地点是否嵌入了动作、环境或压力。
+12. 主角是否出现生活细节或身体消耗，避免长期不睡、不吃、不累、不恢复。
+13. 异能或金手指是否有感官刻画、边界、代价、失败残缺或外部反馈。
 
 若项目提供审查脚本，优先运行项目脚本。没有脚本时，可用等价命令检查字符数、Markdown 标记、UTF-8 编码和状态文件解析。
 
