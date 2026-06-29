@@ -1,6 +1,6 @@
 ---
 name: frontend-acceptance-workflow
-description: End-to-end workflow for improving an existing frontend project from product intent and UI design through implementation, code validation, browser regression testing, bug triage, and final acceptance. Use when Codex is asked to beautify or redesign a frontend, add generated visual assets, verify local web app behavior, debug user-reported UI regressions, or prepare a project for acceptance after frontend changes.
+description: End-to-end workflow for improving an existing frontend project from product intent and UI design through implementation, interaction design, motion/playfulness polish, code validation, browser regression testing, bug triage, and final acceptance. Use when Codex is asked to beautify or redesign a frontend, add website interactions or animations, make a UI more fun or delightful, add generated visual assets, verify local web app behavior, debug user-reported UI regressions, or prepare a project for acceptance after frontend changes.
 ---
 
 # Frontend Acceptance Workflow
@@ -26,6 +26,7 @@ Use this skill to run frontend work as a closed loop: understand intent, inspect
 2. Lock product intent.
    - Identify audience, main workflow, success criteria, in/out of scope, and visual direction.
    - For frontend polish, choose a concrete aesthetic tied to the product domain.
+   - For interaction, animation, or playfulness work, read `references/interaction-motion-playbook.md` before implementing.
    - If generated images are useful, define where they will be used and save project-bound assets inside the workspace.
 
 3. Implement conservatively.
@@ -73,6 +74,10 @@ When in doubt, restore the original working flow and layer feedback on top.
 - Use generated bitmap assets only when they improve product communication or empty states.
 - Save final project-bound assets under the repo, not only under Codex generated image storage.
 - Verify generated assets load in the browser and do not block the primary workflow.
+
+## Interaction And Motion Guidance
+
+Read `references/interaction-motion-playbook.md` when the request mentions interaction quality, animation, motion, delight, playfulness, empty-state personality, hover effects, scroll effects, page transitions, tactile controls, or making a website feel less static.
 
 ## Acceptance Checklist
 
