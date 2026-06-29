@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fanqie Novel Workflow"
+  short_description: "Generic Fanqie webnovel writing and export flow"
+  default_prompt: "Use $fanqie-novel-workflow to manage a Fanqie webnovel continuation, review, or export workflow."

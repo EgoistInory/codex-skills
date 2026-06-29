@@ -30,6 +30,7 @@ codex-skills/
 | Skill | 用途 |
 | --- | --- |
 | `agent-handoff-workflow` | Agent 交接、上下文到顶、换会话/换模型时的项目上下文包创建与维护。 |
+| `fanqie-novel-workflow` | 番茄小说通用创作工作流，编排续写、审校、状态交接、导出与小说专项 skill 配合。 |
 | `frontend-acceptance-workflow` | 前端实现、浏览器验收、回归排查与交付闭环。 |
 | `frontend-netlify-release` | 前端项目 Netlify 发布前检查、干净发布目录、MCP/CLI 发布与失败止损流程。 |
 | `hatch-pet` | Codex pet / spritesheet 生成、校验与打包流程。 |
