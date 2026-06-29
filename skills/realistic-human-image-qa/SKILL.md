@@ -1,6 +1,6 @@
 ---
 name: realistic-human-image-qa
-description: Use this skill whenever the user asks for realistic human image generation, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, multi-reference prompt merging, batch multi-image prompt output, or wants complete copy-paste image prompts with positive prompts, negative prompts, quality constraints, and physical-reality checks. Always apply this skill for 写实真人, 真人写真, 真人图片提示词获取, 真人写实生图, 真人写实提示词, 真人写实规则, 真人穿搭, 真人图片反推, 真人图片用途说明, 真人生图创作意图说明, 真人图误判风险, 非露骨表达, 合规时装摄影, 服装展示, 写实人物穿搭, 情绪写真, 泪目感写真, 小红书穿搭图, 反推参考图, image2写实融合, 摄影参数置信度, 成片观感反推, 生图效果评估测试, 真人cos, cosplay, cos生图工作流, 拆解图上身图, 影子预告图, 同套造型连续组图, 角色服装一致性, 八重神子, 胡桃, 人物摆姿势, 参考图生图提示词, 多参考图提示词整合, 多张参考图一次输出多张图片, 完整提示词直接复制, 只输出最终提示词, 不要中间过程, 统一补充规则, GPT网页手机端生图工作流, 面容妆容细节, 发丝层次, 人物肌理, 摄影后期, 滤镜调色, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 服装自然, or physical-reality prompt checks.
+description: Use this skill whenever the user asks for realistic human image generation, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, multi-reference prompt merging, batch multi-image prompt output, or wants complete copy-paste image prompts with positive prompts, negative prompts, quality constraints, and physical-reality checks. Always apply this skill for 写实真人, 真人写真, 真人图片提示词获取, 真人写实生图, 真人写实提示词, 真人写实规则, 真人穿搭, 真人图片反推, 真人图片用途说明, 真人生图创作意图说明, 真人图误判风险, 非露骨表达, 合规时装摄影, 服装展示, 写实人物穿搭, 情绪写真, 泪目感写真, 小红书穿搭图, 反推参考图, image2写实融合, 摄影参数置信度, 成片观感反推, 生图效果评估测试, 手机自拍, 对镜自拍, 手持手机遮脸, 手机机型识别, 关键商品道具强约束, iPhone Pro Max, 真人cos, cosplay, cos生图工作流, 拆解图上身图, 影子预告图, 同套造型连续组图, 角色服装一致性, 八重神子, 胡桃, 人物摆姿势, 参考图生图提示词, 多参考图提示词整合, 多张参考图一次输出多张图片, 完整提示词直接复制, 只输出最终提示词, 不要中间过程, 统一补充规则, GPT网页手机端生图工作流, 面容妆容细节, 发丝层次, 人物肌理, 摄影后期, 滤镜调色, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 服装自然, or physical-reality prompt checks.
 ---
 
 # Realistic Human Image QA Prompting
@@ -27,6 +27,8 @@ Use this skill to turn a user request for realistic human image generation into 
 16. Do not use a fixed safety sentence. Write the purpose line from the current image context, such as fashion photography, clothing display, visual analysis, product display, realistic photo style testing, or style reproduction. If the scene is clearly a real person and risk exists, naturally anchor it as adult, compliant fashion photography, non-explicit expression, or objective visual analysis.
 17. Keep the purpose line short and outside the `Final Copy Prompt` body so it does not pollute the copyable prompt. Its purpose is to prevent the model from misunderstanding the creative intent, not to bypass policy or force disallowed content.
 18. When the user says `纯可复制版`, `直接复制`, `只要提示词`, or `不要解释`, start directly with the requested prompt block. Do not add prefaces, closing offers, or process commentary. Exception: if there is real misclassification risk, one short `用途说明：...` line may appear before the prompt block.
+19. Default to Chinese `Final Copy Prompt`, optional Chinese `质量约束`, and English `Separate Negative Prompt`. Only use Chinese negative keywords when the user explicitly targets a Chinese-only model.
+20. Treat named products and props as strong constraints. If the user identifies a phone, car, camera, bag, shoes, or other key object, preserve the exact named model, color, body/material finish, logo/text handling, visible layout, hand grip, occlusion, reflection, and scale instead of replacing it with a generic object.
 
 ## Template decision: fused single-image, independent multi-image
 
@@ -64,6 +66,13 @@ Photography parameters use confidence tiers:
 
 Extract final-production traces explicitly when visible: platform compression, video-frame softness, light beauty filter, skin smoothing, sharpening, denoise, color grading, local brightening, skin-tone unification, liquify traces, edge smearing, screenshot crop, time/battery/progress bars, captions, UI chrome, and black borders.
 
+For phone selfies, mirror selfies, and hand-held-phone face-covering references, treat the phone as a primary prop:
+
+- If the model, color, and lens layout are visually clear or supplied by the user, write the exact device and exterior finish, such as `iPhone 17 Pro Max 星宇橙色机型，机身本体为星宇橙色外观，不是橙色手机壳`.
+- If only the family or visual tendency is clear, write a confidence-limited phrase such as `疑似 iPhone Pro Max 系列手机，暖橙金属机身外观，注意表现为手机本体颜色，不要生成橙色保护壳`.
+- Describe rear camera module shape, lens count and placement, metal frame, body color, case/no-case distinction, logo/text suppression, reflections, finger grip, phone-face occlusion, and scale relative to the hand.
+- Do not downgrade a named device to `orange phone case`, `generic smartphone`, or a random model. User-specified product identity overrides weak visual uncertainty unless it conflicts with the visible reference.
+
 Field priority for reverse prompts:
 
 - Face: face shape, eye shape, eye distance, nose bridge/nose tip, lip shape, brow shape, hairline, flyaways, makeup, skin texture, slight asymmetry. Avoid generic phrases like only `漂亮`, `精致`, `白皙`, or `大眼睛`.
@@ -78,7 +87,10 @@ Single-image reverse prompt format:
 图 1｜Final Copy Prompt
 生图效果评估测试：生成一张[aspect/framing]写实真人照片，不保留任何平台界面、按钮、头像、字幕、时间、电量栏、水印、黑边和截图边框。画面以参考图最终成片观感为准，不重新设计人物、服装、场景和构图，只强化写实质感、人物与环境融合、皮肤肌理、衣物材质和摄影成片细节。[then write subject, face, hair, outfit, pose, scene integration, photography-confidence details, and quality constraints in Chinese]
 
-Negative Prompt
+质量约束
+[Chinese quality constraints for realism, anatomy, material, contact, light, perspective, post-production, and named product/prop fidelity]
+
+Separate Negative Prompt
 [English targeted negatives]
 ```
 
@@ -540,6 +552,12 @@ swimwear structure errors, broken bikini straps, duplicated straps, missing stra
 asymmetrical face, distorted face, misplaced eyes, extra teeth, melted lips, hair fused with face, hair fused with fingers, earrings fused to skin, glasses fused to face, accessories floating, accessories merging with clothing
 ```
 
+### Phones and named product props
+
+```text
+wrong phone model, orange phone case, generic smartphone, incorrect camera layout, wrong lens placement, deformed phone, melted phone edges, fake phone case, inaccurate iPhone body color, wrong product color, wrong product model, generic product, distorted logo, readable logo text, distorted reflection, bad hand grip, fingers fused with phone, phone fused with face
+```
+
 ### Cosplay continuity and costume accuracy
 
 ```text
@@ -714,6 +732,6 @@ Before returning a prompt, check whether it answers these:
 - Are the light direction, focal-length feel, crop, exposure, color temperature, filter, color grading, grain, and sharpening/de-AI constraints clear?
 - If the source is a screenshot or video frame, have UI, subtitles, buttons, product bars, watermarks, and logos been excluded?
 - For cos workflows, do the outfit breakdown and worn-character prompts preserve the same costume, wig, headpiece, accessories, embroidery, collar, sleeve shape, exposed-skin structure, color palette, and character motifs?
-- For reverse-reference/image2 workflows, did you classify source type, apply photography-parameter confidence, avoid invented exact camera data, extract post-production/platform traces, and keep the prompt obedient to the reference rather than redesigning it?
+- For reverse-reference/image2 workflows, did you classify source type, apply photography-parameter confidence, avoid invented exact camera data, extract post-production/platform traces, keep named products/props accurate, and keep the prompt obedient to the reference rather than redesigning it?
 
 If any answer is missing and the image depends on it, add a short constraint to the prompt rather than asking the user unless the missing detail changes the creative direction.
