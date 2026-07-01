@@ -1,6 +1,6 @@
 ---
 name: fanqie-novel-workflow
-description: Use for generic Fanqie/番茄小说 webnovel production workflows, including high-quality chapter drafting, chapter quality control, canon/setting consistency, project onboarding, chapter continuation, state and handoff updates, pure-text Markdown validation, anti-template/anti-empty-expression craft checks, lived-in character detail checks, publish-ready Fanqie TXT export, and coordinating relevant fiction-craft skills such as 爽文, 热梗, 选题, 大纲, 润色, and platform-style guidance. Use when a user is writing, maintaining, checking, or preparing a Chinese webnovel for Fanqie-style publication.
+description: Use for generic Fanqie/番茄小说 webnovel production workflows, including high-quality chapter drafting, chapter quality control, canon/setting consistency, project onboarding, chapter continuation, state and handoff updates, pure-text Markdown validation, anti-template/anti-empty-expression craft checks, lived-in character detail checks, type-bridge borrowing constraints, low-quality-governance iteration, publish-ready Fanqie TXT export, and coordinating relevant fiction-craft skills such as 爽文, 热梗, 选题, 大纲, 润色, and platform-style guidance. Use when a user is writing, maintaining, checking, or preparing a Chinese webnovel for Fanqie-style publication.
 ---
 
 # 番茄小说通用工作流
@@ -56,6 +56,20 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 
 若旧聊天记录与项目事实源冲突，以项目文件为准。
 
+## 项目框架扫描与持续迭代
+
+用户要求更新 workflow、调整策略或同步 skill 时，先只读扫描项目框架和事实源变化，再抽取可复用规则。不要把当前书名、人物名、章号、专有设定或阶段剧情写进通用 skill。
+
+扫描重点：
+
+- 目录结构是否变化：多书/单书入口、正文事实源、导出脚本、状态文件、审查记录、投稿包、兼容链接。
+- 工作流是否变化：轻量链路或严格链路的适用边界、日常导出要求、提交推送节奏、状态回灌位置。
+- 质量策略是否变化：平台低质治理、字数区间、反模板化、人味细节、异能刻画、爽点节奏、AI 味硬闸。
+- 新增规范是否可泛化：素材借鉴、热梗使用、人物生活细节、能力代价、章末钩子、已发布正文修订边界。
+- 可配合 skill 是否需要更新：只记录触发时机和职责，不让专项 skill 的默认目录覆盖当前项目约定。
+
+只有稳定、跨项目通用、不会增加 agent 判断噪声的规则才写入本 workflow；临时章节状态、具体剧情和当前书籍专名留在项目文件中。
+
 ## 总目标与三道门
 
 目标不是简单“把章节写完”，而是稳定完成一部长篇网文：主线清晰、人物有魅力、爽点持续、设定闭环、章节有追读欲，避免太监、烂尾、流水账、设定堆砌、剧情空转、人物扁平、文风廉价和明显 AI 味。
@@ -94,6 +108,24 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 - 动作描写要有因果和节奏：写动作如何发生、身体如何发力、对方如何反应、环境如何被影响。
 - 章末悬念要自然来自剧情压力、人物选择、秘密揭露、危机升级、反派行动、能力异变或情绪爆点，不机械断章。
 - 可在恰当时机使用网络梗、流行语、谚语、成语、古诗词、神话传说或原创口头梗增加趣味，但必须贴合人物身份、时代语境和场景情绪；梗只能点亮人物或冲突，不能替代剧情推进。
+
+## 类型桥段借鉴与表达调味
+
+可以借鉴成熟网文的类型技法，但只借“桥段功能、爽点结构、节奏模型、人物关系张力和危机兑现方式”。
+
+禁止照搬：
+
+- 具体剧情、设定名词、势力结构、人物组合、核心外挂、名台词、标志性描写或连续场景编排。
+- 退婚、宗门大比、学院测试、秘境试炼、拍卖会、诡异规则、无限副本等经典桥段的原样版本。
+- 某本作品的语气仿写、经典名场面复刻，或把项目正文写成其他作品的贴脸影子。
+
+正确用法：
+
+- 先拆出桥段功能，例如资格门槛、规则反押、低权材料抬权、危机倒计时、关系边界试探、胜利有代价。
+- 再转译为当前项目自己的事实源、人物目标、规则机制、能力代价、场景物件和章末压力。
+- 让桥段服务本书已有金手指、世界观、人物关系和伏笔，不让外部模板覆盖项目事实。
+- 近年热门作品、平台榜单或读者讨论如需纳入参考池，必须先联网核对当前热度和作品信息，再只提炼可通用技法。
+- 网络梗、流行语、成语、古诗词、神话典故和原创口头梗只作人物声音与冲突调味；严肃压迫场景慎用，不能替代剧情推进，也不能让所有角色变成同一种评论区口吻。
 
 ## 反模板化与人物细节
 
@@ -198,6 +230,9 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 18. 反派和配角是否有有效行动逻辑，而不是无脑嘲讽、送经验或集体降智。
 19. 是否存在平台低质治理风险：AI 粗制滥造、格式混乱、结构失常、空洞水文、拼接脱节、情节错乱、烂尾式突兀结束。
 20. 连续核验、审计、调查、修炼或赶路章节是否补足现场压力、人物选择、能力代价、关系变化或爽点余波，避免只罗列系统结论。
+21. 是否存在未经转译的类型桥段、名场面台词、专有设定、人物组合、连续剧情链或贴脸仿写。
+22. 网络梗、成语、古诗词、神话典故或原创口头梗是否服务人物声音和场景压力，而不是替代冲突、泄掉压迫感或造成角色口吻同质化。
+23. 系统提示、规则判定或审计结论之后，是否有现场人物动作、表情、心理、局势变化或后续代价承接。
 
 若项目提供审查脚本，优先运行项目脚本。没有脚本时，可用等价命令检查字符数、Markdown 标记、UTF-8 编码和状态文件解析。
 
@@ -213,6 +248,8 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 - 已出现跨章设定污染、JSON/数据库投影错误或无法靠轻量校验定位的问题。
 
 严格链路不能改写项目目录约定；生成的临时文件、备份和投影必须符合项目规则。
+
+平台治理、AI 味或低质风险没有现成可靠的一键插件时，不为“看起来更完整”引入新依赖。优先使用项目已有脚本、格式扫描、JSON/YAML 解析、`humanizer`、`webnovel-review` 或人工质检门；只有发现可验证收益且不破坏项目约定时，才增加新工具。
 
 ## 番茄导出
 
@@ -268,6 +305,10 @@ Git 提交和推送应服务跨设备协作，不应打断写作节奏：
 - `webnovel-hot-memes`：用于男频/泛网文中的热梗、平台评论区、弹幕、短视频文案、轻喜剧反应和热门事件模板；只在角色、场景和时代适配时使用，避免过度堆梗。
 - `webnovel-female-radar`：用于女频、言情、古言、现言、快穿、团宠、权谋、情绪流、人物关系和女性向平台语感。
 - `webnovel-finalize`：用于完稿技术校验、错别字/标点/敏感词检查、平台格式适配和最终导出。
+- `webnovel-dashboard`：用于只读查看项目状态、实体图谱和章节进度，不用于改写正文或覆盖事实源。
+- `webnovel-doctor`：用于项目级体检，排查结构、状态、连续性、格式和 workflow 风险。
+- `webnovel-learn`：用于从已验证的成功章节提取可复用写法，写入项目记忆；不要把一次偶然写法立即固化为通用规则。
+- `humanizer`：用于检查 AI 味、模板腔、工整排比、空泛总结和机械连接词；它辅助质检，不替代设定一致性审查。
 
 使用专项 skill 后，在最终回复中点明实际调用了哪些 skill，以及它们分别负责选题、爽点、热梗、续写、审查、润色、导出中的哪个阶段。没有实际调用时，只说明本 workflow 更新了这些可选配合时机。
 
