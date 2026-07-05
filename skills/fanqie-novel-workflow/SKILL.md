@@ -1,6 +1,6 @@
 ---
 name: fanqie-novel-workflow
-description: Use for generic Fanqie/番茄小说 webnovel production workflows, including high-quality chapter drafting, chapter quality control, canon/setting consistency, project onboarding, chapter continuation, state and handoff updates, pure-text Markdown validation, anti-template/anti-empty-expression craft checks, lived-in character detail checks, type-bridge borrowing constraints, low-quality-governance iteration, publish-ready Fanqie TXT export, and coordinating relevant fiction-craft skills such as 爽文, 热梗, 选题, 大纲, 润色, and platform-style guidance. Use when a user is writing, maintaining, checking, or preparing a Chinese webnovel for Fanqie-style publication.
+description: Use for generic Fanqie/番茄小说 webnovel production workflows, including high-quality chapter drafting, chapter quality control, canon/setting consistency, project onboarding, chapter continuation, state and handoff updates, pure-text Markdown validation, native Chinese prose-sense checks, translationese avoidance, anti-template/anti-empty-expression craft checks, lived-in character detail checks, type-bridge borrowing constraints, low-quality-governance iteration, publish-ready Fanqie TXT export, and coordinating relevant fiction-craft skills such as 爽文, 热梗, 选题, 大纲, 润色, and platform-style guidance. Use when a user is writing, maintaining, checking, or preparing a Chinese webnovel for Fanqie-style publication.
 ---
 
 # 番茄小说通用工作流
@@ -64,7 +64,7 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 
 - 目录结构是否变化：多书/单书入口、正文事实源、导出脚本、状态文件、审查记录、投稿包、兼容链接。
 - 工作流是否变化：轻量链路或严格链路的适用边界、日常导出要求、提交推送节奏、状态回灌位置。
-- 质量策略是否变化：平台低质治理、字数区间、反模板化、人味细节、异能刻画、爽点节奏、AI 味硬闸。
+- 质量策略是否变化：平台低质治理、字数区间、中文语感、意象搭配、翻译腔治理、反模板化、人味细节、异能刻画、爽点节奏、AI 味硬闸。
 - 新增规范是否可泛化：素材借鉴、热梗使用、人物生活细节、能力代价、章末钩子、已发布正文修订边界。
 - 可配合 skill 是否需要更新：只记录触发时机和职责，不让专项 skill 的默认目录覆盖当前项目约定。
 
@@ -90,10 +90,10 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 4. 写入 `正文/NNN-标题.md` 或项目约定路径。扩展名可为 `.md`，但正文内容必须是投稿兼容纯文本。
 5. 单章按目标平台节奏控制长度。番茄常见源文建议不少于 2,000 中文字符；日常续写可用 2,050-3,300 字符作为常用区间，质量优先，场景确有需要时可适当超过，不为卡上限删掉必要情绪、动作和余波。
 6. 每章形成“开头有钩子，中段有冲突，后段有变化，结尾有期待”的阅读体验。
-7. 每章保留即时冲突、可感知收益或规则反制，并留下能推动下一章的问题。
+7. 每章保留即时冲突、可感知收益或规则反制，并留下能推动下一章的问题；章末钩子要自然来自场景压力、物件异常、人物选择、信息缺口或情绪余波，避免“下一章”“下一步”“下一个目标”这类提示牌式断章。
 8. 不为了单章爽点破坏能力代价、人物边界、时间线或后续高潮。
 9. 若某段只是交代信息、没有场景、没有情绪、没有冲突、没有吸引力，主动重写，不交付低质量正文。
-10. 完章后同步更新状态、审查记录、交接文件和必要的机器状态。
+10. 完章后同步更新状态、审查记录、交接文件和必要的机器状态；若项目有单章 summary 或轻量审查记录，也要一并回灌。
 
 ## 正文生产约束
 
@@ -108,6 +108,29 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 - 动作描写要有因果和节奏：写动作如何发生、身体如何发力、对方如何反应、环境如何被影响。
 - 章末悬念要自然来自剧情压力、人物选择、秘密揭露、危机升级、反派行动、能力异变或情绪爆点，不机械断章。
 - 可在恰当时机使用网络梗、流行语、谚语、成语、古诗词、神话传说或原创口头梗增加趣味，但必须贴合人物身份、时代语境和场景情绪；梗只能点亮人物或冲突，不能替代剧情推进。
+
+## 中文原生语感与翻译腔治理
+
+正文要按中文写作创作来处理，不把英文提示词、英文句法或外语叙事习惯简单翻译成中文。语义能懂还不够，读起来必须像中文网文正文：顺耳、贴切、有落点。先想“这个人物在这个场景里会怎么说、中文读者会怎么听”，再落笔。
+
+优先采用：
+
+- 按中文信息流推进：人、动作、物件、结果、情绪自然递进，不机械保留英语长从句、抽象名词前置、所有格堆叠或被动结构。
+- 用短中句承载网文节奏，长句只在情绪压迫、思维失控、制度文本或仪式感场景中使用。
+- 用准确动词和具体名词替代抽象名词堆叠，例如用“捏住杯沿”“退到门槛外”“票据边角发潮”替代“产生明显情绪变化”。
+- 对白按人物身份、年龄、教育、地域、职业、权力位置和关系远近分层，不让所有角色都说同一种标准书面汉语。
+- 旁白保持当前作品的叙事气质；网络语、短视频语、热梗只在角色会这么想或这么说时出现，不让旁白追热词。
+- 比喻、成语、俗语、诗词典故和口语梗都要用中国语境里自然的表达；成语、古诗词、谚语、神话典故不是“高级感贴纸”，必须成为人物语感、动作钉子、情绪反讽或场景压力的一部分。
+- 意象搭配优先使用中文读者熟悉且顺耳的联想。危险、阴冷、游走、潜伏、刺痛类感觉，可优先考虑蛇、针、刀、冷线、潮水、旧纸、薄刃、湿痕等中文常见意象；不要为了新鲜感造“语义能懂但搭配别扭”的句子。
+- 专业名词、制度条款、奇幻设定和异能规则第一次出现时给出现场触感、物件或后果，后续用项目内部自然简称，不反复说明。
+
+需要警惕：
+
+- 翻译腔句式：这让他感到、他意识到这是一个、对于……而言、基于……之上、通过……来实现、对……进行处理、被……所影响。
+- 论文腔和产品腔：有效地、显著地、某种程度上、从某个层面来说、形成闭环、完成赋能、产生价值，除非这是角色职业口吻或制度文本。
+- 英文逻辑直译：先给抽象判断，再补例子；先讲概念，再让人物行动；用“因为/所以/然而/与此同时”替代场景因果。
+- 过度解释心理：不要只写“他很愤怒”“她感到复杂”“他意识到问题严重”，要让动作、停顿、称呼变化、身体反应和后续选择说话。
+- 生硬本地化：不要把外语习语硬翻成中文，不要把现代网络梗贴到不该使用它的时代、阶层、职业或严肃场景里，也不要写“会咬人的虫”这类读者能懂但中文搭配别扭的比喻。
 
 ## 类型桥段借鉴与表达调味
 
@@ -233,8 +256,11 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 21. 是否存在未经转译的类型桥段、名场面台词、专有设定、人物组合、连续剧情链或贴脸仿写。
 22. 网络梗、成语、古诗词、神话典故或原创口头梗是否服务人物声音和场景压力，而不是替代冲突、泄掉压迫感或造成角色口吻同质化。
 23. 系统提示、规则判定或审计结论之后，是否有现场人物动作、表情、心理、局势变化或后续代价承接。
+24. 是否出现翻译腔、英文句法直译、论文腔、产品腔或抽象名词堆叠；这些表达是否可被更自然的中文动作、物件、对白或短句替代。
+25. 对白和旁白是否有中文语域区分；人物说话是否符合身份、年龄、职业、关系和场景压力，而不是全员同一腔调。
+26. 比喻、成语、俗语、诗词典故、口语梗和危险/阴冷类意象是否顺耳、贴切、有落点；是否存在语义可懂但像机翻腔或搭配别扭的表达。
 
-若项目提供审查脚本，优先运行项目脚本。没有脚本时，可用等价命令检查字符数、Markdown 标记、UTF-8 编码和状态文件解析。
+若项目提供审查脚本，优先运行项目脚本。若脚本支持不导出发布包的轻量自检模式，例如 `--skip-export`，日常续写优先使用轻量自检；没有脚本时，可用等价命令检查字符数、Markdown 标记、UTF-8 编码和状态文件解析。
 
 ## 轻量链路与严格链路
 
