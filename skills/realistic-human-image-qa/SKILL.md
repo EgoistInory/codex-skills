@@ -26,7 +26,7 @@ Use this skill to turn a user request for realistic human image generation into 
 15. Add a short dynamic `用途说明` or `创作意图说明` only when the current image or prompt has likely misclassification risk: tight clothing, swimwear, hotel, car interior, low neckline, body-detail crop, cosplay, adult portrait styling, or obvious body-line emphasis. Do not add it for ordinary outfit photos, scenery, or product images.
 16. Do not use a fixed safety sentence. Write the purpose line from the current image context, such as fashion photography, clothing display, visual analysis, product display, realistic photo style testing, or style reproduction. If the scene is clearly a real person and risk exists, naturally anchor it as adult, compliant fashion photography, non-explicit expression, or objective visual analysis.
 17. Keep the purpose line short and outside the `Final Copy Prompt` body so it does not pollute the copyable prompt. Its purpose is to prevent the model from misunderstanding the creative intent, not to bypass policy or force disallowed content.
-18. When the user says `纯可复制版`, `直接复制`, `只要提示词`, or `不要解释`, start directly with the requested prompt block. Do not add prefaces, closing offers, or process commentary. Exception: if there is real misclassification risk, one short `用途说明：...` line may appear before the prompt block.
+18. When the user says `纯可复制版`, `直接复制`, `只要提示词`, or `不要解释`, start directly with the requested prompt block: `Final Copy Prompt` for one image, `【多图输出硬性规则｜最高优先级】` for multi-image output, or the negative prompt block when only negatives are requested. Do not add prefaces, closing offers, or process commentary. Exception: if there is real misclassification risk, one short `用途说明：...` line may appear before the prompt block.
 19. Default to Chinese `Final Copy Prompt`, optional Chinese `质量约束`, and English `Separate Negative Prompt`. Only use Chinese negative keywords when the user explicitly targets a Chinese-only model.
 20. Treat named products and props as strong constraints. If the user identifies a phone, car, camera, bag, shoes, or other key object, preserve the exact named model, color, body/material finish, logo/text handling, visible layout, hand grip, occlusion, reflection, and scale instead of replacing it with a generic object.
 21. For multi-image generation in one prompt, put the image count hard rule at the very beginning and repeat it at the end. Use `Image 1`, `Image 2`, etc. as a storyboard list, separate shared anchors from per-image differences, and state that the list is not one merged image description.
@@ -38,14 +38,14 @@ The user's latest settled workflow is a fusion solution:
 - Single reference image: use one fused fashion/portrait template. It combines face, makeup, skin texture, hair, outfit, pose, scene, photography, post-production, and physical-reality constraints into one Chinese `Final Copy Prompt`.
 - Emotional portrait: do not treat it as a separate competing template. If the reference has tearful, vulnerable, cool, cinematic, or emotional qualities, add an emotional enhancement module inside the single-image template.
 - Multiple reference images: do not use the single-image fusion template to average all images into one prompt unless the user explicitly wants one merged image. Default to the hard-rule multi-image structure with shared anchors and `Image N` sections; use separate `图 N｜Final Copy Prompt` blocks only when the user wants one image per separate call.
-- Multi-image generation from one prompt: keep old single/multi extraction rules, but raise count control to the top. Start with a hard rule that the model must output N independent images, then use shared anchors and `Image N` sections; repeat the count rule at the end.
+- Multi-image generation from one prompt: treat the hard-count block as an output-control layer, not as a replacement for the single-image fusion, reverse-engineering, dynamic purpose, photography-confidence, product/prop, or negative-prompt rules. Start with a hard rule that the model must output N independent images, then use shared anchors and `Image N` sections; repeat the count rule at the end.
 
 Tradeoffs and final choice:
 
 - A concise single-image template is stable and easy to copy, but can miss face, makeup, texture, and post-production details.
 - A very detailed extraction template improves realism and reference fidelity, but becomes too scattered if pasted as analysis fragments.
 - A multi-image merge template is useful for one composite image, but is wrong for batch extraction because it mixes people, outfits, poses, scenes, and composition across references.
-- Final rule: single images use the fused template; emotional detail is an optional single-image enhancement; multiple images use an independent batch template with shared negatives and a final generation-control rule.
+- Final rule: single images use the fused template; emotional detail is an optional single-image enhancement; multiple images use the hard-rule storyboard template with shared anchors, shared negatives, and a final repeated count rule.
 
 ## Multi-image hard output control
 
@@ -60,6 +60,7 @@ Rules:
 - Separate shared anchors from per-image differences: shared person, makeup, outfit, scene system, photography style, and negative prompt go in unified blocks; each Image block only changes camera angle, pose, expression, hand action, prop relationship, crop, and composition.
 - End with `【最终输出要求】` and repeat that the output must contain N independent images, one Image per completed picture, with no missing images, collage, grid, split screen, stitching, poster layout, or merged canvas.
 - If the target product only supports one image per call, say that text prompts can improve intent clarity but cannot bypass product output limits; the stable workflow is to split the Image blocks into separate calls or use a model/API with batch `n` support.
+- If a model keeps returning only one image, do not keep lengthening a single fused prompt. Split the `Image N` blocks into separate calls, or use an API/model setting that explicitly supports multiple images.
 
 Default multi-image structure:
 
