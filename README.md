@@ -36,6 +36,7 @@ codex-skills/
 | `hatch-pet` | Codex pet / spritesheet 生成、校验与打包流程。 |
 | `kindle-home-board-workflow` | Kindle / 电子墨水屏 / 老浏览器家庭信息板的本地同步、低频刷新、Admin 表单化与验收流程。 |
 | `macos-app-external-restart` | macOS GUI 应用外置重启、launchd 托管执行、残留进程与临时文件清理验证。 |
+| `python-ai-project-dependencies` | AI / vibe-coding Python 项目的依赖选择、分组、安装与验证方法论。 |
 | `realistic-human-image-qa` | 写实真人生图、多参考图提示词整合、完整可复制提示词与物理现实校验。 |
 | `windows-codex-msix-portable-fix` | Windows 受限环境下 Codex MSIX / portable 运行与 runtime 修复。 |
 | `windows-ide-open-fix` | Windows 上 Codex 打开 IDE / 文件失败的诊断与修复。 |
