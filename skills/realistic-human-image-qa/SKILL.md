@@ -1,11 +1,11 @@
 ---
 name: realistic-human-image-qa
-description: Use this skill whenever the user asks for realistic human image generation, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, multi-reference prompt merging, batch multi-image prompt output, or wants complete copy-paste image prompts with positive prompts, negative prompts, quality constraints, and physical-reality checks. Always apply this skill for 写实真人, 真人写真, 真人图片提示词获取, 真人写实生图, 真人写实提示词, 真人写实规则, 真人穿搭, 真人图片反推, 真人图片用途说明, 真人生图创作意图说明, 真人图误判风险, 非露骨表达, 合规时装摄影, 服装展示, 写实人物穿搭, 情绪写真, 泪目感写真, 小红书穿搭图, 反推参考图, image2写实融合, 摄影参数置信度, 成片观感反推, 生图效果评估测试, 手机自拍, 对镜自拍, 手持手机遮脸, 手机机型识别, 关键商品道具强约束, iPhone Pro Max, 多图输出硬性规则, 多图分镜清单, Image 1, Image 2, Image 3, 单次多图输出, 真人cos, cosplay, cos生图工作流, 拆解图上身图, 影子预告图, 同套造型连续组图, 角色服装一致性, 八重神子, 胡桃, 人物摆姿势, 参考图生图提示词, 多参考图提示词整合, 多张参考图一次输出多张图片, 完整提示词直接复制, 只输出最终提示词, 不要中间过程, 最终输出要求, GPT网页手机端生图工作流, 面容妆容细节, 发丝层次, 人物肌理, 摄影后期, 滤镜调色, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 服装自然, or physical-reality prompt checks.
+description: Use this skill whenever the user asks for realistic human image generation, reference-guided generation, image-to-image/image2 work, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, multi-reference prompt merging, batch multi-image prompt output, or complete copy-paste image prompts with quality and physical-reality checks. Always apply this skill for 写实真人, 真人写真, 参考图生图, 参考生成图片, 图生图, 参考图生图提示词, 真人图片提示词获取, 真人写实生图, 真人写实提示词, 真人写实规则, 真人穿搭, 真人图片反推, 真人图片用途说明, 真人生图创作意图说明, 真人图误判风险, 非露骨表达, 合规时装摄影, 服装展示, 写实人物穿搭, 情绪写真, 泪目感写真, 小红书穿搭图, 反推参考图, image2写实融合, 摄影参数置信度, 成片观感反推, 生图效果评估测试, 手机自拍, 对镜自拍, 手持手机遮脸, 手机机型识别, 关键商品道具强约束, iPhone Pro Max, 多图输出硬性规则, 多图分镜清单, Image 1, Image 2, Image 3, 单次多图输出, 多参考图提示词整合, 多张参考图一次输出多张图片, 真人cos, cosplay, cos生图工作流, 拆解图上身图, 影子预告图, 同套造型连续组图, 角色服装一致性, 人物摆姿势, 人物插入背景, 局部重绘, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 完整提示词直接复制, 只输出最终提示词, 不要中间过程, 最终输出要求, GPT网页手机端生图工作流, 面容妆容细节, 发丝层次, 人物肌理, 摄影后期, 滤镜调色, 服装自然, or physical-reality prompt checks.
 ---
 
 # Realistic Human Image QA Prompting
 
-Use this skill to turn a user request for realistic human image generation into a prompt package that actively checks anatomy, pose, contact, clothing, camera logic, and scene physics. The goal is not just to add a long negative prompt; the goal is to make the image model understand a physically plausible person in a physically plausible scene.
+Use this skill for both prompt extraction and actual reference-guided image generation. Turn the user's request and references into a generation-ready prompt package that actively checks anatomy, pose, contact, clothing, camera logic, and scene physics. The goal is not just to add a long negative prompt; the goal is to help the image model generate a physically plausible person in a physically plausible scene.
 
 ## Core workflow
 
@@ -30,6 +30,19 @@ Use this skill to turn a user request for realistic human image generation into 
 19. Default to Chinese `Final Copy Prompt`, optional Chinese `质量约束`, and English `Separate Negative Prompt`. Only use Chinese negative keywords when the user explicitly targets a Chinese-only model.
 20. Treat named products and props as strong constraints. If the user identifies a phone, car, camera, bag, shoes, or other key object, preserve the exact named model, color, body/material finish, logo/text handling, visible layout, hand grip, occlusion, reflection, and scale instead of replacing it with a generic object.
 21. For multi-reference prompt extraction or multi-image generation in one prompt, put the image count hard rule at the very beginning and repeat it at the end. Use bracketed headings, no Markdown bold inside the copyable block. Default to `【Final Copy Prompt 1】`, `【Final Copy Prompt 2】`, etc. for the user's GPT web / image2 workflow; use `【Image 1】`, `【Image 2】`, etc. only for storyboard tools or when the user asks for Image sections.
+22. Treat prompt extraction, prompt writing, actual image generation, image-to-image/reference-guided generation, and repair/iteration as sibling modes of the same skill. Do not narrow the skill to extraction only.
+23. If the user asks to generate or edit the image itself and an image-generation tool is available, use these rules to build and QA the prompt internally, then perform the generation/edit. Do not stop at a prompt-only answer unless the user asks for the prompt text.
+24. For both single-image and multi-image prompt delivery, place all model-facing sections inside one `text` code block so the user can copy once. Do not put `【语境声明】`, shared anchors, individual `Final Copy Prompt` sections, quality constraints, and negative prompts into separate code blocks.
+
+## Reference-guided generation and repair mode
+
+When the user supplies one or more references for actual generation, use the same fidelity and physical-reality rules as prompt extraction, but treat the prompt package as an internal generation plan unless the user also requests the text.
+
+- Preserve the visible subject, face, makeup, hair, outfit, pose, scene, camera position, light, post-production feel, and named products according to the requested degree of similarity.
+- Apply positive anatomy, contact, fabric, scene-integration, and camera constraints before generation.
+- For hand repair, crossed legs, shallow water, background insertion, or complex occlusion, use the pose-specific and repair guidance later in this skill; recommend or use masking, reference pose, OpenPose, Depth, ControlNet, or inpainting when the target workflow supports them.
+- If the user requests several generated images, keep shared identity/style anchors and per-image differences separate. Respect the actual image tool's output limits; use separate generation calls when one call cannot return the requested count.
+- After generation, inspect the result when the tool or workflow exposes it. Check identity drift, anatomy, hands, clothing structure, contact shadows, reflections, perspective, and reference fidelity before claiming success.
 
 ## Template decision: fused single-image, independent multi-image
 
@@ -248,7 +261,7 @@ Cos continuity requirements:
 
 ## Output format
 
-When the user asks for a prompt, return this structure:
+When the user asks for a prompt package rather than direct image generation, return this structure:
 
 ```text
 Prompt:
