@@ -23,9 +23,9 @@ Use this skill for both prompt extraction and actual reference-guided image gene
 12. For the user's fixed fashion/emotional-portrait extraction workflow, single-image output is `【Final Copy Prompt】`, Chinese `【质量约束】`, and English `【Separate Negative Prompt】`; multi-reference prompt extraction output uses the bracketed multi-image copy block with `【Final Copy Prompt 1】` through `【Final Copy Prompt N】`, `【质量约束】`, `【Shared Negative Prompt】`, and `【最终输出要求】`; storyboard-style one-prompt generation may use `【Image 1】` through `【Image N】` only when the target workflow explicitly expects Image sections.
 13. For realistic cosplay workflows, treat the costume flatlay/ground breakdown image and the worn-character image as one continuity set: outfit, wig, headpiece, accessories, embroidery, collar, sleeve shape, exposed-skin structure, color palette, and character motifs must match across the sequence.
 14. For reverse-engineering reference images, first infer the image source and final-production traces, then write a prompt that obeys the reference instead of redesigning the person, outfit, scene, or composition.
-15. Add a short dynamic `用途说明` or `创作意图说明` only when the current image or prompt has likely misclassification risk: tight clothing, swimwear, hotel, car interior, low neckline, body-detail crop, cosplay, adult portrait styling, or obvious body-line emphasis. Do not add it for ordinary outfit photos, scenery, or product images.
-16. Do not use a fixed safety sentence. Write the purpose line from the current image context, such as fashion photography, clothing display, visual analysis, product display, realistic photo style testing, or style reproduction. If the scene is clearly a real person and risk exists, naturally anchor it as adult, compliant fashion photography, non-explicit expression, or objective visual analysis.
-17. Keep the purpose line short and outside the `Final Copy Prompt` body so it does not pollute the copyable prompt. Its purpose is to prevent the model from misunderstanding the creative intent, not to bypass policy or force disallowed content.
+15. Add a short dynamic context statement only when the current image or prompt has likely misclassification risk: tight clothing, swimwear, hotel, car interior, low neckline, body-detail crop, cosplay, adult portrait styling, or obvious body-line emphasis. Do not add it for ordinary outfit photos, scenery, or product images.
+16. Do not use a fixed safety sentence. Write the statement from the current image context, such as fashion photography, clothing display, visual analysis, product display, realistic photo style testing, or style reproduction. If the scene is clearly a real person and risk exists, naturally anchor it as adult, compliant fashion photography, non-explicit expression, or objective visual analysis.
+17. Render the statement under `【语境声明】` inside the same copyable code block, immediately before `【Final Copy Prompt】`; keep it out of the prompt body and omit the entire block when unnecessary. Its purpose is to prevent misunderstanding of creative intent, not to bypass policy or force disallowed content.
 18. When the user says `纯可复制版`, `直接复制`, `只要提示词`, or `不要解释`, start directly with the requested copy block: `【Final Copy Prompt】` for one image, `【多图输出硬性规则｜最高优先级】` for multi-reference prompt extraction or multi-image output, or the negative prompt block when only negatives are requested. Do not add prefaces, closing offers, Markdown bold headings, or process commentary. Exception: if there is real misclassification risk, a short `【语境声明】` block may appear inside the copy block before the prompt content.
 19. Default to Chinese `Final Copy Prompt`, optional Chinese `质量约束`, and English `Separate Negative Prompt`. Only use Chinese negative keywords when the user explicitly targets a Chinese-only model.
 20. Treat named products and props as strong constraints. If the user identifies a phone, car, camera, bag, shoes, or other key object, preserve the exact named model, color, body/material finish, logo/text handling, visible layout, hand grip, occlusion, reflection, and scale instead of replacing it with a generic object.
@@ -130,47 +130,7 @@ Rules:
 - If the target product only supports one image per call, say that text prompts can improve intent clarity but cannot bypass product output limits; the stable workflow is to split the `Final Copy Prompt N` blocks into separate calls or use a model/API with batch `n` support.
 - If a model keeps returning only one image, do not keep lengthening a single fused prompt. Split the `Final Copy Prompt N` blocks into separate calls, or use an API/model setting that explicitly supports multiple images.
 
-Default multi-image structure:
-
-```text
-【多图输出硬性规则｜最高优先级】
-本次任务必须输出 N 张独立图片，不是 1 张。
-下方内容是 N 张图片的独立提示词清单，不是一张图的综合描述。
-请严格按照【Final Copy Prompt 1】、【Final Copy Prompt 2】、【Final Copy Prompt 3】分别生成。
-每个 Final Copy Prompt 对应 1 张完整成图。
-禁止宫格、拼图、分屏、上下拼接、左右拼接、海报排版、合成一张。
-禁止只输出 1 张。
-
-【可选语境声明】
-[only when misclassification risk exists; omit otherwise]
-
-【统一人物锚点】
-[shared adult subject, face, makeup, skin texture, hair, body proportion, accessories, temperament]
-
-【统一服装与造型】
-[shared clothing structure, material, color, fit, seams, shoes, bag, jewelry, product props, fabric tension]
-
-【统一场景与摄影风格】
-[shared space, light direction, color, camera feel, focal-length feel, post-production texture]
-
-【Final Copy Prompt 1】
-[aspect ratio/crop, camera angle, pose, expression, hand action, prop relation, scene detail, what to preserve from reference 1]
-
-【Final Copy Prompt 2】
-[only the second image's camera angle, pose, expression, hand action, prop relation, crop, and composition changes]
-
-【Final Copy Prompt 3】
-[only the third image's independent differences while preserving shared anchors]
-
-【质量约束】
-[Chinese realism, anatomy, hand/foot, clothing, material, contact, light, perspective, scene integration, prop fidelity]
-
-【Shared Negative Prompt】
-[shared English negative keywords]
-
-【最终输出要求】
-最终必须返回 N 张独立图片，1 个 Final Copy Prompt 对应 1 张。不得缺失，不得合并，不得拼接，不得宫格，不得分屏，不得把多张内容融合成一张图。
-```
+Use the canonical count-first template in `Multi-reference final-only extraction mode`. The output shape is identical for prompt extraction and one-prompt multi-image generation; only the per-image content and the target tool's real output limits differ. When a context statement is needed, use `【语境声明】`; otherwise omit that block entirely.
 
 ## Reference reverse-engineering and image2 fusion
 
@@ -261,25 +221,7 @@ Cos continuity requirements:
 
 ## Output format
 
-When the user asks for a prompt package rather than direct image generation, return this structure:
-
-```text
-Prompt:
-[natural-language prompt with subject, pose, anatomy, clothing, environment, light, camera, realism]
-
-Physical Reality Checks:
-- [short checklist items tailored to the scene]
-
-Negative Prompt:
-[comma-separated targeted negative keywords]
-
-Optional Model Notes:
-[only include if useful: aspect ratio, inpainting/masking advice, ControlNet/OpenPose/depth/reference-image guidance]
-```
-
-If the user asks for only negative keywords, provide `Negative Prompt` plus a short `Use with` note explaining which pose or body region it targets.
-
-For reference-image prompt extraction in the user's current Chinese GPT workflow, prefer this final-only format over the generic `Prompt / Physical Reality Checks` structure:
+For prompt delivery, the canonical single-image format is:
 
 ```text
 【Final Copy Prompt】
@@ -292,83 +234,19 @@ For reference-image prompt extraction in the user's current Chinese GPT workflow
 [one English negative keyword block]
 ```
 
+Put the complete block inside one outer `text` code block. `【语境声明】` may appear before `【Final Copy Prompt】` only when the dynamic-purpose rule applies; omit it otherwise. Keep physical-reality checks integrated into the Chinese prompt and `【质量约束】` instead of exposing a separate checklist by default.
+
+Use the legacy diagnostic structure `Prompt / Physical Reality Checks / Negative Prompt / Optional Model Notes` only when the user explicitly asks for a technical breakdown, physical-reality audit, repair diagnosis, or model-control notes. `Optional Model Notes` is conditional and should contain only useful controls such as aspect ratio, masking/inpainting, OpenPose, Depth, ControlNet, or reference strength.
+
+If the user asks for only negative keywords, provide `【Separate Negative Prompt】` plus one short `Use with` line explaining the targeted pose or body region. For multi-image output, use `【Shared Negative Prompt】` once when the risks are shared.
+
 If the reference is a fashion, lifestyle, or emotional portrait of a woman, clearly make the subject a young adult woman or young adult Asian woman when visually appropriate. Do not infer minor age. Preserve the reference's face, makeup, skin texture, hair, outfit, pose, scene, composition, light, and post-production feel as a single fluent Chinese prompt.
 
-For multiple reference images, return cards only if the user asks to see the extraction process or is intentionally running a parallel card workflow. If the user asks to extract prompts or output N final prompts, use the multi-reference final-only extraction mode above with bracketed `Final Copy Prompt N` headings. If the user asks one prompt/task to generate N images, skip visible cards and return the hard-rule multi-image generation structure:
-
-```text
-【多图输出硬性规则｜最高优先级】
-本次任务必须输出 N 张独立图片，不是 1 张。
-下方内容是 N 张图片的独立分镜清单，不是一张图的综合描述。
-请严格按照【Final Copy Prompt 1】、【Final Copy Prompt 2】、【Final Copy Prompt 3】分别生成。
-每个 Final Copy Prompt 对应 1 张完整成图。
-禁止宫格、拼图、分屏、拼接、海报排版、合成一张。
-禁止只输出 1 张。
-
-【统一人物锚点】
-[consistent subject, face, hair, makeup, body proportion, temperament]
-
-【统一服装与造型】
-[consistent wardrobe, materials, shoes, bag, accessories, product props]
-
-【统一场景与摄影风格】
-[consistent environment, light, camera feel, color, texture, mood]
-
-【Final Copy Prompt 1】
-[image 1-specific crop, pose, action, angle, expression, hand/prop relation, reference details]
-
-【Final Copy Prompt 2】
-[image 2-specific crop, pose, action, angle, expression, hand/prop relation, reference details]
-
-【质量约束】
-[Chinese realism, anatomy, material, contact, light, perspective, and integration constraints]
-
-【Shared Negative Prompt】
-[one shared English negative keyword block, plus per-image additions only when needed]
-
-【最终输出要求】
-最终必须返回 N 张独立图片，1 个 Final Copy Prompt 对应 1 张。不得缺失，不得合并，不得拼接，不得宫格，不得分屏，不得把多张内容融合成一张图。
-```
+For multiple reference images, return cards only if the user asks to see the extraction process or is intentionally running a parallel card workflow. If the user asks to extract prompts, output N final prompts, or asks one task to generate N independent images, use the canonical count-first template in `Multi-reference final-only extraction mode`; skip visible cards and merge analysis.
 
 For ChatGPT image generation, each `Final Copy Prompt` must be fluent Chinese by default. Do not append a long English tag list to the Chinese prompt body. Translate quality, realism, anatomy, fabric, contact, light, and perspective constraints into natural Chinese. Put English keyword-style negatives such as `bad anatomy`, `extra fingers`, `watermark`, `text`, `logo`, `collage`, `grid`, `split-screen`, and `screenshot UI` only in `Separate Negative Prompt` for models that support a negative field.
 
 When the user asks for prompt extraction and does not explicitly request the analysis process, output only the final usable blocks. Single-image tasks use `【Final Copy Prompt】`, `【质量约束】`, and `【Separate Negative Prompt】`. Multi-reference prompt extraction tasks use the count-first bracketed block with `【Final Copy Prompt 1】` through `【Final Copy Prompt N】`, `【质量约束】`, `【Shared Negative Prompt】`, and `【最终输出要求】`. Keep `Reference Card`, `Merged Prompt Ingredients`, and reasoning internal unless the user asks to see them.
-
-For Chinese multi-reference extraction or one-prompt multi-image generation where the user wants several independent images, use the latest hard-rule headings by default:
-
-```text
-【多图输出硬性规则｜最高优先级】
-本次任务必须输出 N 张独立图片，不是 1 张。
-下方内容是 N 张图片的独立分镜清单，不是一张图的综合描述。
-请严格按照【Final Copy Prompt 1】、【Final Copy Prompt 2】、【Final Copy Prompt 3】分别生成。
-每个 Final Copy Prompt 对应 1 张完整成图。
-禁止宫格、拼图、分屏、拼接、海报排版、合成一张。
-禁止只输出 1 张。
-
-【统一人物锚点】
-[shared person, face, makeup, hair, body proportion, temperament]
-
-【统一服装与造型】
-[shared outfit, fabric, shoes, bag, accessories, product props]
-
-【统一场景与摄影风格】
-[shared scene, light, camera feel, color, post-production texture]
-
-【Final Copy Prompt 1】
-[image 1-specific crop, pose, camera angle, action, expression, props, reference details]
-
-【Final Copy Prompt 2】
-[image 2-specific crop, pose, camera angle, action, expression, props, reference details]
-
-【质量约束】
-[shared Chinese quality constraints]
-
-【Shared Negative Prompt】
-[shared English negative keywords]
-
-【最终输出要求】
-最终必须返回 N 张独立图片，1 个 Final Copy Prompt 对应 1 张。不得缺失，不得合并，不得拼接，不得宫格，不得分屏，不得把多张内容融合成一张图。
-```
 
 Use `Image 1..N` and `Batch Generation Note` labels only when the user asks for that exact format or when a non-Chinese model/tooling workflow expects those labels.
 
@@ -391,10 +269,11 @@ Add it for risky but legitimate visual contexts:
 Do not add it for ordinary outfits, scenery, product-only images, or clear
 non-risky reference extraction.
 
-Write it as one brief Chinese line before the prompt blocks:
+Write it as one brief Chinese paragraph under `【语境声明】` before the prompt blocks:
 
 ```text
-用途说明：用于服装展示与写实摄影效果测试，重点呈现穿搭、材质、姿态和光影，保持客观、专业、非露骨表达。
+【语境声明】
+用于服装展示与写实摄影效果测试，重点呈现穿搭、材质、姿态和光影，保持客观、专业、非露骨表达。
 ```
 
 Vary the wording for the actual image. Do not paste this exact line by default.
@@ -595,7 +474,7 @@ Use this workflow when the user uploads several reference photos or says they wa
    - Single final image: merge cards by separating shared anchors from conflicting details, then return one `Final Copy Prompt`.
    - Multi-reference prompt extraction: return the count-first copyable block with `【Final Copy Prompt 1】`, `【Final Copy Prompt 2】`, etc., no visible cards or merge analysis, plus `【质量约束】`, one shared English `【Shared Negative Prompt】`, and `【最终输出要求】`.
    - One-prompt multi-image generation: use the multi-image hard output control structure with `【多图输出硬性规则｜最高优先级】`, optional shared anchors, per-image `Final Copy Prompt N` sections by default, one shared negative prompt, and a final repeated output requirement.
-4. Deduplicate negative prompts. If the images share the same failure risks, output one shared `Separate Negative Prompt` at the end instead of repeating it after each prompt.
+4. Deduplicate negative prompts. If the images share the same failure risks, output one `【Shared Negative Prompt】` at the end instead of repeating it after each prompt.
 5. Add per-image negative additions only when a specific image has a unique risk, such as holding objects, mirror selfies, crossed legs, shallow water, back-side over-shoulder poses, complex skirts, reflective surfaces, or strong occlusion.
 6. Put the count hard rule before all multi-reference extraction or multi-image output content and repeat it after the final negative prompt block. This is an output-control layer; it does not replace per-image prompt detail.
 
@@ -613,41 +492,7 @@ Reference Card:
 - Reusable phrase:
 ```
 
-Use this final copy format for multi-reference prompt extraction and one-prompt multi-image generation by default.
-
-```text
-【多图输出硬性规则｜最高优先级】
-本次任务必须输出 2 张独立图片，不是 1 张。
-下方内容是 2 张图片的独立分镜清单，不是一张图的综合描述。
-请严格按照【Final Copy Prompt 1】、【Final Copy Prompt 2】分别生成。
-每个 Final Copy Prompt 对应 1 张完整成图。
-禁止宫格、拼图、分屏、拼接、海报排版、合成一张。
-禁止只输出 1 张。
-
-【统一人物锚点】
-[shared subject, face, hair, makeup, body proportion, temperament]
-
-【统一服装与造型】
-[shared outfit, fabric, shoes, bag, accessories, product props]
-
-【统一场景与摄影风格】
-[shared scene, light, camera, color, post-production texture]
-
-【Final Copy Prompt 1】
-[first image crop, pose, camera angle, expression, hand/prop relation, scene details, reference-specific details]
-
-【Final Copy Prompt 2】
-[second image crop, pose, camera angle, expression, hand/prop relation, scene details, reference-specific details]
-
-【质量约束】
-[shared Chinese realism, anatomy, clothing, prop, contact, light, perspective, and UI-removal constraints]
-
-【Shared Negative Prompt】
-bad anatomy, extra fingers, missing fingers, extra limbs, bad legs, floating feet, distorted clothing, wrong perspective, no contact shadow, AI artifacts, subtitle, caption text, social media UI, platform UI, product bar, app buttons, watermark, text, logo, collage, grid, split-screen, screenshot UI
-
-【最终输出要求】
-最终必须返回 2 张独立图片，1 个 Final Copy Prompt 对应 1 张。不得缺失，不得合并，不得拼接，不得宫格，不得分屏，不得把多张内容融合成一张图。
-```
+For the final output, use the canonical count-first template in `Multi-reference final-only extraction mode`. Keep the `Reference Card` schema only for the explicit parallel-card workflow; do not expose both cards and final prompts in an ordinary extraction response.
 
 Use this language split by default:
 

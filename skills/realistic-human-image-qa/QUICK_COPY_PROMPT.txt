@@ -8,7 +8,7 @@
 
 当用户说“纯可复制版”“直接复制”“只要提示词”“不要解释”时，正文必须直接从提示词块开始，不写开场说明，也不写结尾建议。单图或多图的所有模型可用内容必须放在同一个 `text` 代码块中，不要把语境声明、统一锚点、各条 Final Copy Prompt、质量约束和负面词拆开，方便手机端一次复制。
 
-用途说明 / 创作意图说明规则：不要固定使用某一段声明，也不要默认限定主体。普通穿搭、风景、商品图不加。只有贴身服装、泳装、酒店、车内、低领、局部身体构图、cos、成人写真、身体线条明显等容易被误判的场景，才在提示词块前加一条很短的 `用途说明：...`。这句话必须根据当次参考图动态生成，目的只是避免模型误解创作意图，把内容归类到写实摄影、穿搭展示、视觉分析、商品展示、风格复刻等合理语境，不是绕过规则。画面是真人且有误判风险时，可自然加入“成人 / 成年 / 合规时装摄影 / 非露骨表达”等锚点；如果某张图没必要加，就完全不加。
+语境声明规则：不要固定使用某一段声明，也不要默认限定主体。普通穿搭、风景、商品图不加。只有贴身服装、泳装、酒店、车内、低领、局部身体构图、cos、成人写真、身体线条明显等容易被误判的场景，才在同一个可复制代码块内、`【Final Copy Prompt】` 前加入简短的 `【语境声明】`。正文必须根据当次参考图动态生成，目的只是避免模型误解创作意图，把内容归类到写实摄影、穿搭展示、视觉分析、商品展示、风格复刻等合理语境，不是绕过规则。画面是真人且有误判风险时，可自然加入“成人 / 成年 / 合规时装摄影 / 非露骨表达”等锚点；若无必要，整个模块省略。
 
 最新固定方案：单图用“写实人物穿搭融合模板”，多参考图提示词提取用“逐图独立 Final Copy Prompt 模板”，一次性多图生成用“硬规则前置的独立分镜清单模板”，情绪写真/泪目感/脆弱感/清冷感/电影感不单独成体系，只作为单图模板里的增强模块。
 
@@ -37,19 +37,18 @@ Cos 工作流不新建独立体系，作为写实人物连续组图模块：先�
 - 多图合并模板适合生成一张融合图，但用户要多张参考图分别提取 Final Copy Prompt 时，容易混合不同图片的人物、穿搭、姿态、场景和构图。
 - 最终规则：单图融合，情绪增强按需叠加；多参考图提示词提取和多图生成都使用硬规则前置，逐图输出 `【Final Copy Prompt N】`；统一锚点按需添加，最后统一英文负面词并重复最终输出要求。
 
-输出格式：
+默认单图输出格式：
 
-Prompt:
-[写实自然语言提示词：主体、姿势、人体结构、服装、环境、光线、镜头、真实感]
+【Final Copy Prompt】
+[一整段全中文、可直接复制的完整提示词]
 
-Physical Reality Checks:
-- [当前画面的人体结构、接触、遮挡、服装、背景透视检查]
+【质量约束】
+[中文写实质量约束]
 
-Negative Prompt:
-[逗号分隔的针对性负面关键词]
+【Separate Negative Prompt】
+[英文针对性负面关键词]
 
-Optional Model Notes:
-[仅在有用时提供：比例、局部重绘、参考图、OpenPose/depth/ControlNet 建议]
+所有内容放在同一个 `text` 代码块中。人体结构、接触、遮挡、服装受力和背景透视检查默认融入 Final Copy Prompt 与质量约束。只有用户明确要求技术拆解、物理现实审计、修复诊断或模型控制建议时，才改用 `Prompt / Physical Reality Checks / Negative Prompt / Optional Model Notes` 诊断结构；Optional Model Notes 仅在比例、局部重绘、参考图、OpenPose、Depth、ControlNet 等信息确实有用时输出。
 
 正向约束优先加入：
 photorealistic adult human, anatomically correct body, natural body proportions, consistent limb thickness, realistic joints at shoulders elbows wrists hips knees and ankles, natural posture, stable center of gravity, limbs connected naturally to the torso, realistic skin and muscle transitions, each visible hand has five fingers and one thumb, natural finger spacing, fingers bend only at real knuckles, wrist connected cleanly to forearm, hands match the body perspective and scale, clothing follows the underlying body form, fabric drapes under gravity, natural folds at elbows waist hips knees and contact points, realistic contact shadows
@@ -70,7 +69,7 @@ integrated naturally into the scene, matching the background perspective, horizo
 
 如果参考图来自小红书、抖音、TikTok、Instagram、视频截图、直播截图或商品页，只保留人物、姿势、穿搭、场景、光线和镜头感；不要保留字幕、用户名、头像、商品栏、按钮、页码、截图边框、水印、logo 或平台界面。
 
-如果上传多张参考图，或用户在多个会话里并行处理多张参考图，请每张图先只输出这个卡片：
+只有用户明确要在多个会话里并行提取卡片时，每张图才只输出这个卡片：
 
 Reference Card:
 - Role in final image:
