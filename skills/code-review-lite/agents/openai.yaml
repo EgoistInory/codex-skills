@@ -1,4 +1,0 @@
-interface:
-  display_name: "Code Review Lite"
-  short_description: "Review correctness, regressions, security, maintainability"
-  default_prompt: "Use $code-review-lite to review this change for material engineering risks."

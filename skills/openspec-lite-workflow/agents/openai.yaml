@@ -1,4 +1,4 @@
 interface:
   display_name: "OpenSpec Lite Workflow"
-  short_description: "Route medium work through OpenSpec and five lite skills"
+  short_description: "Route medium work through OpenSpec and lite modules"
   default_prompt: "Use $openspec-lite-workflow to run this project with the lightweight OpenSpec workflow."
