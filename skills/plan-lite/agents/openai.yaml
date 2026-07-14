@@ -1,0 +1,4 @@
+interface:
+  display_name: "Plan Lite"
+  short_description: "Plan only when task complexity justifies it"
+  default_prompt: "Use $plan-lite to decide whether this task needs a short plan or direct execution."

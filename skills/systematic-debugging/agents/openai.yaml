@@ -1,0 +1,4 @@
+interface:
+  display_name: "Systematic Debugging Lite"
+  short_description: "Reproduce, gather evidence, then fix root cause"
+  default_prompt: "Use $systematic-debugging to diagnose this failure before changing code."

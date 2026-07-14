@@ -1,0 +1,4 @@
+interface:
+  display_name: "Verification Before Completion Lite"
+  short_description: "Require fresh evidence before completion claims"
+  default_prompt: "Use $verification-before-completion to verify this work before calling it complete."

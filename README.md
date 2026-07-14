@@ -30,14 +30,20 @@ codex-skills/
 | Skill | 用途 |
 | --- | --- |
 | `agent-handoff-workflow` | Agent 交接、上下文到顶、换会话/换模型时的项目上下文包创建与维护。 |
+| `code-review-lite` | 轻量代码审查，仅关注正确性、回归风险、安全和明显可维护性问题。 |
 | `fanqie-novel-workflow` | 番茄小说通用创作工作流，编排续写、审校、状态交接、导出与小说专项 skill 配合。 |
 | `frontend-acceptance-workflow` | 前端实现、浏览器验收、回归排查与交付闭环。 |
 | `frontend-netlify-release` | 前端项目 Netlify 发布前检查、干净发布目录、MCP/CLI 发布与失败止损流程。 |
 | `hatch-pet` | Codex pet / spritesheet 生成、校验与打包流程。 |
 | `kindle-home-board-workflow` | Kindle / 电子墨水屏 / 老浏览器家庭信息板的本地同步、低频刷新、Admin 表单化与验收流程。 |
 | `macos-app-external-restart` | macOS GUI 应用外置重启、launchd 托管执行、残留进程与临时文件清理验证。 |
+| `openspec-lite-workflow` | 面向中低复杂度项目的 OpenSpec 轻量工作流，按需编排计划、TDD、调试、验证和审查。 |
+| `plan-lite` | 简单修改直接执行，仅在耦合、风险或步骤复杂度达到门槛时生成短计划。 |
 | `python-ai-project-dependencies` | AI / vibe-coding Python 项目的依赖选择、分组、安装与验证方法论。 |
 | `realistic-human-image-qa` | 写实真人生图、多参考图提示词整合、完整可复制提示词与物理现实校验。 |
+| `systematic-debugging` | 故障先复现和收集证据，定位根因后再做最小修复。 |
+| `tdd` | 仅对核心逻辑、复杂状态、算法、重要修复和易回归行为采用测试先行。 |
+| `verification-before-completion` | 声称完成前运行适用的测试、构建检查和关键路径验证。 |
 | `windows-codex-msix-portable-fix` | Windows 受限环境下 Codex MSIX / portable 运行与 runtime 修复。 |
 | `windows-ide-open-fix` | Windows 上 Codex 打开 IDE / 文件失败的诊断与修复。 |
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "TDD Lite"
+  short_description: "Selective test-first workflow for high-risk logic"
+  default_prompt: "Use $tdd for this regression-prone logic and implement it test first."
