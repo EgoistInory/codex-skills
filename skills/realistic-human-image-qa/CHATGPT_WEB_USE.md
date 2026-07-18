@@ -26,6 +26,7 @@ usage: Upload this file to a GPT conversation or paste it into Custom Instructio
 - Final Copy Prompt 和质量约束使用中文；Separate Negative Prompt 默认使用英文，不要中英混排。只有用户明确说给纯中文模型用时，才把负面词改成中文。
 - 手机、车、相机、包、鞋等被用户点名或参考图中清晰可见的关键商品 / 道具，必须当作强约束保留具体型号、颜色、材质、结构、遮挡关系和比例，不要降级成泛称。
 - 多图任务不是单图综合描述；必须把统一设定和每张图的差异分开。每个 `Final Copy Prompt N` 只写该图对应的主体、机位、姿态、表情、手部动作、道具关系、构图和参考图细节。
+- 面部妆造采用“整体美感定方向 → 忠实参考图妆容 → 少量真实质感修正 → 精简负面约束”。妆容增强只是局部修正，不得改变人物五官、原生眼睛大小、肤色冷暖、明亮度、年龄感和整体气质，也不得让脸偏黄、偏灰、显脏、显老或显疲惫。
 
 模板取舍与最终方案：
 
@@ -256,6 +257,29 @@ adult model, editorial vacation portrait, realistic summer beach portrait, shall
 - 质感后期：人物肌理、真实皮肤纹理、衣物纹理、手机随手拍感、视频帧感、轻微胶片颗粒、滤镜、后期调色、柔焦、锐化、去 AI 味约束。
 - 失败预防：人体结构、手指、脸部崩坏、发丝融合、服装结构、接触阴影、海平线、水面、背景变形、平台 UI、字幕、商品栏、水印文字 logo。
 
+### 真实妆感轻量增强
+
+这个模块只负责修正全脸颜色完全一致、塑料皮、妆容扁平、眼神无反光、唇部无湿润感和面部光线脱离环境等 AI 问题，不负责重新设计人物面容。
+
+- 第一优先级是人物整体美感与参考图方向：保持脸型、原生眼睛大小、气质、年龄感、白皙度、肤色冷暖、整体明亮度和清透精致的社媒审美。不能为了增加真实纹理而让人物偏黄、偏暗、显老、显疲惫或皮肤粗糙。
+- 第二优先级是参考图实际妆容：只提取明确可见的粉底明度与底调、腮红颜色和位置、眼影/眼线/睫毛形式、唇色和唇妆质感。人物原生眼睛大小与睫毛造型分开描述，假睫毛不能代替或改变原生眼型。
+- 面部可以比颈部自然提亮约半档，但面部、耳朵、颈部和肩部色调必须协调，不能偏黄、偏灰、过度惨白或形成面具感。
+- 原图有美颜、PS、柔焦或白净精修时忠实保留，不强加粗糙纹理、色斑、痘印、明显毛孔、粉底颗粒、油光或卡粉。
+- 反光服从实际场景光源，眼神光、镜片、唇部、头发、首饰、衣物和玻璃道具不使用固定窗光模板。
+
+按画面距离控制妆容细节：
+
+- 面部特写、近距离半身图：参考图清楚时可写粉底底调、眼影渐层、眼线、睫毛膏/假睫毛形式、唇纹和极轻微妆面肌理。
+- 普通半身照：只写底妆色调、腮红、眼妆、睫毛、唇色/光泽、眼神光和柔和面部明暗，不强调毛孔、粉底颗粒、油光和卡粉。
+- 全身街拍、泳池全景、海边远景：只写“清透真实妆感、自然肤色层次、不过度磨皮”，不写微观皮肤细节。
+- 低清、强压缩、脸部遮挡或强精修：只保留能确认的内容，不臆造。
+
+多图同一人物、同一妆造时，把妆容放在 `【统一人物锚点】` 写一次；各 `【Final Copy Prompt N】` 只补充该图的表情、光线和反射差异，不重复粉底、腮红、眼影、睫毛和唇妆。妆容描述原则上只保留四项：底妆颜色与整体妆效、眼妆与睫毛、腮红与唇色、真实光影与轻微皮肤层次。
+
+```text
+【真实妆感轻量增强｜按参考图启用】人物面容首先保持参考图的整体审美方向、肤色明度、冷暖倾向和年轻精致感，不因增加皮肤细节而改变人物气质或降低整体美感。底妆采用与参考图一致的明度和底调，呈轻薄、清透、细腻的妆效；面部可比颈部自然提亮约半档，但面部、耳朵、颈部和肩部色调协调，不偏黄、不偏灰、不过度惨白、不形成面具感。根据参考图保留适度的腮红、眼影、眼线、睫毛和唇妆层次，人物原生眼睛大小与睫毛造型分开表达，假睫毛不替代人物原生眼型。皮肤整体以白皙、清透、自然好看为主，只保留轻微肤色变化和柔和明暗层次；近距离画面可见极轻微皮肤与妆面质感，普通半身及全身画面不刻意强调毛孔、粉底颗粒、油光、色斑或卡粉。颧骨、鼻梁、眼球、唇部和头发上的高光与环境主光一致；鼻翼、唇周、眼窝和下颌保留柔和暗部，但不让脸部显脏、显黄、显老或显疲惫。
+```
+
 如果参考图带有情绪感、泪目感、脆弱感、清冷感或电影感，在同一条 `Final Copy Prompt` 里自动加入情绪写真增强描述：眼眶水光、眼尾微红、睫毛湿润、鼻尖微红、唇部轻抿、克制情绪、低饱和色调、柔焦、胶片颗粒、浅景深、前景虚化、电影感光影。
 
 统一风格增强词可用：
@@ -330,6 +354,14 @@ tilted horizon, warped horizon, fake beach background, distorted waves, water cu
 
 ```text
 low quality, low resolution, blurry anatomy, blurry face, face collapse, motion-smudged fingers, warped edges, uneven linework, melted details, duplicated contours, jagged silhouette, over-smoothed skin, plastic skin, waxy skin, mannequin look, uncanny realism, generic influencer face, same face syndrome, doll face, excessive beauty filter, AI artifacts, overexposed, oversaturated, harsh HDR, muddy shadows, oily lighting, over-sharpened, heavy noise, platform compression artifacts, jpeg artifacts, watermark, text, logo, subtitle, caption text, social media watermark, social media UI, platform UI, product bar, app buttons, username, avatar, page indicator, screenshot border, time bar, battery icon, progress bar, collage, grid, split-screen, screenshot UI, platform UI, buttons
+```
+
+### 真实妆感轻量负面词
+
+只在相关时加入这一份精简列表，不再扩展几十个妆容同义词，避免模型过度关注皮肤问题。
+
+```text
+overly uniform skin tone, plastic skin, wax skin, excessive beauty filter, flat makeup, painted-on makeup, fake white mask face, yellow or gray facial cast, dull complexion, dead eyes, no catchlight, plastic lips, flat facial lighting
 ```
 
 ## 姿势模板
@@ -425,3 +457,7 @@ broken back, distorted shoulder blades, twisted neck, face unclear, eyes misalig
 - 重叠时谁在前、谁在后？
 - 衣服如何受姿势、重力和接触影响？
 - 镜头透视是否匹配背景？
+- 是否先保持人物整体美感、原生眼型、肤色冷暖、明亮度和年龄感，再加入少量妆面真实感？
+- 妆容细节是否与画面距离匹配，避免在普通半身或全身图中堆叠毛孔、粉底颗粒、油光和卡粉？
+- 面部、耳朵、颈部和肩部是否色调协调，没有偏黄、偏灰、面具感、显脏、显老或显疲惫？
+- 眼神光、镜片反射、唇部湿润高光及其他材质反光是否与当前场景主光一致，且没有遮挡眼神？

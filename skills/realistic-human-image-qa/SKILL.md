@@ -1,6 +1,6 @@
 ---
 name: realistic-human-image-qa
-description: Use this skill whenever the user asks for realistic human image generation, reference-guided generation, image-to-image/image2 work, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, multi-reference prompt merging, batch multi-image prompt output, or complete copy-paste image prompts with quality and physical-reality checks. Always apply this skill for 写实真人, 真人写真, 参考图生图, 参考生成图片, 图生图, 参考图生图提示词, 真人图片提示词获取, 真人写实生图, 真人写实提示词, 真人写实规则, 真人穿搭, 真人图片反推, 真人图片用途说明, 真人生图创作意图说明, 真人图误判风险, 非露骨表达, 合规时装摄影, 服装展示, 写实人物穿搭, 情绪写真, 泪目感写真, 小红书穿搭图, 反推参考图, image2写实融合, 摄影参数置信度, 成片观感反推, 生图效果评估测试, 手机自拍, 对镜自拍, 手持手机遮脸, 手机机型识别, 关键商品道具强约束, iPhone Pro Max, 多图输出硬性规则, 多图分镜清单, Image 1, Image 2, Image 3, 单次多图输出, 多参考图提示词整合, 多张参考图一次输出多张图片, 真人cos, cosplay, cos生图工作流, 拆解图上身图, 影子预告图, 同套造型连续组图, 角色服装一致性, 人物摆姿势, 人物插入背景, 局部重绘, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 完整提示词直接复制, 只输出最终提示词, 不要中间过程, 最终输出要求, GPT网页手机端生图工作流, 面容妆容细节, 发丝层次, 人物肌理, 摄影后期, 滤镜调色, 服装自然, or physical-reality prompt checks.
+description: Use this skill whenever the user asks for realistic human image generation, reference-guided generation, image-to-image/image2 work, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, multi-reference prompt merging, batch multi-image prompt output, or complete copy-paste image prompts with quality and physical-reality checks. Always apply this skill for 写实真人, 真人写真, 参考图生图, 参考生成图片, 图生图, 参考图生图提示词, 真人图片提示词获取, 真人写实生图, 真人写实提示词, 真人写实规则, 真人穿搭, 真人图片反推, 真人图片用途说明, 真人生图创作意图说明, 真人图误判风险, 非露骨表达, 合规时装摄影, 服装展示, 写实人物穿搭, 情绪写真, 泪目感写真, 小红书穿搭图, 反推参考图, image2写实融合, 摄影参数置信度, 成片观感反推, 生图效果评估测试, 手机自拍, 对镜自拍, 手持手机遮脸, 手机机型识别, 关键商品道具强约束, iPhone Pro Max, 多图输出硬性规则, 多图分镜清单, 单次多图输出, 多参考图提示词整合, 多张参考图一次输出多张图片, 真人cos, cosplay, cos生图工作流, 拆解图上身图, 影子预告图, 同套造型连续组图, 角色服装一致性, 人物摆姿势, 人物插入背景, 局部重绘, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 完整提示词直接复制, 只输出最终提示词, 不要中间过程, 最终输出要求, GPT网页手机端生图工作流, 面容妆容细节, 真实妆面, 皮肤层次, 眼神光, 镜片反射, 发丝层次, 人物肌理, 摄影后期, 滤镜调色, 服装自然, or physical-reality prompt checks.
 ---
 
 # Realistic Human Image QA Prompting
@@ -15,6 +15,7 @@ Use this skill for both prompt extraction and actual reference-guided image gene
 4. Keep negatives specific. Avoid huge generic negative blocks that may suppress normal hands, fabric folds, or body shape.
 5. If the user provides a source image, preserve its real-world geometry: viewpoint, floor plane, horizon, light direction, object scale, occlusion order, and contact shadows.
 6. When extracting from realistic person references, include face shape, jawline, eyes, gaze, brows, nose bridge, lips, lip color, blush, eye makeup, skin pores, hair layers, hair direction, fabric material, garment fit, pose force, light direction, focal-length feel, composition, depth of field, exposure, color temperature, film/phone feel, filter, color grading, grain, sharpening, and de-AI constraints.
+   Apply the `真实妆感轻量增强` rule below: overall attractiveness and reference identity come first; makeup fidelity comes second; subtle realism correction comes third. Never let pores, powder, oil shine, tonal variation, or a long negative list redesign the face or make it yellow, gray, dull, aged, tired, or dirty.
 7. If the user provides multiple reference images, first decide whether they want prompt extraction, one merged prompt, or image generation. If the user asks `分别生成 N 条 Final Copy Prompt`, `每张图一条`, `按图分别提取`, or `中间过程和细则都不要`, output one clean copyable text block: start with `【多图输出硬性规则｜最高优先级】`, then add `【语境声明】` only when useful, optional `【统一人物锚点】`, `【统一服装与造型】`, and `【统一场景与摄影风格】` when they improve consistency, then `【Final Copy Prompt 1】` through `【Final Copy Prompt N】`, `【质量约束】`, `【Shared Negative Prompt】`, and `【最终输出要求】`. Do not show `Shared Style Anchor`, `Reference Card`, `Merged Prompt Ingredients`, `Shared Style Enhancer`, `Optional Model Notes`, or one merged prompt unless explicitly requested.
 8. Do not leave the user with only categorized fragments. Every useful subject, face/makeup, hair, pose, wardrobe, scene, light, camera, post-production, quality, and negative constraint must be folded into the relevant `Final Copy Prompt`.
 9. For batch multi-image output, put shared English negatives once near the end in `【Shared Negative Prompt】`, then add `【最终输出要求】`. Do not repeat identical negatives inside every `Final Copy Prompt N` block.
@@ -446,6 +447,40 @@ For the user's fashion/emotional-portrait extraction workflow, make sure the fin
 
 If the reference carries emotional, tearful, vulnerable, cool, or cinematic feeling, add the emotional portrait enhancement inside the same `Final Copy Prompt`: watery eyes, slightly red outer corners, damp eyelashes, slightly red nose tip, gently pressed lips, restrained emotion, low-saturation tone, soft focus, film grain, shallow depth of field, foreground blur, cinematic light.
 
+### 真实妆感轻量增强
+
+Treat this as a local correction layer, never a full face-redesign module. Use this priority order: `整体美感定方向 → 忠实参考图妆容 → 少量真实质感修正 → 精简负面约束`.
+
+Priority and extraction rules:
+
+- First preserve the reference person's face shape, native eye size, temperament, age impression, complexion brightness, cool/warm skin direction, and clean social-media aesthetic. Do not sacrifice attractiveness or identity to prove skin realism.
+- Extract only makeup that is clearly visible: foundation brightness and undertone, blush color and placement, eye shadow/liner/lash form, lip color, and lip finish. Do not pile up cosmetic products, application steps, or unsupported micro-details.
+- Keep native eye size and lash styling as separate traits. False or enhanced lashes must not replace, enlarge, or redefine the person's original eye shape.
+- Use realism correction only to prevent a fully uniform face, plastic skin, flat makeup, dead eyes, dry plastic lips, or facial light disconnected from the environment. It must not change facial features, complexion direction, or overall makeup style.
+- The face may be naturally about half a stop brighter than the neck, but face, ears, neck, and shoulders must remain coordinated. Avoid yellow/gray cast, excessive whitening, mask-face separation, dullness, visible dirtiness, aged texture, and tired-looking shadows.
+- Preserve deliberate beauty filters, PS, soft focus, or bright smooth social retouching when present. Do not force roughness, freckles, acne marks, obvious pores, powder particles, oil shine, pigmentation, or foundation caking that the reference does not show.
+- Reflections must adapt to the real scene. Catchlights and highlights on eyes, glasses, lips, hair, jewelry, fabric, and glassware follow window light, café daylight, car flash, night direct flash, mirror lighting, or the actual visible source; they must not become a fixed generic reflection phrase.
+
+Control makeup detail by image distance:
+
+- Face close-up or close half-body portrait: when clearly visible, describe foundation undertone, eye-shadow gradient, liner, mascara/lash form, lip texture, and only very slight skin/makeup texture.
+- Ordinary half-body portrait: describe foundation tone, blush, eye makeup, lashes, lip color/shine, catchlight, and soft facial light; do not emphasize pores, foundation particles, oil shine, or caking.
+- Full-body street photo, pool/beach wide shot, or distant image: use only `清透真实妆感、自然肤色层次、不过度磨皮`; omit microscopic makeup and skin terms.
+- Unclear, compressed, occluded, or strongly retouched face: stay conservative and do not invent details.
+
+Integration and complexity rules:
+
+- In a multi-image set with the same person and makeup, write the stable face/makeup direction once in `【统一人物锚点】`. Each `【Final Copy Prompt N】` adds only its expression and scene-specific light/reflection differences; do not repeat foundation, blush, eye shadow, lashes, and lip makeup in every prompt.
+- In single-image output, blend one concise makeup sentence into `【Final Copy Prompt】`; do not expose this module as a separate output section.
+- Keep the makeup description to four ideas whenever possible: base color/finish, eye makeup/lashes, blush/lip color, and realistic light with slight skin layering.
+- Add only the shortest relevant makeup check to `【质量约束】`. Use one compact negative set in `【Separate Negative Prompt】` or one deduplicated `【Shared Negative Prompt】`; do not add dozens of synonyms.
+
+Default lightweight module, adapted to the reference rather than pasted verbatim:
+
+```text
+人物面容首先保持参考图的整体审美方向、肤色明度、冷暖倾向和年轻精致感，不因增加皮肤细节而改变人物气质或降低整体美感。底妆采用与参考图一致的明度和底调，呈轻薄、清透、细腻的妆效；面部可比颈部自然提亮约半档，但面部、耳朵、颈部和肩部色调协调，不偏黄、不偏灰、不过度惨白、不形成面具感。根据参考图保留适度的腮红、眼影、眼线、睫毛和唇妆层次，人物原生眼睛大小与睫毛造型分开表达，假睫毛不替代人物原生眼型。皮肤整体以白皙、清透、自然好看为主，只保留轻微肤色变化和柔和明暗层次；近距离画面可见极轻微皮肤与妆面质感，普通半身及全身画面不刻意强调毛孔、粉底颗粒、油光、色斑或卡粉。颧骨、鼻梁、眼球、唇部和头发上的高光与环境主光一致；鼻翼、唇周、眼窝和下颌保留柔和暗部，但不让脸部显脏、显黄、显老或显疲惫。
+```
+
 ### Unsupported or unreadable references
 
 If the image is unsupported, unavailable, or too unclear to inspect, do not fill in imagined face, outfit, pose, or scene details. Reply briefly that the reference cannot be extracted reliably and ask for a JPG, PNG, WEBP, or a short visual description. If only part of the image is readable, extract only visible details and mark the missing detail as unspecified.
@@ -551,6 +586,14 @@ swimwear structure errors, broken bikini straps, duplicated straps, missing stra
 
 ```text
 asymmetrical face, distorted face, misplaced eyes, extra teeth, melted lips, hair fused with face, hair fused with fingers, earrings fused to skin, glasses fused to face, accessories floating, accessories merging with clothing
+```
+
+### Lightweight makeup artifacts
+
+Use only the compact block below when makeup correction is relevant. Do not expand it with near-synonymous pore, powder, roughness, reflection, or retouching terms unless the current image has that specific failure.
+
+```text
+overly uniform skin tone, plastic skin, wax skin, excessive beauty filter, flat makeup, painted-on makeup, fake white mask face, yellow or gray facial cast, dull complexion, dead eyes, no catchlight, plastic lips, flat facial lighting
 ```
 
 ### Phones and named product props
@@ -730,6 +773,10 @@ Before returning a prompt, check whether it answers these:
 - How does clothing respond to the pose?
 - Does the camera perspective match the background?
 - Are face, makeup, hair, skin texture, fabric material, and garment fit described beyond generic beauty words?
+- Does the face preserve the reference's attractiveness, identity, native eye size, complexion brightness, cool/warm direction, and age impression before adding subtle makeup realism?
+- Is makeup detail calibrated to image distance—micro-detail only for close-ups, normal makeup structure for half-body portraits, and only a clean natural makeup impression for full-body or distant images?
+- Are face, ears, neck, and shoulders tonally coordinated without yellow/gray cast, mask-face separation, dullness, aging, dirtiness, or tired-looking shadows?
+- Do eye catchlights, glasses glare, lip moisture, facial highlights, jewelry, hair, fabric, and reflective props follow the actual scene light instead of a fixed reflection phrase?
 - Are the light direction, focal-length feel, crop, exposure, color temperature, filter, color grading, grain, and sharpening/de-AI constraints clear?
 - If the source is a screenshot or video frame, have UI, subtitles, buttons, product bars, watermarks, and logos been excluded?
 - For cos workflows, do the outfit breakdown and worn-character prompts preserve the same costume, wig, headpiece, accessories, embroidery, collar, sleeve shape, exposed-skin structure, color palette, and character motifs?
