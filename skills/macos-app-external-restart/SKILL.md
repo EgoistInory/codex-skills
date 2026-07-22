@@ -38,6 +38,10 @@ changes unless the user explicitly asks and understands the risk.
   restart/test helper processes remain.
 - Keep logs in `/private/tmp` until verification is complete, then remove them
   if the user asks for a clean machine state.
+- Treat `Codex` and `ChatGPT` as compatible host names. The helper detects which
+  host is running; if neither is running, it prefers the current
+  `/Applications/ChatGPT.app` and falls back to the legacy
+  `/Applications/Codex.app`.
 
 ## Recommended Script
 
@@ -58,6 +62,10 @@ Then submit the restart:
 ```bash
 scripts/restart-macos-app-via-launchd.sh --app Codex --delay 8
 ```
+
+The command reports both `requested_app` and `effective_app`. For example,
+`--app Codex` can correctly report `effective_app=ChatGPT` after the desktop
+apps have been consolidated.
 
 The command returns immediately after handing the job to `launchd`. The current
 session may disconnect if it is inside the app being restarted.

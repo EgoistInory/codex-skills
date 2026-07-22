@@ -63,7 +63,32 @@ if ! [[ "${DELAY_SECONDS}" == <-> ]]; then
   exit 2
 fi
 
-APP_PATH="$(/usr/bin/osascript -e "POSIX path of (path to application \"${APP_NAME}\")" 2>/dev/null || true)"
+REQUESTED_APP_NAME="${APP_NAME}"
+
+# Codex desktop is now distributed inside ChatGPT.app, while older Codex.app
+# installations can still be active. Restart the running host first; when
+# neither host is running, prefer the current ChatGPT app if it is installed.
+if [[ "${APP_NAME}" == "Codex" || "${APP_NAME}" == "ChatGPT" ]]; then
+  CODEX_RUNNING="$(/usr/bin/osascript -e 'application "Codex" is running' 2>/dev/null || echo false)"
+  CHATGPT_RUNNING="$(/usr/bin/osascript -e 'application "ChatGPT" is running' 2>/dev/null || echo false)"
+
+  if [[ "${CHATGPT_RUNNING}" == "true" ]]; then
+    APP_NAME="ChatGPT"
+  elif [[ "${CODEX_RUNNING}" == "true" ]]; then
+    APP_NAME="Codex"
+  elif [[ -d "/Applications/ChatGPT.app/Contents" ]]; then
+    APP_NAME="ChatGPT"
+  elif [[ -d "/Applications/Codex.app/Contents" ]]; then
+    APP_NAME="Codex"
+  fi
+fi
+
+APP_PATH=""
+if [[ -d "/Applications/${APP_NAME}.app/Contents" ]]; then
+  APP_PATH="/Applications/${APP_NAME}.app/"
+else
+  APP_PATH="$(/usr/bin/osascript -e "POSIX path of (path to application \"${APP_NAME}\")" 2>/dev/null || true)"
+fi
 APP_CONTENTS=""
 if [[ -n "${APP_PATH}" && -d "${APP_PATH%/}/Contents" ]]; then
   APP_CONTENTS="${APP_PATH%/}/Contents"
@@ -83,6 +108,8 @@ RUNNER_LOG="${BASE}.runner.log"
 LABEL_FILE="${BASE}.label"
 
 echo "label=${LABEL}"
+echo "requested_app=${REQUESTED_APP_NAME}"
+echo "effective_app=${APP_NAME}"
 echo "worker=${WORKER}"
 echo "log=${LOG_FILE}"
 echo "runner_log=${RUNNER_LOG}"
