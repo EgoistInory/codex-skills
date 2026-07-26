@@ -1,6 +1,6 @@
 ---
 name: fanqie-novel-workflow
-description: Use for generic Fanqie/番茄小说 webnovel production workflows, including high-quality chapter drafting, chapter quality control, pre-draft payoff ledgers, quote-based native-Chinese line editing, canon/setting consistency, project onboarding, chapter continuation, state and handoff updates, pure-text Markdown validation, native Chinese prose-sense checks, translationese avoidance, anti-template/anti-empty-expression craft checks, lived-in character detail checks, type-bridge borrowing constraints, low-quality-governance iteration, publish-ready Fanqie TXT export, and coordinating relevant fiction-craft skills such as 爽文, 热梗, 选题, 大纲, 润色, and platform-style guidance. Use when a user is writing, maintaining, checking, or preparing a Chinese webnovel for Fanqie-style publication.
+description: Use for generic Fanqie/番茄小说 webnovel production workflows, including high-quality chapter drafting, chapter quality control, pre-draft payoff ledgers, quote-based native-Chinese line editing, canon/setting consistency, multi-book creative isolation, genre-register and world-language checks, scene embodiment, project onboarding, chapter continuation, state and handoff updates, pure-text Markdown validation, translationese avoidance, anti-template/anti-empty-expression craft checks, lived-in character detail checks, type-bridge borrowing constraints, low-quality-governance iteration, publish-ready Fanqie TXT export, and coordinating fiction-craft skills such as 爽文, 热梗, 选题, 大纲, 润色, and platform-style guidance. Use when a user is writing, maintaining, checking, or preparing a Chinese webnovel for Fanqie-style publication.
 ---
 
 # 番茄小说通用工作流
@@ -33,12 +33,14 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 │       └── .story-system/
 ```
 
-可替换为单书结构；关键是把正文、设定、大纲、状态、审查记录和导出物料分开维护。
+可替换为单书结构；关键是把正文、设定、大纲、状态、审查记录和导出物料分开维护。若项目用 `chapters` 等兼容链接指向正文事实源，保留链接关系，不复制第二套正文。
+
+多书项目中，每本书必须维护独立的正文、设定、大纲、状态、审查记录和机器记忆。可以共享纯文本、校验、导出、审稿和同步流程，但不要共享角色、能力、制度、专有词、关系模型、标志性冲突或习惯性比喻。
 
 ## 入口步骤
 
 1. 从项目根开始，先读项目协作规则，例如 `AGENTS.md`。
-2. 确认目标书籍目录；多书项目必须先确定是哪一本。
+2. 根据用户当前任务和项目入口确认目标书籍目录；多书项目不能沿用旧会话中的默认书籍，也不能因仓库里另一本书更成熟就误读其上下文。
 3. 检查工作树状态，识别用户已有改动，不回滚、不覆盖无关文件。
 4. 在目标书籍目录内执行写作、审校和导出命令；在项目根执行 Git 命令。
 
@@ -50,13 +52,15 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 2. 当前状态：`CURRENT_STATUS.md`
 3. 交接记录：`HANDOFF.md`
 4. 总纲、卷纲、章纲
-5. 相关设定：世界观、角色、力量体系、势力、时间线、伏笔表
+5. 相关设定：世界观、角色、力量体系、势力、时间线、伏笔表、语体与用词规范、世界观隔离规则
 6. 机器状态：`.webnovel/state.json`、`.story-system/MASTER_SETTING.json` 或同类文件
 7. 最近 1-3 章正文
 8. 当前章节对应章纲
 9. 当前阶段的时间线、节拍表或阶段规划文件
 
 若旧聊天记录与项目事实源冲突，以项目文件为准。
+
+多书项目默认只读取目标书籍的创作事实源。除非用户明确要求比较、迁移或审查跨书污染，不读取其他书籍正文来生成当前书的场景、对白、人物关系、能力效果或破局方式。
 
 ## 项目框架扫描与持续迭代
 
@@ -156,6 +160,16 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 - 章末悬念要自然来自剧情压力、人物选择、秘密揭露、危机升级、反派行动、能力异变或情绪爆点，不机械断章。
 - 可在恰当时机使用网络梗、流行语、谚语、成语、古诗词、神话传说或原创口头梗增加趣味，但必须贴合人物身份、时代语境和场景情绪；梗只能点亮人物或冲突，不能替代剧情推进。
 
+### 场景血肉与节奏
+
+- 每个主要场景先确认人物想要什么、正受什么阻碍、压着什么情绪，以及冲突会逼他作出什么选择。描写必须服务这些问题，不能把章纲扩写成事件清单。
+- 让对白、动作、心理、神态、感官和环境彼此牵动并影响下一步选择；不要把人物写成执行剧情指令的工具。
+- 按场景选择最有效的两三种表现手段，不要求每段同时包含动作、心理、神态、环境和修辞，也不按“动作一句、心理一句、神态一句、环境一句”机械轮排。
+- 同一情绪已经由动作、身体反应或对白潜台词表现后，不再由心理和旁白重复解释。情绪高点应有蓄积、触发、选择和余波。
+- 环境必须参与人物感受、剧情推进、氛围营造或信息暗示，例如遮挡视线、改变距离、暴露来路、逼停一句话或勾起记忆；不做静态陈设清单。
+- 让节奏随情节变化：紧张场景偏短句、停顿、动作因果和较高对白密度；情绪场景允许递进、回旋、沉默和留白；日常场景用饮食、衣物、劳作、伤痛与小习惯增加生活质感。
+- 验收标准不是描写数量，而是读者能否感到人物正在现场经历事件，并理解其情绪、选择、关系变化和代价。
+
 ## 中文原生语感与翻译腔治理
 
 正文要按中文写作创作来处理，不把英文提示词、英文句法或外语叙事习惯简单翻译成中文。语义能懂还不够，读起来必须像中文网文正文：顺耳、贴切、有落点。先想“这个人物在这个场景里会怎么说、中文读者会怎么听”，再落笔。
@@ -182,6 +196,17 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 - 生硬本地化：不要把外语习语硬翻成中文，不要把现代网络梗贴到不该使用它的时代、阶层、职业或严肃场景里，也不要写“会咬人的虫”这类读者能懂但中文搭配别扭的比喻。
 - 过度纠错：不要把项目内稳定术语改成现实世界更常见的词，也不要为了“去 Markdown”删除中文标点、系统提示块或短段落。
 
+### 题材语域与世界内表达
+
+自然中文不等于现代都市中文。写前从项目简介、世界观、人物卡、语体规范和近期正文确认本书的题材语域、叙事距离、制度表达、名物来源和人物语言边界。
+
+- 把旁白当作故事与当代读者之间的桥。旁白可以使用清楚、普通、自然的现代汉语快速交代行动，但不能整段落入项目复盘、职场汇报、商品运营、网络评论或现实行政机构的思路和腔调。
+- 人物对白、价值判断、称呼、比喻和制度表达要属于人物所在的世界与身份。古代、仙侠或架空题材中的制度优先落到该世界的名物、规则、器物、责罚和实际得失；现代、科幻或都市题材则遵守各自语域。
+- 不做脱离语境的词表封禁。某个现代常用词若准确、顺口且不破坏沉浸感可以保留；真正需要改的是连续堆叠后让世界变成现代公司、产品文档、新闻评论或现实机构的表达方式。
+- 不为追求古意把所有对白改成半文半白，也不为避开常用词制造拗口的新词。清楚、顺口、准确优先，题材质感来自名物、人物思路、动作后果和稳定语境。
+- 母语点名审稿除搭配与节奏外，还要检查名物称呼、对白思路、人物价值判断、比喻来源、制度表达和叙事总结是否属于当前世界。
+- 新书不得沿用其他书籍的话语习惯。新增术语先检查现实中文读者能否从现场动作、器物或后果直接理解，再恢复题材质感；若必须先猜定义，说明术语仍未落地。
+
 ## 类型桥段借鉴与表达调味
 
 可以借鉴成熟网文的类型技法，但只借“桥段功能、爽点结构、节奏模型、人物关系张力和危机兑现方式”。
@@ -199,6 +224,7 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 - 让桥段服务本书已有金手指、世界观、人物关系和伏笔，不让外部模板覆盖项目事实。
 - 近年热门作品、平台榜单或读者讨论如需纳入参考池，必须先联网核对当前热度和作品信息，再只提炼可通用技法。
 - 网络梗、流行语、成语、古诗词、神话典故和原创口头梗只作人物声音与冲突调味；严肃压迫场景慎用，不能替代剧情推进，也不能让所有角色变成同一种评论区口吻。
+- 多书仓库只共享上述转译方法，不把其他书籍正文、专有设定、关系模型或标志性解法当作当前书的素材库。
 
 ## 反模板化与人物细节
 
@@ -313,6 +339,12 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 27. 抽样正文是否存在“读起来别扭”的句子；即使逻辑成立，也要检查中文惯用搭配、人物口吻、生活经验和场景情绪。
 28. 是否把项目稳定术语误判为错字，或把真正的少字错句、重复口语和标点收束问题放过。
 29. 系统提示句后紧接提示块时，是否用冒号、停顿或自然动作收束，避免提示语和提示块生硬相撞。
+30. 名物、对白思路、人物价值判断、比喻来源、制度表达和叙事总结是否属于当前作品的题材语域与世界，而不是借用了另一类题材的整套思路。
+31. 是否把语域审查做成了机械禁词替换；通俗词是否结合上下文判断，改写后是否仍清楚、顺口、准确。
+32. 主要场景是否围绕人物目标、阻碍、情绪和选择推进；是否又把章纲扩写成“到场 -> 说明 -> 执行 -> 公布结果”的事件清单。
+33. 是否机械凑齐动作、心理、神态、环境和修辞，或用对白、心理、旁白连续重复同一情绪。
+34. 环境是否真正改变人物感受、动作、距离或信息；紧张、情绪、日常场景的句长、停顿、对白密度和留白是否有变化。
+35. 多书项目是否混入其他书籍的角色、能力、制度、专有词、关系模型、提示格式、标志性冲突或习惯性比喻。
 
 若项目提供审查脚本，优先运行项目脚本。若脚本支持不导出发布包的轻量自检模式，例如 `--skip-export`，日常续写优先使用轻量自检；没有脚本时，可用等价命令检查字符数、Markdown 标记、UTF-8 编码和状态文件解析。
 
