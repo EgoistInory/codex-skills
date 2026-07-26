@@ -1,6 +1,6 @@
 ---
 name: realistic-human-image-qa
-description: Use this skill whenever the user asks for realistic human image generation, reference-guided generation, image-to-image/image2 work, photoreal portraits, full-body photos, fashion/editorial people shots, pose-heavy人物生图, reference-image prompt extraction, multi-reference prompt merging, batch multi-image prompt output, or complete copy-paste image prompts with quality and physical-reality checks. Always apply this skill for 写实真人, 真人写真, 参考图生图, 参考生成图片, 图生图, 参考图生图提示词, 真人图片提示词获取, 真人写实生图, 真人写实提示词, 真人写实规则, 真人穿搭, 真人图片反推, 真人图片用途说明, 真人生图创作意图说明, 真人图误判风险, 非露骨表达, 合规时装摄影, 服装展示, 写实人物穿搭, 情绪写真, 泪目感写真, 小红书穿搭图, 反推参考图, image2写实融合, 摄影参数置信度, 成片观感反推, 生图效果评估测试, 手机自拍, 对镜自拍, 手持手机遮脸, 手机机型识别, 关键商品道具强约束, iPhone Pro Max, 多图输出硬性规则, 多图分镜清单, 单次多图输出, 多参考图提示词整合, 多张参考图一次输出多张图片, 真人cos, cosplay, cos生图工作流, 拆解图上身图, 影子预告图, 同套造型连续组图, 角色服装一致性, 人物摆姿势, 人物插入背景, 局部重绘, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 完整提示词直接复制, 只输出最终提示词, 不要中间过程, 最终输出要求, GPT网页手机端生图工作流, 面容妆容细节, 真实妆面, 皮肤层次, 眼神光, 镜片反射, 发丝层次, 人物肌理, 摄影后期, 滤镜调色, 服装自然, or physical-reality prompt checks.
+description: Use this skill for realistic human image generation, reference-guided generation, image-to-image/image2, photoreal portraits, fashion/editorial people shots, pose-heavy人物生图, reference prompt extraction, multi-reference merging, batch multi-image prompts, aesthetic-direction calibration, tattoo reference or placement calibration, and copy-paste prompts with physical-reality QA. Apply it for 写实真人, 真人写真, 参考图生图, 图生图, 真人图片提示词获取, 真人写实提示词, 真人穿搭, 真人图片反推, 审美方向校准, 风格方向把控, 参考图作用分工, 纹身图参考, 纹身设计还原, 纹身位置校准, 非露骨表达, 合规时装摄影, 服装展示, 情绪写真, 小红书穿搭图, 反推参考图, image2写实融合, 摄影参数置信度, 成片观感反推, 生图效果评估测试, 手机自拍, 对镜自拍, 手机机型识别, 关键商品道具强约束, 多图输出硬性规则, 多参考图提示词整合, 真人cos, cosplay, 同套造型连续组图, 角色服装一致性, 人物摆姿势, 人物插入背景, 局部重绘, 手指修复, 二郎腿, 全身照, 半身照, 泳装写真, 海边写真, 完整提示词直接复制, 只输出最终提示词, 面容妆容细节, 真实妆面, 皮肤层次, 发丝层次, 人物肌理, 摄影后期, 滤镜调色, or physical-reality prompt checks.
 ---
 
 # Realistic Human Image QA Prompting
@@ -34,6 +34,9 @@ Use this skill for both prompt extraction and actual reference-guided image gene
 22. Treat prompt extraction, prompt writing, actual image generation, image-to-image/reference-guided generation, and repair/iteration as sibling modes of the same skill. Do not narrow the skill to extraction only.
 23. If the user asks to generate or edit the image itself and an image-generation tool is available, use these rules to build and QA the prompt internally, then perform the generation/edit. Do not stop at a prompt-only answer unless the user asks for the prompt text.
 24. For both single-image and multi-image prompt delivery, place all model-facing sections inside one `text` code block so the user can copy once. Do not put `【语境声明】`, shared anchors, individual `Final Copy Prompt` sections, quality constraints, and negative prompts into separate code blocks.
+25. In prompt-extraction delivery, treat the uploaded image as internal evidence and make the final text independently executable. Replace phrases such as `忠于参考图`, `按参考图`, `保持原图效果`, or `若参考图存在` with concrete visible facts about subject, styling, pose, scene, light, camera, and post-production. In actual image2/reference-guided execution, the attached reference may remain an active constraint because the generation tool receives it.
+26. Apply named subject presets such as `亚洲1号` or `亚洲2号` only when the user explicitly requests one, or when an established preset definition is already present and the reference clearly matches it. Otherwise describe the visible person; never silently replace the reference subject with a preset.
+27. When the face is cropped, phone-obscured, unreadable, distant, or strongly retouched, do not spend prompt budget inventing facial or makeup details. Prioritize body proportions, hair silhouette, outfit construction and material, pose, scene, camera, and light.
 
 ## Reference-guided generation and repair mode
 
@@ -44,6 +47,24 @@ When the user supplies one or more references for actual generation, use the sam
 - For hand repair, crossed legs, shallow water, background insertion, or complex occlusion, use the pose-specific and repair guidance later in this skill; recommend or use masking, reference pose, OpenPose, Depth, ControlNet, or inpainting when the target workflow supports them.
 - If the user requests several generated images, keep shared identity/style anchors and per-image differences separate. Respect the actual image tool's output limits; use separate generation calls when one call cannot return the requested count.
 - After generation, inspect the result when the tool or workflow exposes it. Check identity drift, anatomy, hands, clothing structure, contact shadows, reflections, perspective, and reference fidelity before claiming success.
+
+## Reference roles and aesthetic-direction calibration
+
+Before extraction, generation, repair, or aesthetic QA, assign each reference one or more roles:
+
+- identity, face, and makeup
+- outfit, fit, material, and accessories
+- pose, contact, and body geometry
+- scene, composition, and spatial hierarchy
+- light, camera, post-production, and finished-image mood
+- tattoo or graphic motif, placement, and skin integration
+- overall aesthetic direction only
+
+Choose a primary reference for subject/composition and treat the others as scoped supplements. A secondary lighting, styling, tattoo, or mood reference must not overwrite the primary person's identity, pose, or scene unless the user asks for that transfer.
+
+When the user asks to `把控方向` or `校准审美`, compare the proposed prompt or generated result against the reference's visual hierarchy: what attracts attention first, the balance between face/body/outfit/environment, color and material relationships, crop, negative space, realism level, and whether the image still feels like the requested photographic genre. Do not force a full extraction template when a short direction/QA answer is the useful deliverable.
+
+For tattoo references, treat the image as design and placement evidence unless it is also explicitly the subject reference. Extract motif, style such as fine-line/blackwork/color realism, line weight, shading, density, orientation, size relative to anatomical landmarks, placement, curvature, negative space, clothing occlusion, and foreshortening. During generation or QA, require the tattoo to follow skin perspective and muscle curvature rather than look like a flat sticker; prevent mirrored or duplicated motifs, keep scale and placement consistent across a set, and preserve correct occlusion under clothing.
 
 ## Template decision: fused single-image, independent multi-image
 
@@ -68,7 +89,13 @@ Use this mode when the user uploads several references and asks to extract promp
 Rules:
 
 - Output one complete Chinese `Final Copy Prompt` per reference image, numbered in the same order as the images: `【Final Copy Prompt 1】`, `【Final Copy Prompt 2】`, etc.
-- Each prompt must stand alone. Fold the relevant face, makeup, skin texture, hair, wardrobe, pose, scene, camera, post-production, quality, and physical-reality constraints into that prompt.
+- First group the references instead of copying the full single-image template N times:
+  - same person, styling, and scene: write scoped shared person/outfit/scene/photo anchors once;
+  - same person with multiple outfits: write one person anchor and separate outfit anchors such as `造型 A｜适用于 1—3`;
+  - multiple people: use scoped person anchors such as `人物 A｜适用于 1—2`;
+  - heterogeneous references: keep the details inside each prompt and do not force a global anchor.
+- Inside one complete copy block, each prompt may inherit only the shared anchors whose heading explicitly states its applicable prompt range. If the prompts will be split into separate calls, expand the needed shared anchors into each split prompt at that time so it remains standalone.
+- Keep each per-image prompt complete for its actual differences: pose, expression, hand/prop relationship, crop, composition, and scene-specific light. Do not repeat unchanged makeup, clothing, or scene paragraphs just to make the batch longer.
 - Do not output `Shared Style Anchor`, `Reference Card`, `Merged Prompt Ingredients`, `Shared Style Enhancer`, `Optional Model Notes`, or a single merged `Final Copy Prompt` unless the user explicitly asks for analysis, cards, or one merged image.
 - Start with `【多图输出硬性规则｜最高优先级】` and repeat the count rule at `【最终输出要求】`.
 - Add `【语境声明】` only when it helps avoid misclassification or clarify legitimate use. Add `【统一人物锚点】`, `【统一服装与造型】`, and `【统一场景与摄影风格】` only when the references share the same person, outfit/styling, scene, or finished-image mood.
@@ -83,7 +110,7 @@ Default extraction format:
 下方内容是 N 张图片的独立提示词清单，不是一张图的综合描述。
 请严格按照【Final Copy Prompt 1】到【Final Copy Prompt N】分别生成。
 每个 Final Copy Prompt 对应 1 张完整成图。
-禁止宫格、拼图、分屏、上下拼接、左右拼接、海报排版、合成一张。
+禁止把不同 Final Copy Prompt 合并成宫格、拼图、分屏、上下拼接、左右拼接或海报排版；若某一张参考图本身就是有意设计的双画面/视频分屏结构，且对应提示词明确要求保留，则仅该编号允许生成一张同结构的独立成图。
 禁止只输出 1 张。
 
 【语境声明】
@@ -126,8 +153,9 @@ Rules:
 - State the exact count: `本次任务必须输出 N 张独立图片，不是 1 张`.
 - State that the following content is an independent prompt list, not a single merged description.
 - Use `【Final Copy Prompt 1】`, `【Final Copy Prompt 2】`, `【Final Copy Prompt 3】` headings by default. Use `Image 1..N` only when the user or target tool explicitly asks for Image storyboard labels.
-- Separate shared anchors from per-image differences: shared person, makeup, outfit, scene system, photography style, and negative prompt go in unified blocks; each `Final Copy Prompt N` contains the full prompt for that image.
-- End with `【最终输出要求】` and repeat that the output must contain N independent images, one Final Copy Prompt per completed picture, with no missing images, collage, grid, split screen, stitching, poster layout, or merged canvas.
+- Separate shared anchors from per-image differences: shared person, makeup, outfit, scene system, photography style, and negative prompt go in scoped unified blocks; each `Final Copy Prompt N` contains its complete image-specific action, expression, prop, crop, composition, and light differences and inherits only anchors explicitly scoped to it.
+- End with `【最终输出要求】` and repeat that the output must contain N independent images, one Final Copy Prompt per completed picture, with no missing images or cross-prompt merging.
+- Default to no collage, grid, split screen, stitching, poster layout, or merged canvas. Exception: if one source reference is itself an intentional composite/video split and fidelity requires preserving it, name the allowed prompt index and exact structure in the opening hard rule. That prompt still produces one independent image; it does not authorize combining different prompts.
 - If the target product only supports one image per call, say that text prompts can improve intent clarity but cannot bypass product output limits; the stable workflow is to split the `Final Copy Prompt N` blocks into separate calls or use a model/API with batch `n` support.
 - If a model keeps returning only one image, do not keep lengthening a single fused prompt. Split the `Final Copy Prompt N` blocks into separate calls, or use an API/model setting that explicitly supports multiple images.
 
@@ -137,7 +165,7 @@ Use the canonical count-first template in `Multi-reference final-only extraction
 
 Use this module when the user asks to `反推参考图`, recover a prompt from a finished image, run image-to-image/image2, or test whether a generated prompt can reproduce the final reference-image look.
 
-Core rule: the prompt must obey the reference image. Do not redesign the person, outfit, pose, scene, or composition. Strengthen realism, face specificity, skin texture, clothing material, human-environment integration, camera/final-image feel, and removal of UI/watermark/screenshot artifacts.
+Core rule: internally obey the reference image. Do not redesign the person, outfit, pose, scene, or composition. For a standalone extracted prompt, convert that fidelity into explicit visual facts rather than leaving model-facing phrases that depend on access to the reference. For actual image2 execution, the attached reference may remain an active constraint. Strengthen realism, face specificity, skin texture, clothing material, human-environment integration, camera/final-image feel, and removal of UI/watermark/screenshot artifacts.
 
 First classify the likely source before writing the prompt:
 
@@ -173,7 +201,7 @@ Single-image reverse prompt format:
 
 ```text
 【Final Copy Prompt】
-生图效果评估测试：生成一张[aspect/framing]写实真人照片，不保留任何平台界面、按钮、头像、字幕、时间、电量栏、水印、黑边和截图边框。画面以参考图最终成片观感为准，不重新设计人物、服装、场景和构图，只强化写实质感、人物与环境融合、皮肤肌理、衣物材质和摄影成片细节。[then write subject, face, hair, outfit, pose, scene integration, photography-confidence details, and quality constraints in Chinese]
+生图效果评估测试：生成一张[aspect/framing]写实真人照片，不保留任何平台界面、按钮、头像、字幕、时间、电量栏、水印、黑边和截图边框。[write every observed subject, face, hair, outfit, pose, scene, composition, lighting, photography-confidence, post-production, and quality fact explicitly in Chinese; do not leave reference-dependent shorthand]
 
 【质量约束】
 [Chinese quality constraints for realism, anatomy, material, contact, light, perspective, post-production, and named product/prop fidelity]
@@ -399,6 +427,14 @@ For outdoor scenes:
 
 - natural sun direction, ground contact, atmospheric perspective, realistic wind effect on hair and fabric
 
+Use ordinary photographic lighting description in every prompt, but add an explicit `【光影气氛增强模块】` only when lighting is a major recognition or aesthetic feature: sunset side/backlight, direct flash, neon/stage/car light, water reflections, strong window or leaf shadows, or distinct mixed-color zones.
+
+- Do not trigger the module merely because lamps or windows are visible.
+- Invisible artificial sources may be inferred only when their illumination, reflection, or color cast is clearly visible in the finished image.
+- Describe observed results—exposure level, high/low key, contrast, color temperature, subject/background brightness, shadow softness, reflection, bloom, phone/video/studio finish—not speculative lighting equipment.
+- Keep enhancement low-strength. Do not turn a dim no-main-light interior into a fully illuminated render or intensify artificial light beyond the reference aesthetic.
+- In pure-text extraction, state the actual lighting result directly rather than saying `保持参考图光影`.
+
 ### Swimwear, beach, and shallow-water scenes
 
 When the scene includes beaches, pools, shallow water, or swimwear, add both aesthetic and physics constraints:
@@ -487,17 +523,19 @@ If the image is unsupported, unavailable, or too unclear to inspect, do not fill
 
 ### Platform screenshot and video-frame cleanup
 
-For 小红书, 抖音, TikTok, Instagram, video screenshots, livestream frames, product pages, or phone screenshots, preserve the useful photographic content but strip app UI from the final prompt. Do not ask the model to recreate subtitles, usernames, avatars, product bars, buttons, page indicators, screenshot borders, watermarks, logos, or interface text. Add these risks to the English negative prompt when relevant:
+For 小红书, 抖音, TikTok, Instagram, video screenshots, livestream frames, product pages, or phone screenshots, preserve the useful photographic content but strip app UI from the final prompt. Do not ask the model to recreate subtitles, usernames, avatars, product bars, buttons, page indicators, screenshot borders, platform watermarks, or interface text. Preserve a legitimate product logo only when the user requests it or it is a clearly identifiable, fidelity-critical brand detail. Add these unwanted risks to the English negative prompt when relevant:
 
 ```text
-subtitle, caption text, social media UI, platform UI, product bar, app buttons, username, avatar, page indicator, screenshot border, watermark, text, logo
+subtitle, caption text, social media UI, platform UI, product bar, app buttons, username, avatar, page indicator, screenshot border, platform watermark, unwanted text, malformed logo
 ```
 
-For a set of references, preserve consistent style anchors and vary only pose/framing details. A useful shared style tail is:
+For a set of references, preserve consistent style anchors and vary only pose/framing details. Build the style tail from observed facts instead of pasting a universal shallow-depth portrait look:
 
 ```text
-高清写实摄影质感，真实皮肤纹理，柔和自然光，浅景深，轻微胶片颗粒，构图干净，主体清晰锐利，背景自然虚化，光影细腻，具有高级人像摄影质感，画面中不要出现水印、文字或 logo。
+高清写实摄影质感，真实皮肤纹理，[observed light and exposure]，[observed depth of field/background readability]，[observed phone/video/film texture]，构图与参考用途一致，主体和环境细节层级自然，画面中不要出现平台水印、界面文字或无关标识。
 ```
+
+Do not add shallow depth of field or background blur mechanically. When architecture, landscape, a room, or environmental storytelling is important, keep the background readable with realistic depth.
 
 ## Multi-reference integration workflow
 
@@ -598,8 +636,10 @@ overly uniform skin tone, plastic skin, wax skin, excessive beauty filter, flat 
 
 ### Phones and named product props
 
+When a legitimate brand/product identity is requested or clearly fidelity-critical, preserve its visible logo/icon placement, size, finish, orientation, construction, and occlusion. Infer an exact product model only at the supported confidence level; do not invent a SKU. Remove generic `logo` negatives that would suppress the requested branding, and target only platform watermarks, unrelated text, or malformed branding.
+
 ```text
-wrong phone model, orange phone case, generic smartphone, incorrect camera layout, wrong lens placement, deformed phone, melted phone edges, fake phone case, inaccurate iPhone body color, wrong product color, wrong product model, generic product, distorted logo, readable logo text, distorted reflection, bad hand grip, fingers fused with phone, phone fused with face
+wrong phone model, orange phone case, generic smartphone, incorrect camera layout, wrong lens placement, deformed phone, melted phone edges, fake phone case, inaccurate iPhone body color, wrong product color, wrong product model, generic product, distorted logo, duplicated logo, misplaced logo, unrelated text, distorted reflection, bad hand grip, fingers fused with phone, phone fused with face
 ```
 
 ### Cosplay continuity and costume accuracy
@@ -781,5 +821,11 @@ Before returning a prompt, check whether it answers these:
 - If the source is a screenshot or video frame, have UI, subtitles, buttons, product bars, watermarks, and logos been excluded?
 - For cos workflows, do the outfit breakdown and worn-character prompts preserve the same costume, wig, headpiece, accessories, embroidery, collar, sleeve shape, exposed-skin structure, color palette, and character motifs?
 - For reverse-reference/image2 workflows, did you classify source type, apply photography-parameter confidence, avoid invented exact camera data, extract post-production/platform traces, keep named products/props accurate, and keep the prompt obedient to the reference rather than redesigning it?
+- For standalone extraction, did you replace reference-dependent shorthand with explicit visual facts?
+- For multiple references, are shared anchors scoped to the correct prompt indices without wasteful repetition or accidental cross-person/outfit mixing?
+- If a native composite/video split is preserved, is the exception limited to the named prompt index rather than authorizing cross-prompt merging?
+- Is any explicit light-enhancement module justified by visible lighting effects and kept low-strength?
+- Does depth of field preserve readable environmental detail when the background is part of the image's story?
+- If a tattoo reference is used, are motif, placement, scale, anatomical curvature, foreshortening, and clothing occlusion stable?
 
 If any answer is missing and the image depends on it, add a short constraint to the prompt rather than asking the user unless the missing detail changes the creative direction.
