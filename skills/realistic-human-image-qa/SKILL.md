@@ -35,8 +35,23 @@ Use this skill for both prompt extraction and actual reference-guided image gene
 23. If the user asks to generate or edit the image itself and an image-generation tool is available, use these rules to build and QA the prompt internally, then perform the generation/edit. Do not stop at a prompt-only answer unless the user asks for the prompt text.
 24. For both single-image and multi-image prompt delivery, place all model-facing sections inside one `text` code block so the user can copy once. Do not put `【语境声明】`, shared anchors, individual `Final Copy Prompt` sections, quality constraints, and negative prompts into separate code blocks.
 25. In prompt-extraction delivery, treat the uploaded image as internal evidence and make the final text independently executable. Replace phrases such as `忠于参考图`, `按参考图`, `保持原图效果`, or `若参考图存在` with concrete visible facts about subject, styling, pose, scene, light, camera, and post-production. In actual image2/reference-guided execution, the attached reference may remain an active constraint because the generation tool receives it.
-26. Apply named subject presets such as `亚洲1号` or `亚洲2号` only when the user explicitly requests one, or when an established preset definition is already present and the reference clearly matches it. Otherwise describe the visible person; never silently replace the reference subject with a preset.
+26. Apply named subject presets such as `亚洲1号` through `亚洲5号` only when the user explicitly requests one, when the current series is already bound to one, or when an established preset clearly matches and cross-image identity continuity is actually required. Otherwise describe the visible person; never silently replace the reference subject with a preset. When a numbered Asian model is invoked, read `references/asian-model-presets.md` and preserve that profile's fixed identity anchor.
 27. When the face is cropped, phone-obscured, unreadable, distant, or strongly retouched, do not spend prompt budget inventing facial or makeup details. Prioritize body proportions, hair silhouette, outfit construction and material, pose, scene, camera, and light.
+28. For maximum-fidelity extraction, use this evidence order: clearly visible reference facts first, explicit user corrections or named requirements second, confidence-limited visual inference third, and generic aesthetic enhancement last. A generic beauty, cinematic, shallow-depth, body-proportion, makeup, or lighting template must never overwrite a visible reference detail.
+29. Keep canonical output headings exact. Use `【Separate Negative Prompt】` for one image and `【Shared Negative Prompt】` for shared multi-image negatives; do not rename them to `【负面提示词】`, append `英文版 / 中文版`, or introduce extra model-facing headings unless the user requests another schema.
+30. Before finalizing a negative prompt, remove any keyword that contradicts a requested visible feature. In particular, do not keep generic `logo`, `text`, `blur`, `background blur`, or product-suppression negatives when a legitimate logo, readable environmental detail, native motion softness, or named product is part of the requested reference fidelity.
+
+## Fixed Asian model preset routing
+
+The five numbered Asian models are optional identity presets, not generic beauty templates. Their canonical visual anchors and distinctions are stored in `references/asian-model-presets.md`.
+
+- Read that reference whenever the user names `亚洲1号` through `亚洲5号`, asks to compare or maintain those models, or continues a series already bound to one.
+- A named preset controls identity only: face, head scale, complexion direction, base hair traits, skeleton, body proportions, muscle state, and temperament. The current reference or user request still controls outfit, pose, scene, camera, lighting, and temporary styling unless the user says otherwise.
+- Never infer a preset merely from `年轻亚洲女性`, long hair, a similar outfit, or a similar setting. A same-person reference set may use a temporary shared person anchor without being assigned a numbered model.
+- When the user explicitly asks to replace a reference person with a numbered model, preserve the reference's pose, clothing, scene, composition, light, and photographic treatment while replacing only the identity dimensions.
+- Once a series is bound to a numbered model, keep that model stable across later prompts and generations. Do not reanalyze it into a different face/body profile or let makeup, clothing, lens perspective, or a new setting permanently modify the canonical identity.
+- Exact measurements are internal calibration aids, not literal prompt requirements. Prefer the concise visual anchor in normal generation; use measurements only for character-sheet review, comparison, or drift diagnosis.
+- A confirmed model sheet or user-supplied identity reference outranks prose measurements when both are available.
 
 ## Reference-guided generation and repair mode
 
