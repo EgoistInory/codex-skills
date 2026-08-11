@@ -19,13 +19,13 @@ Treat a project as high complexity when it spans multiple systems or teams, has 
 
 ## OpenSpec Flow
 
-1. Use `openspec-explore` only when a bounded question still needs clarification.
-2. Use `openspec-propose` to create the proposal, design, specs, and short task list.
-3. Review scope and acceptance criteria before implementation.
-4. Use `openspec-apply-change` to implement the tasks.
+1. Use `$openspec-explore` only when a bounded question still needs clarification.
+2. Use `$openspec-propose` to create the proposal, design, specs, and short task list.
+3. Stop after planning. Review scope and acceptance criteria, then wait for a new user request before implementation.
+4. On that later request, use `$openspec-apply-change` to implement the tasks.
 5. Run the completion gate, then the focused review.
 6. Fix material findings and repeat affected checks.
-7. Use `openspec-archive-change` only after implementation and verification are complete.
+7. Use `$openspec-archive-change` only after implementation and verification are complete.
 
 ## Conditional Modules
 

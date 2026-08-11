@@ -15,6 +15,7 @@ Create a short plan when any of these apply:
 - Multiple valid approaches with meaningful tradeoffs
 
 Keep the plan to 3-5 outcome-oriented steps with at most one step in progress.
-For an OpenSpec project, use `openspec-propose` when a plan is warranted and
-`openspec-apply-change` after the proposal is ready. Do not expand a small
-task into architecture work, speculative requirements, or unrelated cleanup.
+For an OpenSpec project, use `$openspec-propose` when a plan is warranted.
+Stop after planning and wait for a new user request before using
+`$openspec-apply-change`. Do not expand a small task into architecture work,
+speculative requirements, or unrelated cleanup.
