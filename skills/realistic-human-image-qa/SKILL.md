@@ -21,16 +21,16 @@ Use this skill for both prompt extraction and actual reference-guided image gene
 9. For batch multi-image output, put shared English negatives once near the end in `【Shared Negative Prompt】`, then add `【最终输出要求】`. Do not repeat identical negatives inside every `Final Copy Prompt N` block.
 10. If uploaded image content is unavailable, unsupported, blocked, or visually unreadable, do not invent details. Ask the user to upload JPG, PNG, WEBP, or provide a text description.
 11. For platform screenshots or video frames, extract the person, pose, outfit, scene, light, and camera feel, but remove platform UI, subtitles, product bars, buttons, avatars, page counters, watermarks, and screenshot chrome from the generation prompt.
-12. For the user's fixed fashion/emotional-portrait extraction workflow, single-image output is `【Final Copy Prompt】`, Chinese `【质量约束】`, and English `【Separate Negative Prompt】`; multi-reference prompt extraction output uses the bracketed multi-image copy block with `【Final Copy Prompt 1】` through `【Final Copy Prompt N】`, `【质量约束】`, `【Shared Negative Prompt】`, and `【最终输出要求】`; storyboard-style one-prompt generation may use `【Image 1】` through `【Image N】` only when the target workflow explicitly expects Image sections.
+12. For the user's fixed fashion/emotional-portrait extraction workflow, single-image output starts with a concise `【单图输出硬性规则｜最高优先级】`, then uses `【Final Copy Prompt】`, Chinese `【质量约束】`, and English `【Separate Negative Prompt】`; multi-reference prompt extraction output uses the bracketed multi-image copy block with `【Final Copy Prompt 1】` through the actual final numbered prompt, `【质量约束】`, `【Shared Negative Prompt】`, and `【最终输出要求】`; storyboard-style one-prompt generation may use `【Image 1】` through `【Image N】` only when the target workflow explicitly expects Image sections.
 13. For realistic cosplay workflows, treat the costume flatlay/ground breakdown image and the worn-character image as one continuity set: outfit, wig, headpiece, accessories, embroidery, collar, sleeve shape, exposed-skin structure, color palette, and character motifs must match across the sequence.
 14. For reverse-engineering reference images, first infer the image source and final-production traces, then write a prompt that obeys the reference instead of redesigning the person, outfit, scene, or composition.
 15. Add a short dynamic context statement only when the current image or prompt has likely misclassification risk: tight clothing, swimwear, hotel, car interior, low neckline, body-detail crop, cosplay, adult portrait styling, or obvious body-line emphasis. Do not add it for ordinary outfit photos, scenery, or product images.
 16. Do not use a fixed safety sentence. Write the statement from the current image context, such as fashion photography, clothing display, visual analysis, product display, realistic photo style testing, or style reproduction. If the scene is clearly a real person and risk exists, naturally anchor it as adult, compliant fashion photography, non-explicit expression, or objective visual analysis.
 17. Render the statement under `【语境声明】` inside the same copyable code block, immediately before `【Final Copy Prompt】`; keep it out of the prompt body and omit the entire block when unnecessary. Its purpose is to prevent misunderstanding of creative intent, not to bypass policy or force disallowed content.
-18. When the user says `纯可复制版`, `直接复制`, `只要提示词`, or `不要解释`, start directly with the requested copy block: `【Final Copy Prompt】` for one image, `【多图输出硬性规则｜最高优先级】` for multi-reference prompt extraction or multi-image output, or the negative prompt block when only negatives are requested. Do not add prefaces, closing offers, Markdown bold headings, or process commentary. Exception: if there is real misclassification risk, a short `【语境声明】` block may appear inside the copy block before the prompt content.
+18. When the user says `纯可复制版`, `直接复制`, `只要提示词`, or `不要解释`, start directly with the requested copy block: `【单图输出硬性规则｜最高优先级】` for one image, `【多图输出硬性规则｜最高优先级】` for multi-reference prompt extraction or multi-image output, or the negative prompt block when only negatives are requested. Do not add prefaces, closing offers, Markdown bold headings, or process commentary. Exception: if there is real misclassification risk, a short `【语境声明】` block may appear inside the copy block after the hard rule and before the prompt content.
 19. Default to Chinese `Final Copy Prompt`, optional Chinese `质量约束`, and English `Separate Negative Prompt`. Only use Chinese negative keywords when the user explicitly targets a Chinese-only model.
 20. Treat named products and props as strong constraints. If the user identifies a phone, car, camera, bag, shoes, or other key object, preserve the exact named model, color, body/material finish, logo/text handling, visible layout, hand grip, occlusion, reflection, and scale instead of replacing it with a generic object.
-21. For multi-reference prompt extraction or multi-image generation in one prompt, put the image count hard rule at the very beginning and repeat it at the end. Use bracketed headings, no Markdown bold inside the copyable block. Default to `【Final Copy Prompt 1】`, `【Final Copy Prompt 2】`, etc. for the user's GPT web / image2 workflow; use `【Image 1】`, `【Image 2】`, etc. only for storyboard tools or when the user asks for Image sections.
+21. For multi-reference prompt extraction or multi-image generation in one prompt, put the image count hard rule at the very beginning and repeat it at the end. In actual user-facing output, calculate the valid reference/prompt count and write the concrete number and concrete final prompt index; never leak `N`, `X`, a standalone count, or another internal placeholder. Keep the fixed execution chain: first understand all prompt content, then follow the numbered prompts in order, generate one independent image per prompt, and complete all images in the same task. Use bracketed headings, no Markdown bold inside the copyable block. Default to `【Final Copy Prompt 1】`, `【Final Copy Prompt 2】`, etc. for the user's GPT web / image2 workflow; use `【Image 1】`, `【Image 2】`, etc. only for storyboard tools or when the user asks for Image sections.
 22. Treat prompt extraction, prompt writing, actual image generation, image-to-image/reference-guided generation, and repair/iteration as sibling modes of the same skill. Do not narrow the skill to extraction only.
 23. If the user asks to generate or edit the image itself and an image-generation tool is available, use these rules to build and QA the prompt internally, then perform the generation/edit. Do not stop at a prompt-only answer unless the user asks for the prompt text.
 24. For both single-image and multi-image prompt delivery, place all model-facing sections inside one `text` code block so the user can copy once. Do not put `【语境声明】`, shared anchors, individual `Final Copy Prompt` sections, quality constraints, and negative prompts into separate code blocks.
@@ -97,6 +97,19 @@ Tradeoffs and final choice:
 - A multi-image merge template is useful for one composite image, but is wrong for batch extraction because it mixes people, outfits, poses, scenes, and composition across references.
 - Final rule: single images use the fused bracketed template; multi-reference prompt extraction uses a hard-rule-first copy block with separate `Final Copy Prompt N` sections and no visible cards; one-prompt multi-image generation uses the same count-first control pattern with shared anchors, shared negatives, and a final repeated count rule.
 
+## Optional module routing and grouping
+
+Use this section to organize model-facing text when extracting copyable prompts from realistic-person references. It does not replace or narrow actual reference-guided generation, image2, repair/inpainting, background insertion, physical-reality QA, tattoo calibration, or aesthetic-direction workflows; those modes may reuse the visual analysis but should follow their own execution and delivery needs.
+
+Treat context, face/makeup, outfit construction, clothing physics, scene/space, photography, lighting atmosphere, and named brand/model fidelity as reusable capabilities for both single-image and multi-image prompt extraction. Do not print every module mechanically.
+
+- Promote a capability to its own bracketed module only when it is high-weight in the current references, repeats across several images, or materially controls generation. Fold secondary details into `Final Copy Prompt` or a nearby shared block.
+- For a single image, use a concise task-specific module such as `【妆容增强模块】`, `【服装物理增强模块】`, `【摄影增强模块】`, or `【光影气氛增强模块】` only when explicit separation improves control; otherwise keep the fused prompt compact. Do not use `【统一人物锚点】` for single-image output.
+- For multiple images, convert repeated capabilities into scoped shared/group modules such as `【A组统一穿搭设定｜适用于 Final Copy Prompt 1—3】`, `【统一场景设定】`, `【统一摄影风格】`, or `【统一光影氛围】`. Create `【统一人物锚点】` only when identity is genuinely shared, and state its prompt range when the batch contains several people or groups.
+- `摄影增强模块`, `统一摄影风格`, `摄影质感要求`, camera angle, framing, camera height, focal-length feel, and finished-image texture are one photography capability expressed at different scopes. Never duplicate them as competing modules.
+- Keep shared relations and independent boundaries explicit. A batch does not default to the same person, outfit, scene, pose, camera, or light; only scoped unified modules may be inherited.
+- Reuse the approved hard-rule wording as a fixed module. Only substitute the actual count, last prompt index, orientation when known, and explicitly permitted native-composite exceptions; do not rewrite it while reorganizing downstream groups.
+
 ## Multi-reference final-only extraction mode
 
 Use this mode when the user uploads several references and asks to extract prompts, especially with wording like `分别生成7条Final Copy Prompt`, `中间过程和细则都不要`, `按每张图分别输出`, or `只要最终可复制提示词`.
@@ -125,6 +138,7 @@ Default extraction format:
 下方内容是 N 张图片的独立提示词清单，不是一张图的综合描述。
 请严格按照【Final Copy Prompt 1】到【Final Copy Prompt N】分别生成。
 每个 Final Copy Prompt 对应 1 张完整成图。
+先完整理解全部提示词内容，再按顺序逐个提示词、逐张独立生成，一次性完成全部图片。
 禁止把不同 Final Copy Prompt 合并成宫格、拼图、分屏、上下拼接、左右拼接或海报排版；若某一张参考图本身就是有意设计的双画面/视频分屏结构，且对应提示词明确要求保留，则仅该编号允许生成一张同结构的独立成图。
 禁止只输出 1 张。
 
@@ -157,6 +171,8 @@ Default extraction format:
 【最终输出要求】
 最终必须返回 N 张独立图片，1 个 Final Copy Prompt 对应 1 张。不得缺失，不得合并，不得拼接，不得宫格，不得分屏，不得把多张内容融合成一张图。
 ```
+
+`N` is documentation notation only. Before replying, replace every `N` and range endpoint with the actual uploaded/valid reference count and actual last `Final Copy Prompt` number. The copyable answer must contain no placeholder variables or leaked standalone count.
 
 ## Multi-image hard output control
 
@@ -268,6 +284,11 @@ Cos continuity requirements:
 For prompt delivery, the canonical single-image format is:
 
 ```text
+【单图输出硬性规则｜最高优先级】
+本次任务只生成 1 张完整独立图片。
+严格按照下方【Final Copy Prompt】生成一张完整单画面照片。
+禁止宫格、拼图、分屏、上下拼接、左右对比、多画面同画布、连续动作排版、海报版式或社交媒体截图界面。
+
 【Final Copy Prompt】
 [one complete Chinese prompt, directly copyable, no intermediate analysis]
 
