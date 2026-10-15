@@ -21,7 +21,7 @@ Use this skill for both prompt extraction and actual reference-guided image gene
 9. For batch multi-image output, put shared English negatives once near the end in `【Shared Negative Prompt】`, then add `【最终输出要求】`. Do not repeat identical negatives inside every `Final Copy Prompt N` block.
 10. If uploaded image content is unavailable, unsupported, blocked, or visually unreadable, do not invent details. Ask the user to upload JPG, PNG, WEBP, or provide a text description.
 11. For platform screenshots or video frames, extract the person, pose, outfit, scene, light, and camera feel, but remove platform UI, subtitles, product bars, buttons, avatars, page counters, watermarks, and screenshot chrome from the generation prompt.
-12. For the user's fixed fashion/emotional-portrait extraction workflow, single-image output starts with a concise `【单图输出硬性规则｜最高优先级】`, then uses `【Final Copy Prompt】`, Chinese `【质量约束】`, and English `【Separate Negative Prompt】`; multi-reference prompt extraction output uses the bracketed multi-image copy block with `【Final Copy Prompt 1】` through the actual final numbered prompt, `【质量约束】`, `【Shared Negative Prompt】`, and `【最终输出要求】`; storyboard-style one-prompt generation may use `【Image 1】` through `【Image N】` only when the target workflow explicitly expects Image sections.
+12. For the user's fixed fashion/emotional-portrait extraction workflow, single-image output starts with `【单图输出硬性规则｜最高优先级】`, then uses `【Final Copy Prompt】`, Chinese `【质量约束】`, English `【Separate Negative Prompt】`, and `【最终输出要求】`; multi-reference prompt extraction output uses the bracketed multi-image copy block with `【Final Copy Prompt 1】` through the actual final numbered prompt, `【质量约束】`, `【Shared Negative Prompt】`, and `【最终输出要求】`. Both prompt packages request full-quality finished images rather than previews, drafts, thumbnails, or text substitutes; extraction itself still returns text. Storyboard-style one-prompt generation may use `【Image 1】` through `【Image N】` only when the target workflow explicitly expects Image sections.
 13. For realistic cosplay workflows, treat the costume flatlay/ground breakdown image and the worn-character image as one continuity set: outfit, wig, headpiece, accessories, embroidery, collar, sleeve shape, exposed-skin structure, color palette, and character motifs must match across the sequence.
 14. For reverse-engineering reference images, first infer the image source and final-production traces, then write a prompt that obeys the reference instead of redesigning the person, outfit, scene, or composition.
 15. Add a short dynamic context statement only when the current image or prompt has likely misclassification risk: tight clothing, swimwear, hotel, car interior, low neckline, body-detail crop, cosplay, adult portrait styling, or obvious body-line emphasis. Do not add it for ordinary outfit photos, scenery, or product images.
@@ -38,7 +38,7 @@ Use this skill for both prompt extraction and actual reference-guided image gene
 26. Apply named subject presets such as `亚洲1号` through `亚洲5号` only when the user explicitly requests one, when the current series is already bound to one, or when an established preset clearly matches and cross-image identity continuity is actually required. Otherwise describe the visible person; never silently replace the reference subject with a preset. When a numbered Asian model is invoked, read `references/asian-model-presets.md` and preserve that profile's fixed identity anchor.
 27. When the face is cropped, phone-obscured, unreadable, distant, or strongly retouched, do not spend prompt budget inventing facial or makeup details. Prioritize body proportions, hair silhouette, outfit construction and material, pose, scene, camera, and light.
 28. For maximum-fidelity extraction, use this evidence order: clearly visible reference facts first, explicit user corrections or named requirements second, confidence-limited visual inference third, and generic aesthetic enhancement last. A generic beauty, cinematic, shallow-depth, body-proportion, makeup, or lighting template must never overwrite a visible reference detail.
-29. Keep canonical output headings exact. Use `【Separate Negative Prompt】` for one image and `【Shared Negative Prompt】` for shared multi-image negatives; do not rename them to `【负面提示词】`, append `英文版 / 中文版`, or introduce extra model-facing headings unless the user requests another schema.
+29. Keep canonical output headings consistent. Default to `【Separate Negative Prompt】` for one image and `【Shared Negative Prompt】` for shared multi-image negatives; do not append `英文版 / 中文版`. Optional substantive modules follow the routing below; a request to display every available module is a template-review task, not a new default to print all modules every time.
 30. Before finalizing a negative prompt, remove any keyword that contradicts a requested visible feature. In particular, do not keep generic `logo`, `text`, `blur`, `background blur`, or product-suppression negatives when a legitimate logo, readable environmental detail, native motion softness, or named product is part of the requested reference fidelity.
 
 ## Fixed Asian model preset routing
@@ -101,14 +101,16 @@ Tradeoffs and final choice:
 
 Use this section to organize model-facing text when extracting copyable prompts from realistic-person references. It does not replace or narrow actual reference-guided generation, image2, repair/inpainting, background insertion, physical-reality QA, tattoo calibration, or aesthetic-direction workflows; those modes may reuse the visual analysis but should follow their own execution and delivery needs.
 
-Treat context, face/makeup, outfit construction, clothing physics, scene/space, photography, lighting atmosphere, and named brand/model fidelity as reusable capabilities for both single-image and multi-image prompt extraction. Do not print every module mechanically.
+Treat context, identity, hair, face/makeup, body structure and volume, outfit construction, clothing/material physics, props/accessories, scene/space, weather/environment, photography, lighting atmosphere, and named brand/model fidelity as reusable capabilities for both single-image and multi-image prompt extraction. Do not print every module mechanically.
 
 - Promote a capability to its own bracketed module only when it is high-weight in the current references, repeats across several images, or materially controls generation. Fold secondary details into `Final Copy Prompt` or a nearby shared block.
 - For a single image, use a concise task-specific module such as `【妆容增强模块】`, `【服装物理增强模块】`, `【摄影增强模块】`, or `【光影气氛增强模块】` only when explicit separation improves control; otherwise keep the fused prompt compact. Do not use `【统一人物锚点】` for single-image output.
+- When an expanded presentation is useful, order optional modules as: context → person anchor (`【人物锚点】` for single-image output) → scoped groups for a batch → hair → makeup → body structure/volume → outfit → brand/model/item recognition → clothing/material physics → props/accessories → scene → weather/environment → photography → lighting → Final Copy Prompt(s) → quality/physics → negatives → final output requirements. Omit irrelevant modules; fill selected modules with concrete instructions, never `启用 / 关闭`, switches, placeholders, or internal engineering notes. Keep everything in the same copyable block.
 - For multiple images, convert repeated capabilities into scoped shared/group modules such as `【A组统一穿搭设定｜适用于 Final Copy Prompt 1—3】`, `【统一场景设定】`, `【统一摄影风格】`, or `【统一光影氛围】`. Create `【统一人物锚点】` only when identity is genuinely shared, and state its prompt range when the batch contains several people or groups.
+- A shared person anchor and `【分组人物锚点】` may coexist: identify whether a group means different people or only different poses, support/force states, expressions, or camera setups for the same person. Same-person pose groups preserve the base identity and skeleton. Per-image prompts must still specify their own action, expression, support, camera height, distance, crop, composition, and light; never replace distinct photographs with repeated crops of one image. Do not invent differences absent from the references.
 - `摄影增强模块`, `统一摄影风格`, `摄影质感要求`, camera angle, framing, camera height, focal-length feel, and finished-image texture are one photography capability expressed at different scopes. Never duplicate them as competing modules.
 - Keep shared relations and independent boundaries explicit. A batch does not default to the same person, outfit, scene, pose, camera, or light; only scoped unified modules may be inherited.
-- Reuse the approved hard-rule wording as a fixed module. Only substitute the actual count, last prompt index, orientation when known, and explicitly permitted native-composite exceptions; do not rewrite it while reorganizing downstream groups.
+- Reuse the approved hard-rule wording as a fixed module. Only substitute the actual count, last prompt index, orientation when known, verified target capacity, and explicitly permitted native-composite exceptions; do not rewrite it while reorganizing downstream groups.
 
 ## Multi-reference final-only extraction mode
 
@@ -135,10 +137,12 @@ Default extraction format:
 ```text
 【多图输出硬性规则｜最高优先级】
 本次任务必须输出 N 张独立图片，不是 1 张。
+本次必须一次性完成一组共 N 张正式原图级高质量独立成图，不以低清预览、草稿、缩略图或文字说明代替。
 下方内容是 N 张图片的独立提示词清单，不是一张图的综合描述。
 请严格按照【Final Copy Prompt 1】到【Final Copy Prompt N】分别生成。
 每个 Final Copy Prompt 对应 1 张完整成图。
 先完整理解全部提示词内容，再按顺序逐个提示词、逐张独立生成，一次性完成全部图片。
+每张均按完整单图标准完成，不得因多图任务主动减图、漏图、合并图片，或降低人物真实性、人体体积、服装材质、环境细节、光影与构图精度。
 禁止把不同 Final Copy Prompt 合并成宫格、拼图、分屏、上下拼接、左右拼接或海报排版；若某一张参考图本身就是有意设计的双画面/视频分屏结构，且对应提示词明确要求保留，则仅该编号允许生成一张同结构的独立成图。
 禁止只输出 1 张。
 
@@ -170,9 +174,10 @@ Default extraction format:
 
 【最终输出要求】
 最终必须返回 N 张独立图片，1 个 Final Copy Prompt 对应 1 张。不得缺失，不得合并，不得拼接，不得宫格，不得分屏，不得把多张内容融合成一张图。
+一次性完成全部 N 张正式成图，每张均保持完整单图质量标准。
 ```
 
-`N` is documentation notation only. Before replying, replace every `N` and range endpoint with the actual uploaded/valid reference count and actual last `Final Copy Prompt` number. The copyable answer must contain no placeholder variables or leaked standalone count.
+`N` is documentation notation only. Before replying, replace every `N` and range endpoint with the actual uploaded/valid reference count and actual last `Final Copy Prompt` number. Count the uploaded references, not a screenshot's page counter such as `3/9`. The copyable answer must contain no placeholder variables or leaked standalone count.
 
 ## Multi-image hard output control
 
@@ -182,6 +187,7 @@ Rules:
 
 - Put `【多图输出硬性规则｜最高优先级】` before any subject, outfit, scene, or style description.
 - State the exact count: `本次任务必须输出 N 张独立图片，不是 1 张`.
+- Include the quantity/capacity statement in the opening hard-rule block and reiterate it at the end when the target capacity is established. For the user's target workflow with a stated single-task capacity of 10 and an actual count at or below 10, write the concrete count and: `按照本次目标生图环境单次最多 10 张的能力前提，本次要求的 [实际数量] 张未超过数量上限，请一次性完成全部独立正式成图。` Replace the bracketed count before delivery. This is a target-specific premise, not a universal claim about ChatGPT, every image model, every API call, or the currently available tool. If capacity is unknown, retain the full count and quality requirements without inventing a maximum; if a known limit is exceeded, split execution into supported calls without silently dropping images.
 - State that the following content is an independent prompt list, not a single merged description.
 - Use `【Final Copy Prompt 1】`, `【Final Copy Prompt 2】`, `【Final Copy Prompt 3】` headings by default. Use `Image 1..N` only when the user or target tool explicitly asks for Image storyboard labels.
 - Separate shared anchors from per-image differences: shared person, makeup, outfit, scene system, photography style, and negative prompt go in scoped unified blocks; each `Final Copy Prompt N` contains its complete image-specific action, expression, prop, crop, composition, and light differences and inherits only anchors explicitly scoped to it.
@@ -241,6 +247,8 @@ Single-image reverse prompt format:
 [English targeted negatives]
 ```
 
+This abbreviated reverse-prompt example supplies the body content; wrap it with the canonical single-image hard rule and final output requirements from `Output format` when delivering a copyable extraction.
+
 Multi-image reverse prompt format: if the user asks to extract prompts from several reference images, use the count-first `【Final Copy Prompt 1】`, `【Final Copy Prompt 2】`, etc. format by default. Use `Image 1..N` only when the user or target tool explicitly asks for Image sections.
 
 Self-improving rule: if the current rules are not enough for a special reference type, add a short `本次规则补充：...` outside the final copy block. If the user asks for a pure copyable output, keep the rule supplement outside the prompt body so it does not pollute what they copy into the image model.
@@ -287,6 +295,7 @@ For prompt delivery, the canonical single-image format is:
 【单图输出硬性规则｜最高优先级】
 本次任务只生成 1 张完整独立图片。
 严格按照下方【Final Copy Prompt】生成一张完整单画面照片。
+输出正式原图级高质量成图，不以低清预览、草稿、缩略图或文字说明代替。
 禁止宫格、拼图、分屏、上下拼接、左右对比、多画面同画布、连续动作排版、海报版式或社交媒体截图界面。
 
 【Final Copy Prompt】
@@ -297,6 +306,9 @@ For prompt delivery, the canonical single-image format is:
 
 【Separate Negative Prompt】
 [one English negative keyword block]
+
+【最终输出要求】
+直接输出 1 张完整独立正式成图，完整执行上述人物、动作、材质、场景、摄影及质量要求。
 ```
 
 Put the complete block inside one outer `text` code block. `【语境声明】` may appear before `【Final Copy Prompt】` only when the dynamic-purpose rule applies; omit it otherwise. Keep physical-reality checks integrated into the Chinese prompt and `【质量约束】` instead of exposing a separate checklist by default.
@@ -368,6 +380,18 @@ For full-body prompts, add:
 - correct contact shadows under feet or body
 - knees, ankles, and toes aligned with the pose
 - no hidden extra limb behind clothing or furniture
+
+### Body structure, volume, and pose-dependent force
+
+When body form or pose is a high-weight reference feature, use `【人体结构与立体体积增强】` (or its scoped shared form) to describe visible three-dimensional relationships rather than only a slim silhouette. Preserve the actual body type and baseline skeleton; do not impose a universally thin waist, long legs, narrow ribcage, or athletic definition.
+
+- Connect head/neck, shoulder girdle, ribcage, spine, abdominal wall, pelvis, hips, and legs with plausible front-to-back thickness and soft-tissue volume.
+- Describe the current action's support and force: shoulder/scapular change during raised arms or forearm support, abdominal relaxation/stretch/compression or core tension, pelvic rotation, and thigh/knee/ankle continuity. Recumbent, prone, kneeling, seated, and standing poses should not share one frozen body contour.
+- Chest contours and central shadows follow ribcage, soft tissue, gravity, garment coverage, and actual cup/strap support. Preserve the reference's natural volume without inventing exaggeration or flattening it for a generic body template.
+- Keep natural lower-abdominal volume, muscle/soft-tissue curves, and skin-light transitions. Texture follows image distance; never manufacture deep abs, coarse pores, aging, or a rigid flat abdomen merely to signal realism.
+- Cushions, clothing, and skin respond to load with appropriate compression, tension, contact shadows, and occlusion. Across the same-person series, changing pose/light/perspective must not change the base anatomy.
+
+Select only relevant targeted negatives, for example `flattened ribcage, painted-on abs, detached pelvis, incorrect weight bearing, rigid cushion`. Remove any term that would suppress an intentionally visible feature or exaggerate the reference's musculature.
 
 ### Hands and fingers
 
@@ -543,7 +567,7 @@ Control makeup detail by image distance:
 Integration and complexity rules:
 
 - In a multi-image set with the same person and makeup, write the stable face/makeup direction once in `【统一人物锚点】`. Each `【Final Copy Prompt N】` adds only its expression and scene-specific light/reflection differences; do not repeat foundation, blush, eye shadow, lashes, and lip makeup in every prompt.
-- In single-image output, blend one concise makeup sentence into `【Final Copy Prompt】`; do not expose this module as a separate output section.
+- In ordinary single-image output, blend one concise makeup sentence into `【Final Copy Prompt】`. A high-weight makeup reference or an explicitly requested expanded template may use the optional makeup section; retain the same lightweight correction and image-distance limits.
 - Keep the makeup description to four ideas whenever possible: base color/finish, eye makeup/lashes, blush/lip color, and realistic light with slight skin layering.
 - Add only the shortest relevant makeup check to `【质量约束】`. Use one compact negative set in `【Separate Negative Prompt】` or one deduplicated `【Shared Negative Prompt】`; do not add dozens of synonyms.
 
@@ -859,6 +883,9 @@ Before returning a prompt, check whether it answers these:
 - For reverse-reference/image2 workflows, did you classify source type, apply photography-parameter confidence, avoid invented exact camera data, extract post-production/platform traces, keep named products/props accurate, and keep the prompt obedient to the reference rather than redesigning it?
 - For standalone extraction, did you replace reference-dependent shorthand with explicit visual facts?
 - For multiple references, are shared anchors scoped to the correct prompt indices without wasteful repetition or accidental cross-person/outfit mixing?
+- Are selected modules concrete instructions rather than switches, and does a full-module demonstration remain separate from normal selective routing?
+- Does each requested picture receive full finished-image quality, with a concrete count based on actual uploads and any capacity statement limited to the established target environment?
+- When body volume matters, do ribcage/abdomen/pelvis depth, soft tissue, pose-dependent force, and support agree without altering the base identity or body type?
 - If a native composite/video split is preserved, is the exception limited to the named prompt index rather than authorizing cross-prompt merging?
 - Is any explicit light-enhancement module justified by visible lighting effects and kept low-strength?
 - Does depth of field preserve readable environmental detail when the background is part of the image's story?
