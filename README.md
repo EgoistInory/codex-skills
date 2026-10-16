@@ -39,6 +39,7 @@ codex-skills/
 | `openspec-lite-workflow` | 面向中低复杂度项目的 OpenSpec 轻量工作流，内置按需加载的计划、TDD、调试、验证和审查模块。 |
 | `python-ai-project-dependencies` | AI / vibe-coding Python 项目的依赖选择、分组、安装与验证方法论。 |
 | `realistic-human-image-qa` | 写实真人生图、多参考图提示词整合、完整可复制提示词与物理现实校验。 |
+| `tesla-paintshop-wrap-workflow` | Tesla 喷漆车间车衣的官方模板工程化合成、左右图案与文字校准、透明 PNG 导出及真实下载交付。 |
 | `windows-codex-msix-portable-fix` | Windows 受限环境下 Codex MSIX / portable 运行与 runtime 修复。 |
 | `windows-ide-open-fix` | Windows 上 Codex 打开 IDE / 文件失败的诊断与修复。 |
 

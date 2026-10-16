@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tesla 车衣工程化制作"
+  short_description: "从创意或参考图制作官方模板约束的透明车衣，校准图案文字并交付标准 PNG"
+  default_prompt: "使用 $tesla-paintshop-wrap-workflow，按我的准确车型和参考图工程化制作喷漆车间车衣，校验后给出可点击的成品下载链接。"
