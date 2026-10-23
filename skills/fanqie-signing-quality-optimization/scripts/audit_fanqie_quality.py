@@ -3,14 +3,15 @@
 """
 audit_fanqie_quality.py
 -----------------------
-Automated Quality Audit Tool for Fanqie Webnovel Signing Review.
+Automated Quality Audit Tool for Fanqie Webnovel Signing & Recommendation Review.
 Checks character counts, formatting, book title marks, calendar openers,
-dialogue quotation density, encoding, and AI slop patterns.
+dialogue quotation density, encoding, micro AI slop phrases, and paragraph burstiness.
 
 Standard Library only. Compatible with Python 3.7+.
 """
 
 import argparse
+import math
 import os
 import re
 import sys
@@ -33,6 +34,7 @@ RE_CALENDAR_WEATHER = re.compile(
 )
 RE_AI_SLOP_ENDINGS = re.compile(r'（全书完）|时代大幕|拉开了大幕|这不仅是.*?更是|仰不愧于天')
 RE_ACCOUNTING_NEGATION = re.compile(r'并非[^\n，。]{1,20}而是|不是[^\n，。]{1,20}乃是')
+RE_MICRO_AI_SLOP = re.compile(r'眼神.*?(?:闪过|复杂|警惕)|空气中弥漫|无形的气场|微妙的平衡|深知.*?意味|心中暗自|殊不知|随着时间的推移')
 RE_LATIN1_CORRUPTION = re.compile(r'ã€|â€|Ã©|Ã¨|Ã|å|æ')
 
 def count_non_newline_chars(text: str) -> int:
@@ -43,6 +45,17 @@ def count_dialogue_quotes(text: str) -> int:
     left_quotes = text.count('“')
     right_quotes = text.count('”')
     return min(left_quotes, right_quotes)
+
+def calculate_burstiness(paragraphs: List[str]) -> Tuple[float, float, int]:
+    """Returns (mean_length, std_dev, short_paragraph_count)."""
+    lengths = [len(re.sub(r'\s+', '', p)) for p in paragraphs if len(re.sub(r'\s+', '', p)) > 0]
+    if not lengths:
+        return 0.0, 0.0, 0
+    mean = sum(lengths) / len(lengths)
+    variance = sum((x - mean) ** 2 for x in lengths) / len(lengths)
+    std_dev = math.sqrt(variance)
+    short_count = sum(1 for x in lengths if x < 20)
+    return mean, std_dev, short_count
 
 def audit_file(filepath: str) -> Dict[str, any]:
     basename = os.path.basename(filepath)
@@ -131,6 +144,18 @@ def audit_file(filepath: str) -> Dict[str, any]:
     if len(neg_matches) >= 3:
         warnings.append(f"Dense '并非……而是……' negation prose detected ({len(neg_matches)} instances).")
 
+    # Microscopic AI slop phrases (Recommendation Traffic Risk)
+    micro_slop_matches = [m.group(0) for m in RE_MICRO_AI_SLOP.finditer(text)]
+    if micro_slop_matches:
+        warnings.append(f"Microscopic AI slop phrases detected ({len(micro_slop_matches)} instances, e.g. '{micro_slop_matches[0]}').")
+
+    # Burstiness & Paragraph Variance check
+    paragraphs = [p for p in text.splitlines() if p.strip()]
+    if len(paragraphs) >= 12:
+        mean_p, std_p, short_p = calculate_burstiness(paragraphs)
+        if std_p < 14.0 and short_p == 0:
+            warnings.append(f"Low paragraph burstiness (std_dev={std_p:.1f}, 0 short punchlines, high AI rhythmic uniformity).")
+
     status = 'FAIL' if issues else ('WARN' if warnings else 'PASS')
     return {
         'file': basename,
@@ -142,7 +167,7 @@ def audit_file(filepath: str) -> Dict[str, any]:
     }
 
 def main():
-    parser = argparse.ArgumentParser(description="Audit novel files for Fanqie signing review standards.")
+    parser = argparse.ArgumentParser(description="Audit novel files for Fanqie signing & recommendation review standards.")
     parser.add_argument('--dir', type=str, help="Directory containing novel chapter files (.md / .txt)")
     parser.add_argument('--file', type=str, help="Single chapter file to audit")
     parser.add_argument('--strict', action='store_true', help="Treat warnings as failures")
@@ -166,7 +191,7 @@ def main():
         sys.exit(1)
 
     print(f"\n==================================================")
-    print(f" FANQIE SIGNING QUALITY AUDIT TOOL")
+    print(f" FANQIE SIGNING & RECOMMENDATION AUDIT TOOL")
     print(f" Target files: {len(files_to_check)}")
     print(f"==================================================\n")
 
@@ -215,7 +240,7 @@ def main():
         print("\nResult: FAILED (strict mode) - Warnings present.\n")
         sys.exit(1)
     else:
-        print("\nResult: SUCCESS - All chapters meet Fanqie signing criteria.\n")
+        print("\nResult: SUCCESS - All chapters meet Fanqie signing & recommendation criteria.\n")
         sys.exit(0)
 
 if __name__ == '__main__':
