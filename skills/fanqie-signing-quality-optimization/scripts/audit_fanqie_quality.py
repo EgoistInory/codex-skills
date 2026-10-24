@@ -29,6 +29,8 @@ RE_MARKDOWN_LIST = re.compile(r'^\s*[-*+]\s+', re.MULTILINE)
 RE_MARKDOWN_CODE = re.compile(r'(`{1,3})[^\n`]+?\1')
 
 RE_BOOK_TITLE_MARK = re.compile(r'《[^》\n]{1,60}》')
+RE_REDUNDANT_TITLE_NUM = re.compile(r'第[0-9零一二两三四五六七八九十百千]+[章回节话]')
+RE_BODY_FIRST_LINE_HEADER = re.compile(r'^(#{1,6}\s+|第\s*\d+\s*章|第[零一二两三四五六七八九十百千]+章)')
 RE_CALENDAR_WEATHER = re.compile(
     r'^\s*[0-9一二三四五六七八九十百]+月[0-9一二三四五六七八九十]+[日号]?.*?(清晨|一早|午后|傍晚|深夜|微风|寒霜|秋阳|晨雾|雨水)'
 )
@@ -65,6 +67,14 @@ def audit_file(filepath: str) -> Dict[str, any]:
     # Check filename for book title marks
     if '《' in basename or '》' in basename:
         issues.append(f"Filename contains book title marks 《》: '{basename}'")
+
+    # Check filename prefix and redundant chapter numbers
+    stem = os.path.splitext(basename)[0]
+    if not re.match(r'^\d+[\s:：_\-]', basename):
+        warnings.append(f"Filename '{basename}' lacks standard numeric prefix (e.g. '001-Title.md'), which may cause importer tools to fail to recognize chapters.")
+    clean_title = re.sub(r'^\d+[\s:：_\-]+', '', stem)
+    if RE_REDUNDANT_TITLE_NUM.search(clean_title):
+        issues.append(f"Redundant chapter number in title: '{basename}' (contains duplicated chapter prefix like '第三十三章'). Title must only be the clean title text.")
 
     # Read binary to verify encoding and BOM
     try:
@@ -121,6 +131,11 @@ def audit_file(filepath: str) -> Dict[str, any]:
         if stripped:
             first_non_empty_line = stripped
             break
+
+    # Body text first line header check (prevent double title rendering)
+    if RE_BODY_FIRST_LINE_HEADER.search(first_non_empty_line):
+        issues.append(f"Body text first line contains title header ('{first_non_empty_line[:30]}...'). Body text must start directly with novel opening paragraph to prevent double title rendering in App.")
+
     if RE_CALENDAR_WEATHER.search(first_non_empty_line):
         warnings.append(f"Calendar-weather template opening detected: '{first_non_empty_line[:40]}...'")
 
