@@ -1,13 +1,13 @@
 ---
 name: fanqie-novel-workflow
-description: Use for generic Fanqie/番茄小说 webnovel production workflows, including high-quality chapter drafting, chapter quality control, pre-draft payoff ledgers, quote-based native-Chinese line editing, canon/setting consistency, multi-book creative isolation, genre-register and world-language checks, scene embodiment, project onboarding, chapter continuation, state and handoff updates, pure-text Markdown validation, translationese avoidance, anti-template/anti-empty-expression craft checks, lived-in character detail checks, type-bridge borrowing constraints, low-quality-governance iteration, publish-ready Fanqie TXT export, and coordinating fiction-craft skills such as 爽文, 热梗, 选题, 大纲, 润色, and platform-style guidance. Use when a user is writing, maintaining, checking, or preparing a Chinese webnovel for Fanqie-style publication.
+description: Plan, draft, continue, review, and export Chinese webnovels for Fanqie/番茄小说. Use for new-book setup, autonomous novel writing, pre-draft quality checks, opening samples, chapter continuation, canon and handoff maintenance, and publication preparation. Checks reader promise, character limits, plot repetition, and staged expansion before committing to a full-length draft.
 ---
 
 # 番茄小说通用工作流
 
 ## 定位
 
-用于把一个网文项目按“事实源 -> 续写 -> 审校 -> 状态更新 -> 投稿导出”的方式稳定推进。它是流程编排 skill，不绑定具体书名、仓库、人物或剧情。
+用于把一个网文项目按“选题与质量预检 -> 小样试写 -> 分阶段续写 -> 审校与状态更新 -> 投稿导出”的方式稳定推进。它是流程编排 skill，不绑定具体书名、仓库、人物或剧情。
 
 如果项目内存在更具体的 `AGENTS.md`、`CLAUDE.md`、`GEMINI.md`、书籍说明或用户指令，先遵守更具体的项目规则。
 
@@ -43,6 +43,7 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 2. 根据用户当前任务和项目入口确认目标书籍目录；多书项目不能沿用旧会话中的默认书籍，也不能因仓库里另一本书更成熟就误读其上下文。
 3. 检查工作树状态，识别用户已有改动，不回滚、不覆盖无关文件。
 4. 在目标书籍目录内执行写作、审校和导出命令；在项目根执行 Git 命令。
+5. 判断当前是开新书、试写、续写、重构还是投稿；从现有状态恢复最近一次质量检查结论与本轮写作范围。不要因用户只调用本 workflow 而遗漏写前质量检查，也不要在每次续写时重做整套选题评估。
 
 ## 必读上下文
 
@@ -95,6 +96,21 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 
 只有稳定、跨项目通用、不会增加 agent 判断噪声的规则才写入本 workflow；临时章节状态、具体剧情和当前书籍专名留在项目文件中。
 
+## 写前质量检查与分阶段扩写
+
+开新书、全自主长篇任务、重构开篇或进入新卷前，读取 [references/pre-draft-quality-gates.md](references/pre-draft-quality-gates.md)，执行相应阶段的检查。日常续写只做其中的逐章写前检查，并复用已记录的阶段结论。
+
+若可用，联用 `fanqie-signing-quality-optimization` 评估题材承诺、开篇吸引力、结构、人物和写作质量；先用 `本轮写作范围 + 相关大纲/正文 + 待验证问题` 限定检查范围。该 skill 未安装时，按本 workflow 的前置检查参考继续执行，不把可选依赖缺失当作阻塞。
+
+- **选题前**：明确目标读者、核心阅读承诺、独有冲突、主角能力来源与边界，检查各卷是否只是同一解法换更大敌人。分类、简介和中后期主要看点要能互相兑现；允许有铺垫的跨类型发展。
+- **长篇展开前**：先做默认 3–5 章的小样，结合样章原文验证好奇、主角选择、局部兑现和后续空间。这个数量是可调整的内部试写预算，不是平台申请门槛；用户明确要求全本时仍分阶段执行，不按每个检查点重复索要许可。
+- **每章动笔前**：在章纲或内部草稿中写清本章改变什么、人物凭什么行动、会误判什么、代价如何延续、与近期冲突有何差异，再进入爽点账单和正文生产。
+- **每阶段结束/新卷开始前**：复核主线承诺、人物成长与能力边界、未消失的后果、冲突解法的新意，以及跨模型修订后的视角和人物声音。结构性问题未解决时先修复相关大纲或场景，再扩写受影响剧情。
+- **商业证据**：模型自评、脚本结果、读者试读、编辑意见和平台通知分别记录。只有内部检查时标记“市场未验证”，在预算内继续试写；有后台数据时记录时间、样本与读者中断点。不得自造留存率、签约概率或用模型一致好评替代外部反馈。
+- **签约与发布**：按官方最新规则和该账号/作品后台可用模式规划，不默认选连载，也不拿试签约消耗申请机会。安全审核、质量评估、推荐评估及读者反馈不能互相替代；题材、字数、对白数量、段落方差或词频不得被包装成未公开的算法阈值。
+
+遇到关键因果断裂、同构破局反复、能力凭空扩张或简介承诺无法兑现时，将受影响的后续扩写置为待修，优先修根因；不靠全文换词或增加字数冲过检查。只缺外部反馈不等于作品不合格，也不自动取消用户选择的全自主创作路线。
+
 ## 总目标与五道门
 
 目标不是简单“把章节写完”，而是稳定完成一部长篇网文：主线清晰、人物有魅力、爽点持续、设定闭环、章节有追读欲，避免太监、烂尾、流水账、设定堆砌、剧情空转、人物扁平、文风廉价和明显 AI 味。
@@ -107,7 +123,7 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 4. **质检门**：专门检查流水账、AI 味、爽点不足、人物扁平、空洞表达、机械模板、无钩子、无变化。
 5. **设定一致性门**：专门维护人物、金手指、伏笔、时间线、世界观、能力边界和已发布事实。
 
-五道门都通过后再交付。若发生冲突，优先级为：不破坏设定一致性 > 不交付低质量正文 > 局部文句好看。
+五道门用于单章交付，不能替代前面的选题、小样和阶段检查，也不能证明平台会签约。若发生冲突，优先级为：不破坏设定一致性 > 不交付低质量正文 > 局部文句好看。
 
 ## 爽点兑现门：写前账单与写后验收
 
@@ -154,6 +170,7 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 2. 对照章纲和设定，列出本章必须推进、禁止提前揭露、禁止改写的内容；同时判断是否触发书内感情与成人内容专项约束，触发时按项目入口读取指定文件后再设计场景。
 3. 选择本章至少两个功能：推进主线、制造危机、兑现小爽点、埋伏笔、改变人物关系、展现能力成长、增强世界观吸引力、留下章末期待。
 4. 写前列出爽点账单；蓄势章也要写明本章的可感知进展与后续兑现位置。
+   同时回查近期章节：本章不能再用同一套危机、万能专业能力和他人兜底完成破局；角色新能力须有来源、学习或协作证据，前文损失须影响当下选择。发现结构性缺口时先修章纲。
 5. 若进入新阶段或新小高潮，先确认阶段详细大纲、时间线、节拍表或等价规划已补齐；不要边写边临时扩展核心结构。
 6. 写入 `正文/NNN-标题.md` 或项目约定路径。扩展名可为 `.md`，但正文内容必须是投稿兼容纯文本。
 7. 单章按目标平台节奏控制长度。番茄常见源文建议不少于 2,000 中文字符；日常续写可用 2,050-3,300 字符作为常用区间，质量优先，场景确有需要时可适当超过，不为卡上限删掉必要情绪、动作和余波。
@@ -366,6 +383,7 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 35. 多书项目是否混入其他书籍的角色、能力、制度、专有词、关系模型、提示格式、标志性冲突或习惯性比喻。
 36. 若本章触发书内感情与成人内容专项约束，是否已读取项目入口指定文件，并按该书规则核对人物边界、内容尺度、关系后果与呈现重点；是否误用本 Skill 的泛化描述覆盖项目规则或术语。
 37. 复杂场景是否因过度依赖静态细节导致关键因果、局势变化或伏笔性质难以理解；全知提示是否克制、视角稳定、不泄底、不重复，并且没有替代实际冲突与爽点兑现。
+38. 本章是否兑现当前题材承诺，是否重复近期破局机制，能力来源与信息边界是否可信；关键选择的代价和关系后果是否跨章延续。
 
 若项目提供审查脚本，优先运行项目脚本。若脚本支持不导出发布包的轻量自检模式，例如 `--skip-export`，日常续写优先使用轻量自检；没有脚本时，可用等价命令检查字符数、Markdown 标记、UTF-8 编码和状态文件解析。
 
@@ -408,6 +426,7 @@ description: Use for generic Fanqie/番茄小说 webnovel production workflows, 
 - 活跃剧情线、伏笔、下一章钩子
 - 新增设定、人物关系变化、证据链或关键物件
 - 审查结果、中文语感抽样结论、修订点、未解决风险
+- 当前试写/扩写阶段、最近检查的章节范围与结论、本轮预算、阻塞项、下一次复核点；区分内部检查和外部反馈，必要时标记“市场未验证”
 - 下一位协作者的第一步
 
 状态文件要服务下一次恢复，不要写成泛泛总结。
@@ -427,6 +446,7 @@ Git 提交和推送应服务跨设备协作，不应打断写作节奏：
 本 workflow 是主流程，不替代专项创作 skill。按剧情需要临时调用最合适的 skill；不要为了调用 skill 而改动项目结构、覆盖正文或生成无关目录。若专项 skill 的默认输出目录与当前项目约定冲突，先遵守项目约定。
 
 - `webnovel-topic`：用于选题、市场向创意、金手指、核心卖点、受众定位和“一句话概念”打磨。
+- `fanqie-signing-quality-optimization`：用于选题、小样、逐章写前和阶段复核中的质量预防；投稿前再做证据化诊断与申请条件复核。其脚本只提供格式和写法线索，不是平台质量认证。
 - `novel-generator`：用于从一句话方向或关键词快速扩展爽文提示词、雏形设定和章节草案；若它默认创建 `output/` 或 `.learnings/`，先确认是否适合当前项目。
 - `webnovel-outline`：用于世界观、人设、分卷大纲、章节细纲和爽点排布规划。
 - `webnovel-worldbuilder`：用于从零到完稿的一站式小说创作编排；已有成熟项目通常只在需要整体重建流程时使用。

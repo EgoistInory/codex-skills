@@ -1,4 +1,4 @@
 interface:
   display_name: "Fanqie Signing Quality Optimization"
-  short_description: "Audit, de-AI, and tune webnovel chapters to pass Fanqie Novel contract evaluation"
-  default_prompt: "Use $fanqie-signing-quality-optimization to audit, de-AI, and tune webnovel chapters to pass Fanqie Novel signing review."
+  short_description: "Prevent and diagnose Fanqie novel quality risks"
+  default_prompt: "Use $fanqie-signing-quality-optimization to check my novel's concept, opening sample, or current stage and propose evidence-based quality improvements."

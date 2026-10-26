@@ -3,10 +3,11 @@
 """
 audit_fanqie_quality.py
 -----------------------
-Automated Quality Audit Tool for Fanqie Webnovel Signing & Recommendation Review.
-Checks character counts, formatting, book title marks, calendar openers,
+Local format and writing-review hints for Fanqie webnovel manuscripts.
+Checks character counts, formatting, calendar openers,
 dialogue quotation density, encoding, micro AI slop phrases, omniscient clichés,
-macro genre clashes, early chapter pacing, and paragraph burstiness.
+optional historical-register hints, early chapter length, and paragraph rhythm.
+Results are not platform rules, AI detection, or signing certification.
 
 Standard Library only. Compatible with Python 3.7+.
 """
@@ -16,9 +17,9 @@ import math
 import os
 import re
 import sys
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 
-# Configuration & Thresholds
+# Internal review reminders, not platform acceptance thresholds.
 CHAR_MIN = 2050
 CHAR_MAX = 4000
 CHAR_STRICT_OVERLONG = 4500
@@ -31,7 +32,6 @@ RE_MARKDOWN_BLOCKQUOTE = re.compile(r'^\s*>\s+', re.MULTILINE)
 RE_MARKDOWN_LIST = re.compile(r'^\s*[-*+]\s+', re.MULTILINE)
 RE_MARKDOWN_CODE = re.compile(r'(`{1,3})[^\n`]+?\1')
 
-RE_BOOK_TITLE_MARK = re.compile(r'《[^》\n]{1,60}》')
 RE_REDUNDANT_TITLE_NUM = re.compile(r'第[0-9零一二两三四五六七八九十百千]+[章回节话]')
 RE_BODY_FIRST_LINE_HEADER = re.compile(r'^(#{1,6}\s+|第\s*\d+\s*章|第[零一二两三四五六七八九十百千]+章)')
 RE_CALENDAR_WEATHER = re.compile(
@@ -64,22 +64,20 @@ def calculate_burstiness(paragraphs: List[str]) -> Tuple[float, float, int]:
     short_count = sum(1 for x in lengths if x < 20)
     return mean, std_dev, short_count
 
-def audit_file(filepath: str) -> Dict[str, any]:
+def audit_file(filepath: str, min_chars: int = CHAR_MIN,
+               historical: bool = False, body_only: bool = False) -> Dict[str, Any]:
     basename = os.path.basename(filepath)
     issues = []
     warnings = []
 
-    # Check filename for book title marks
-    if '《' in basename or '》' in basename:
-        issues.append(f"Filename contains book title marks 《》: '{basename}'")
-
     # Check filename prefix and redundant chapter numbers
     stem = os.path.splitext(basename)[0]
-    if not re.match(r'^\d+[\s:：_\-]', basename):
+    numeric_prefix = re.match(r'^\d+[\s:：_\-]', basename)
+    if not numeric_prefix:
         warnings.append(f"Filename '{basename}' lacks standard numeric prefix (e.g. '001-Title.md'), which may cause importer tools to fail to recognize chapters.")
     clean_title = re.sub(r'^\d+[\s:：_\-]+', '', stem)
-    if RE_REDUNDANT_TITLE_NUM.search(clean_title):
-        issues.append(f"Redundant chapter number in title: '{basename}' (contains duplicated chapter prefix like '第三十三章'). Title must only be the clean title text.")
+    if numeric_prefix and RE_REDUNDANT_TITLE_NUM.search(clean_title):
+        warnings.append(f"Possible redundant chapter number in filename: '{basename}'. Check the project's importer before changing it.")
 
     # Read binary to verify encoding and BOM
     try:
@@ -106,20 +104,20 @@ def audit_file(filepath: str) -> Dict[str, any]:
         issues.append(f"Potential Latin-1 encoding corruption detected ({len(latin1_match)} instances, e.g. '{latin1_match[0]}').")
 
     # Chapter index detection (e.g. 001 to 005)
-    chapter_num_match = re.search(r'(?:ch|第)?(\d+)', stem, re.IGNORECASE)
+    chapter_num_match = re.match(r'(\d+)[\s:：_\-]', stem)
     chapter_index = int(chapter_num_match.group(1)) if chapter_num_match else None
 
     # Character count checks
     non_ws_count = count_non_newline_chars(text)
-    if non_ws_count < CHAR_MIN:
-        issues.append(f"Character count too low: {non_ws_count} chars (min: {CHAR_MIN}).")
+    if non_ws_count < min_chars:
+        warnings.append(f"Character count below local reminder: {non_ws_count} chars (configured minimum: {min_chars}). Review scene completeness and project requirements.")
     elif non_ws_count > CHAR_STRICT_OVERLONG:
-        warnings.append(f"Chapter severely overlong: {non_ws_count} chars (> {CHAR_STRICT_OVERLONG}). Critical risk of depressing mobile 15s retention and chapter completion rates.")
+        warnings.append(f"Long chapter: {non_ws_count} chars (> local reminder {CHAR_STRICT_OVERLONG}). Review pacing and scene boundaries in context.")
     elif non_ws_count > CHAR_MAX:
         warnings.append(f"Character count high: {non_ws_count} chars (recommended < {CHAR_MAX}).")
 
     if chapter_index is not None and 1 <= chapter_index <= 5 and non_ws_count > CHAR_EARLY_CHAPTER_MAX:
-        warnings.append(f"Golden early chapter (Ch {chapter_index:03d}) has {non_ws_count} chars (> {CHAR_EARLY_CHAPTER_MAX}). Early chapters must be compact (2,200~2,800 chars) to maximize reader completion rate.")
+        warnings.append(f"Early chapter (Ch {chapter_index:03d}) has {non_ws_count} chars (> local reminder {CHAR_EARLY_CHAPTER_MAX}). Review opening pace; this is not a platform limit.")
 
     # Markdown checks
     if RE_MARKDOWN_HEADER.search(text):
@@ -133,11 +131,6 @@ def audit_file(filepath: str) -> Dict[str, any]:
     if RE_MARKDOWN_CODE.search(text):
         issues.append("Markdown code syntax (`...`) detected in body.")
 
-    # Book title marks in body
-    book_marks = RE_BOOK_TITLE_MARK.findall(text)
-    if book_marks:
-        issues.append(f"Book title marks 《》 detected in body ({len(book_marks)} instances, e.g. '{book_marks[0]}').")
-
     # Calendar-weather opening
     first_non_empty_line = ""
     for line in text.splitlines():
@@ -147,8 +140,8 @@ def audit_file(filepath: str) -> Dict[str, any]:
             break
 
     # Body text first line header check (prevent double title rendering)
-    if RE_BODY_FIRST_LINE_HEADER.search(first_non_empty_line):
-        issues.append(f"Body text first line contains title header ('{first_non_empty_line[:30]}...'). Body text must start directly with novel opening paragraph to prevent double title rendering in App.")
+    if body_only and RE_BODY_FIRST_LINE_HEADER.search(first_non_empty_line):
+        issues.append(f"Body-only source contains a title header ('{first_non_empty_line[:30]}...'). Check the importer/exporter title convention.")
 
     if RE_CALENDAR_WEATHER.search(first_non_empty_line):
         warnings.append(f"Calendar-weather template opening detected: '{first_non_empty_line[:40]}...'")
@@ -161,39 +154,39 @@ def audit_file(filepath: str) -> Dict[str, any]:
             last_non_empty_line = stripped
             break
     if RE_AI_SLOP_ENDINGS.search(last_non_empty_line) or '（全书完）' in text:
-        issues.append("AI slop ending or mechanical '（全书完）' tag detected.")
+        warnings.append("Ending phrase or '（全书完）' tag found. Review its narrative purpose and the project's export convention.")
 
     # Dialogue density
     quote_pairs = count_dialogue_quotes(text)
     if quote_pairs < MIN_DIALOGUE_QUOTES:
-        warnings.append(f"Low dialogue density: {quote_pairs} quote pairs (recommended >= {MIN_DIALOGUE_QUOTES}).")
+        warnings.append(f"Dialogue count: {quote_pairs} quote pairs (local reminder < {MIN_DIALOGUE_QUOTES}). Review scene needs; do not add dialogue to meet a quota.")
 
     # Accounting prose negation
     neg_matches = RE_ACCOUNTING_NEGATION.findall(text)
     if len(neg_matches) >= 3:
         warnings.append(f"Dense '并非……而是……' negation prose detected ({len(neg_matches)} instances).")
 
-    # Microscopic AI slop phrases (Recommendation Traffic Risk)
+    # Phrase matches identify passages for review, not authorship or quality.
     micro_slop_matches = [m.group(0) for m in RE_MICRO_AI_SLOP.finditer(text)]
     if micro_slop_matches:
-        warnings.append(f"Microscopic AI slop phrases detected ({len(micro_slop_matches)} instances, e.g. '{micro_slop_matches[0]}').")
+        warnings.append(f"Stock phrase review candidates ({len(micro_slop_matches)} instances, e.g. '{micro_slop_matches[0]}'). Check context and repetition before editing.")
 
     # Omniscient protagonist clichés (Gary Stu / Flat narrative risk without real stakes)
     omni_matches = [m.group(0) for m in RE_OMNISCIENT_PROTAGONIST.finditer(text)]
     if len(omni_matches) >= 2:
-        warnings.append(f"High frequency of omniscient protagonist clichés ({len(omni_matches)} instances, e.g. '{omni_matches[0]}'). Narrative risks Gary Stu syndrome with no vulnerability or real stakes.")
+        warnings.append(f"Repeated certainty phrases ({len(omni_matches)} instances, e.g. '{omni_matches[0]}'). Review actual information limits and consequences; phrases alone do not prove an omnipotent character.")
 
     # Modern macro/corporate financial jargon clash
     macro_matches = [m.group(0) for m in RE_GENRE_CLASH_MACRO.finditer(text)]
-    if macro_matches:
-        warnings.append(f"Modern macroeconomic/corporate jargon detected ({len(macro_matches)} instances, e.g. '{macro_matches[0]}'). Severe risk of genre clash between traditional setting and dry business treatise.")
+    if historical and macro_matches:
+        warnings.append(f"Historical-register review candidates ({len(macro_matches)} instances, e.g. '{macro_matches[0]}'). Check world and speaker context before replacing terms.")
 
     # Burstiness & Paragraph Variance check
     paragraphs = [p for p in text.splitlines() if p.strip()]
     if len(paragraphs) >= 12:
         mean_p, std_p, short_p = calculate_burstiness(paragraphs)
         if std_p < 14.0 and short_p == 0:
-            warnings.append(f"Low paragraph burstiness (std_dev={std_p:.1f}, 0 short punchlines, high AI rhythmic uniformity).")
+            warnings.append(f"Similar paragraph lengths (std_dev={std_p:.1f}, 0 short paragraphs). Review scene rhythm; this is not an AI-detection result.")
 
     status = 'FAIL' if issues else ('WARN' if warnings else 'PASS')
     return {
@@ -206,15 +199,18 @@ def audit_file(filepath: str) -> Dict[str, any]:
     }
 
 def main():
-    parser = argparse.ArgumentParser(description="Audit novel files for Fanqie signing & recommendation review standards.")
-    parser.add_argument('--dir', type=str, help="Directory containing novel chapter files (.md / .txt)")
-    parser.add_argument('--file', type=str, help="Single chapter file to audit")
-    parser.add_argument('--strict', action='store_true', help="Treat warnings as failures")
+    parser = argparse.ArgumentParser(description="Scan local manuscript formatting and writing-review hints; not Fanqie signing certification.")
+    target = parser.add_mutually_exclusive_group(required=True)
+    target.add_argument('--dir', type=str, help="Directory containing novel chapter files (.md / .txt)")
+    target.add_argument('--file', type=str, help="Single chapter file to audit")
+    parser.add_argument('--min-chars', type=int, default=CHAR_MIN, help="Local chapter-length reminder (not a platform limit)")
+    parser.add_argument('--historical', action='store_true', help="Enable historical-register vocabulary reminders")
+    parser.add_argument('--body-only', action='store_true', help="Require source body to start without a chapter title")
+    parser.add_argument('--strict', action='store_true', help="Treat all local review reminders as failures")
     args = parser.parse_args()
 
-    if not args.dir and not args.file:
-        parser.print_help()
-        sys.exit(1)
+    if args.min_chars < 0:
+        parser.error('--min-chars must be zero or positive')
 
     files_to_check = []
     if args.file:
@@ -230,7 +226,8 @@ def main():
         sys.exit(1)
 
     print(f"\n==================================================")
-    print(f" FANQIE SIGNING & RECOMMENDATION AUDIT TOOL")
+    print(f" FANQIE LOCAL MANUSCRIPT SCAN")
+    print(f" Format checks and review hints only; no signing or recommendation verdict.")
     print(f" Target files: {len(files_to_check)}")
     print(f"==================================================\n")
 
@@ -240,7 +237,8 @@ def main():
     total_chars = 0
 
     for filepath in files_to_check:
-        res = audit_file(filepath)
+        res = audit_file(filepath, min_chars=args.min_chars,
+                         historical=args.historical, body_only=args.body_only)
         total_chars += res.get('chars', 0)
         status = res['status']
 
@@ -273,13 +271,13 @@ def main():
     print(f"--------------------------------------------------")
 
     if fail_count > 0:
-        print("\nResult: FAILED - Quality gates not passed.\n")
+        print("\nResult: FAILED - Local format checks or configured strict checks failed.\n")
         sys.exit(1)
     elif warn_count > 0 and args.strict:
         print("\nResult: FAILED (strict mode) - Warnings present.\n")
         sys.exit(1)
     else:
-        print("\nResult: SUCCESS - All chapters meet Fanqie signing & recommendation criteria.\n")
+        print("\nResult: SCAN COMPLETE - No blocking local findings. Review warnings and assess story quality separately; signing and recommendation remain unverified.\n")
         sys.exit(0)
 
 if __name__ == '__main__':
