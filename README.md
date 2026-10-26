@@ -31,7 +31,7 @@ codex-skills/
 | --- | --- |
 | `agent-handoff-workflow` | Agent 交接、上下文到顶、换会话/换模型时的项目上下文包创建与维护。 |
 | `fanqie-novel-workflow` | 番茄小说创作编排，覆盖选题预检、开篇小样、逐章写前检查、阶段扩写、审校、状态交接与投稿导出。 |
-| `fanqie-signing-quality-optimization` | 番茄小说质量预防与证据化诊断：九项质量检查、受众承诺、能力边界、阶段验证；区分官方规则、内部提醒与真实反馈。 |
+| `fanqie-signing-quality-optimization` | 番茄小说签约与推荐质量全生命周期优化规范 2.0（九大质量闸门、题材纯度与受众预期防错位、真实代价防神仙平推、敏捷MVP验证流程、签约与推荐算法反断推防低质治理）。 |
 | `frontend-acceptance-workflow` | 前端实现、浏览器验收、回归排查与交付闭环。 |
 | `frontend-netlify-release` | 前端项目 Netlify 发布前检查、干净发布目录、MCP/CLI 发布与失败止损流程。 |
 | `hatch-pet` | Codex pet / spritesheet 生成、校验与打包流程。 |
