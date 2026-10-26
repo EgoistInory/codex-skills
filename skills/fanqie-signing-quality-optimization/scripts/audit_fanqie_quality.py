@@ -5,7 +5,8 @@ audit_fanqie_quality.py
 -----------------------
 Automated Quality Audit Tool for Fanqie Webnovel Signing & Recommendation Review.
 Checks character counts, formatting, book title marks, calendar openers,
-dialogue quotation density, encoding, micro AI slop phrases, and paragraph burstiness.
+dialogue quotation density, encoding, micro AI slop phrases, omniscient clichés,
+macro genre clashes, early chapter pacing, and paragraph burstiness.
 
 Standard Library only. Compatible with Python 3.7+.
 """
@@ -20,6 +21,8 @@ from typing import Dict, List, Tuple
 # Configuration & Thresholds
 CHAR_MIN = 2050
 CHAR_MAX = 4000
+CHAR_STRICT_OVERLONG = 4500
+CHAR_EARLY_CHAPTER_MAX = 3500
 MIN_DIALOGUE_QUOTES = 18
 
 RE_MARKDOWN_HEADER = re.compile(r'^\s*#{1,6}\s+', re.MULTILINE)
@@ -37,6 +40,8 @@ RE_CALENDAR_WEATHER = re.compile(
 RE_AI_SLOP_ENDINGS = re.compile(r'（全书完）|时代大幕|拉开了大幕|这不仅是.*?更是|仰不愧于天')
 RE_ACCOUNTING_NEGATION = re.compile(r'并非[^\n，。]{1,20}而是|不是[^\n，。]{1,20}乃是')
 RE_MICRO_AI_SLOP = re.compile(r'眼神.*?(?:闪过|复杂|警惕)|空气中弥漫|无形的气场|微妙的平衡|深知.*?意味|心中暗自|殊不知|随着时间的推移')
+RE_OMNISCIENT_PROTAGONIST = re.compile(r'(?:早已料到|一切尽在掌握|算无遗策|胸有成竹|毫无悬念|早有预料|不出所料|皆在算中|洞若观火)')
+RE_GENRE_CLASH_MACRO = re.compile(r'(?:金融保卫战|资本运作|跨周期|降维打击|市场下沉|货币战争|对冲风险|杠杆操作|资金池|产业升级)')
 RE_LATIN1_CORRUPTION = re.compile(r'ã€|â€|Ã©|Ã¨|Ã|å|æ')
 
 def count_non_newline_chars(text: str) -> int:
@@ -100,12 +105,21 @@ def audit_file(filepath: str) -> Dict[str, any]:
     if latin1_match and len(latin1_match) > 3:
         issues.append(f"Potential Latin-1 encoding corruption detected ({len(latin1_match)} instances, e.g. '{latin1_match[0]}').")
 
-    # Character count
+    # Chapter index detection (e.g. 001 to 005)
+    chapter_num_match = re.search(r'(?:ch|第)?(\d+)', stem, re.IGNORECASE)
+    chapter_index = int(chapter_num_match.group(1)) if chapter_num_match else None
+
+    # Character count checks
     non_ws_count = count_non_newline_chars(text)
     if non_ws_count < CHAR_MIN:
         issues.append(f"Character count too low: {non_ws_count} chars (min: {CHAR_MIN}).")
+    elif non_ws_count > CHAR_STRICT_OVERLONG:
+        warnings.append(f"Chapter severely overlong: {non_ws_count} chars (> {CHAR_STRICT_OVERLONG}). Critical risk of depressing mobile 15s retention and chapter completion rates.")
     elif non_ws_count > CHAR_MAX:
         warnings.append(f"Character count high: {non_ws_count} chars (recommended < {CHAR_MAX}).")
+
+    if chapter_index is not None and 1 <= chapter_index <= 5 and non_ws_count > CHAR_EARLY_CHAPTER_MAX:
+        warnings.append(f"Golden early chapter (Ch {chapter_index:03d}) has {non_ws_count} chars (> {CHAR_EARLY_CHAPTER_MAX}). Early chapters must be compact (2,200~2,800 chars) to maximize reader completion rate.")
 
     # Markdown checks
     if RE_MARKDOWN_HEADER.search(text):
@@ -163,6 +177,16 @@ def audit_file(filepath: str) -> Dict[str, any]:
     micro_slop_matches = [m.group(0) for m in RE_MICRO_AI_SLOP.finditer(text)]
     if micro_slop_matches:
         warnings.append(f"Microscopic AI slop phrases detected ({len(micro_slop_matches)} instances, e.g. '{micro_slop_matches[0]}').")
+
+    # Omniscient protagonist clichés (Gary Stu / Flat narrative risk without real stakes)
+    omni_matches = [m.group(0) for m in RE_OMNISCIENT_PROTAGONIST.finditer(text)]
+    if len(omni_matches) >= 2:
+        warnings.append(f"High frequency of omniscient protagonist clichés ({len(omni_matches)} instances, e.g. '{omni_matches[0]}'). Narrative risks Gary Stu syndrome with no vulnerability or real stakes.")
+
+    # Modern macro/corporate financial jargon clash
+    macro_matches = [m.group(0) for m in RE_GENRE_CLASH_MACRO.finditer(text)]
+    if macro_matches:
+        warnings.append(f"Modern macroeconomic/corporate jargon detected ({len(macro_matches)} instances, e.g. '{macro_matches[0]}'). Severe risk of genre clash between traditional setting and dry business treatise.")
 
     # Burstiness & Paragraph Variance check
     paragraphs = [p for p in text.splitlines() if p.strip()]
