@@ -38,6 +38,7 @@ codex-skills/
 | `kindle-home-board-workflow` | Kindle / 电子墨水屏 / 老浏览器家庭信息板的本地同步、低频刷新、Admin 表单化与验收流程。 |
 | `macos-app-external-restart` | macOS GUI 应用外置重启、launchd 托管执行、残留进程与临时文件清理验证。 |
 | `openspec-lite-workflow` | 面向中低复杂度项目的 OpenSpec 轻量工作流，内置按需加载的计划、TDD、调试、验证和审查模块。 |
+| `project-knowledge-extractor` | 系统性只读代码库逆向复盘、架构还原、工程质量审计与“事实→原理→方法”三层知识萃取工作流，支持生成内部维护档案与净室（Clean-Room）跨项目复用设计蓝图。 |
 | `python-ai-project-dependencies` | AI / vibe-coding Python 项目的依赖选择、分组、安装与验证方法论。 |
 | `realistic-human-image-qa` | 写实真人生图、多参考图提示词整合、完整可复制提示词与物理现实校验。 |
 | `tesla-paintshop-wrap-workflow` | Tesla 喷漆车间车衣的官方模板工程化合成、左右图案与文字校准、透明 PNG 导出及真实下载交付。 |

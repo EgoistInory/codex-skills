@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Knowledge Extractor"
+  short_description: "Extract Facts, Principles, and Clean-Room Methods from codebases"
+  default_prompt: "Use $project-knowledge-extractor to perform a read-only architecture reconstruction, engineering audit, and three-layer knowledge extraction (Facts -> Principles -> Clean-Room Methods) on this project."
